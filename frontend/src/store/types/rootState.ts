@@ -1,4 +1,4 @@
 export default interface RootState {
-  user: any;
-  stories: any;
+  User: any
+  Stories: any
 }

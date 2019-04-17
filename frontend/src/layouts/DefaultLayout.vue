@@ -1,11 +1,7 @@
 <template>
   <v-app id="mainlayout">
     <navigation-drawer></navigation-drawer>
-    <v-container>
-      <v-content>
-        <slot/>
-      </v-content>
-    </v-container>
+    <slot/>
     <footer-component></footer-component>
   </v-app>
 </template>
@@ -26,7 +22,7 @@ export default {
 </script>
 <style lang="scss" >
 #mainlayout {
-  background: #f2f2f2;
+  background: #fff;
   .container {
     max-width: 1400px;
   }

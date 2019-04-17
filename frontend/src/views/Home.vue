@@ -1,134 +1,128 @@
 <template>
-  <div class="home">
-    <div class="logo-section">
-      <header>
-        <h3 class="display-4">PaperWiff</h3>
-        <blockquote
-          class="blockquote"
-        >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum maiores modi quidem veniam, expedita quis laboriosam, ullam facere adipisci, iusto, voluptate sapiente corrupti asperiores rem nemo numquam fuga ab at.</blockquote>
-      </header>
-    </div>
-    <!-- <div class="main-slider">
-      <v-carousel hide-controls hide-delimiters>
-        <v-carousel-item v-for="(item,i) in items" :key="i" :src="item.src"></v-carousel-item>
-      </v-carousel>
-    </div>-->
-
-    <div class="main-content">
-      <v-layout>
-        <v-flex xs4>
-          <div class="user-in">
-            <v-avatar>
-              <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
-            </v-avatar>
-            <p>Navaneeth</p>
-          </div>
-          <div class="tags-main">
-            <header>Tags</header>
-            <div class="chip-content">
-              <v-chip v-model="chip1" close>#Closable</v-chip>
-
-              <v-chip v-model="chip2" close>#Remove</v-chip>
-
-              <v-chip v-model="chip3" close>#Success</v-chip>
-
-              <v-chip v-model="chip4" close>#Complete</v-chip>
-            </div>
-          </div>
-        </v-flex>
-        <v-flex xs8>
-          <div class="articles-tab">
-            <v-tabs centered color="#f2f2f2" icons-and-text>
-              <v-tabs-slider color="black"></v-tabs-slider>
-
-              <v-tab href="#tab-1">Feed</v-tab>
-
-              <v-tab href="#tab-2">Popular</v-tab>
-
-              <v-tab href="#tab-3">Latest</v-tab>
-
-              <v-tab-item v-for="i in 3" :key="i" :value="'tab-' + i">
-                <v-card flat>
-                  <v-container fluid grid-list-md>
-                    <v-layout row wrap>
-                      <v-flex
-                        v-for="card in cards"
-                        :key="card.title"
-                        v-bind="{ [`xs${card.flex}`]: true }"
-                      >
-                        <v-card>
-                          <v-img :src="card.src" height="200px">
-                            <v-container fill-height fluid pa-2>
-                              <v-layout fill-height>
-                                <v-flex xs12 align-end flexbox>
-                                  <span class="headline white--text" v-text="card.title"></span>
-                                </v-flex>
-                              </v-layout>
-                            </v-container>
-                          </v-img>
-
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn icon>
-                              <v-icon>favorite</v-icon>
-                            </v-btn>
-                            <v-btn icon>
-                              <v-icon>bookmark</v-icon>
-                            </v-btn>
-                            <v-btn icon>
-                              <v-icon>share</v-icon>
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card>
-              </v-tab-item>
-            </v-tabs>
-          </div>
-        </v-flex>
-      </v-layout>
-    </div>
-  </div>
+  <v-container>
+    <v-content>
+      <div id="home">
+        <v-navigation-drawer
+          class="mobile-left-sidebar"
+          app
+          v-model="drawer"
+          disable-resize-watcher
+        >
+          <v-flex>
+            <join-us></join-us>
+            <tag-listing></tag-listing>
+          </v-flex>
+        </v-navigation-drawer>
+        <div class="logo-section">
+          <v-btn @click="drawer = !drawer" flat icon color="#3e3e3e">
+            <v-icon>fa fa-rss</v-icon>
+          </v-btn>
+          <header>
+            <h3 class="main-title">PaperWiff</h3>
+            <p class="subtitle">Dazzle the world with your words</p>
+          </header>
+        </div>
+        <div class="main-content">
+          <v-layout>
+            <v-flex class="sidebar-section sidebar-left hidden-sm-and-down" md3 xs12>
+              <user-info></user-info>
+              <tag-listing></tag-listing>
+            </v-flex>
+            <v-flex class="content-section" md6 xs12>
+              <story-listing></story-listing>
+            </v-flex>
+            <v-flex class="sidebar-section sidebar-right hidden-sm-and-down" md3 xs12>
+              <key-links></key-links>
+              <join-us></join-us>
+            </v-flex>
+          </v-layout>
+        </div>
+        <v-snackbar v-model="snackbar" color="success" :top="true" :timeout="3000">
+          Shata
+          <v-btn color="pink" flat @click="snackbar = false">Close</v-btn>
+        </v-snackbar>
+      </div>
+    </v-content>
+  </v-container>
 </template>
 <script>
+// Custom components
+import TagListing from "@/components/Blocks/TagListing.vue";
+import UserInfo from "@/components/Blocks/UserInfo.vue";
+import StoryListing from "@/components/Blocks/StoryListing.vue";
+import KeyLinks from "@/components/Blocks/KeyLinks.vue";
+import JoinUs from "@/components/Blocks/JoinUs.vue";
+import { mapGetters } from "vuex";
+
 export default {
   name: "Home",
+  components: {
+    TagListing,
+    UserInfo,
+    StoryListing,
+    KeyLinks,
+    JoinUs
+  },
   data() {
     return {
-      items: [
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg"
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg"
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg"
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg"
-        }
-      ],
-      cards: [
-        {
-          title: "Pre-fab homes",
-          src: "https://cdn.vuetifyjs.com/images/cards/house.jpg",
-          flex: 5
-        },
-        {
-          title: "Favorite road trips",
-          src: "https://cdn.vuetifyjs.com/images/cards/road.jpg",
-          flex: 4
-        },
-        {
-          title: "Best airlines",
-          src: "https://cdn.vuetifyjs.com/images/cards/plane.jpg",
-          flex: 3
-        }
-      ]
+      snackbar: true,
+      drawer: false
     };
+  },
+  computed: {
+    ...mapGetters({
+      filteredStories: "Stories/filteredStories",
+      allStories: "Stories/allStories"
+    })
   }
 };
 </script>
+<style lang="scss">
+$logosection-color: #043344;
+#home {
+  .logo-section {
+    margin: 20px 0;
+    padding: 20px 0;
+    text-align: center;
+    // color: #36789a;
+    color: $logosection-color;
+    overflow: hidden;
+    .main-title {
+      font-family: "Marck Script", cursive;
+      font-size: 55px;
+      font-weight: normal;
+    }
+    .socialIcon {
+      color: $logosection-color;
+    }
+    .subtitle {
+      box-sizing: border-box;
+      padding: 20px 0;
+      margin: 0;
+      position: relative;
+      font-size: 16px;
+      color: $logosection-color;
+      text-transform: lowercase;
+      &::after,
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 10%;
+        height: 2px;
+        background: $logosection-color;
+        margin: 0 20px 5px 20px;
+      }
+    }
+  }
+  .content-section,
+  .sidebar-section {
+    box-sizing: border-box;
+    padding: 0 15px;
+  }
+  .sidebar-left,
+  .sidebar-right {
+    padding-top: 10px;
+  }
+}
+</style>
+

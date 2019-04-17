@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="form-container">
-      <v-form class="form" ref="form" v-model="valid" lazy-validation>
+      <v-form class="form" ref="signupform" v-model="valid" lazy-validation>
         <div class="form-content">
           <div class="form-header">
             <header>
@@ -58,7 +58,7 @@
         </div>
         <div class="social-logins">
           <div class="social">
-            <v-btn fab dark small color="#114b5f">
+            <v-btn @click="signIn" fab dark small color="#114b5f">
               <v-icon dark>fab fa-google</v-icon>
             </v-btn>
           </div>
@@ -98,11 +98,42 @@ export default {
       }
     };
   },
+  mounted() {
+    window.gapi.load("auth2", () => {
+      const auth2 = window.gapi.auth2.init({
+        client_id:
+          "430441876577-gpsarrij27132ir90dqb493hanfrn0og.apps.googleusercontent.com"
+      });
+    });
+  },
+
   methods: {
     validate() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.signupform.validate()) {
         this.snackbar = true;
+        let user = {
+          username: "@" + this.name,
+          password: this.password,
+          email: this.email
+        };
+        this.$router.push(`/a/${user.username}`);
       }
+    },
+    signIn() {
+      var auth2 = window.gapi.auth2.getAuthInstance();
+      auth2.signIn().then(
+        function() {
+          var profile = auth2.currentUser.get().getBasicProfile();
+          let user = {
+            user_id: profile.getId(),
+            first_name: profile.getGivenName(),
+            last_name: profile.getFamilyName(),
+            username: profile.getGivenName(),
+            email: profile.getEmail()
+          };
+          this.$store.dispatch("User/loginUser", user);
+        }.bind(this)
+      );
     }
   }
 };
@@ -128,8 +159,10 @@ export default {
 }
 .form-header {
   .ftitle {
-    font-size: 26px;
+    font-size: 46px;
     text-transform: capitalize;
+    font-family: "Marck Script", cursive;
+    font-weight: normal;
   }
   .desc {
     font-size: 18px;
@@ -159,7 +192,7 @@ export default {
   }
   .form-container {
     max-width: 1200px;
-    margin: auto;
+    margin: 100px auto auto auto;
     z-index: 1;
   }
 }
