@@ -14,13 +14,15 @@
           </v-flex>
         </v-navigation-drawer>
         <div class="logo-section">
-          <v-btn @click="drawer = !drawer" flat icon color="#3e3e3e">
-            <v-icon>fa fa-rss</v-icon>
-          </v-btn>
-          <header>
-            <h3 class="main-title">PaperWiff</h3>
-            <p class="subtitle">Dazzle the world with your words</p>
-          </header>
+          <v-layout class="hidden-md-and-up">
+            <v-btn @click="drawer = !drawer" flat icon color="#337fb5">
+              <v-icon>fab fa-buffer</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn @click="drawer = !drawer" flat icon color="#337fb5">
+              <v-icon>fa fa-coins</v-icon>
+            </v-btn>
+          </v-layout>
         </div>
         <div class="main-content">
           <v-layout>
@@ -32,15 +34,11 @@
               <story-listing></story-listing>
             </v-flex>
             <v-flex class="sidebar-section sidebar-right hidden-sm-and-down" md3 xs12>
-              <key-links></key-links>
               <join-us></join-us>
+              <key-links></key-links>
             </v-flex>
           </v-layout>
         </div>
-        <v-snackbar v-model="snackbar" color="success" :top="true" :timeout="3000">
-          Shata
-          <v-btn color="pink" flat @click="snackbar = false">Close</v-btn>
-        </v-snackbar>
       </div>
     </v-content>
   </v-container>
@@ -81,12 +79,6 @@ export default {
 $logosection-color: #043344;
 #home {
   .logo-section {
-    margin: 20px 0;
-    padding: 20px 0;
-    text-align: center;
-    // color: #36789a;
-    color: $logosection-color;
-    overflow: hidden;
     .main-title {
       font-family: "Marck Script", cursive;
       font-size: 55px;

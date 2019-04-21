@@ -8,17 +8,25 @@ const User: Module<UserState, RootState> = {
   namespaced: true,
   state: {
     isSignedIn: false,
+    access_token: "",
+    refresh_token: "",
     current: {
-      user_id: null,
-      first_name: "",
-      last_name: "",
-      username: "",
+      userId: null,
+      firstName: "",
+      lastName: "",
+      userName: "",
       email: "",
-      following_tags: [],
-      followers: null,
-      following: null
+      followingTags: [],
+      followingAuthors: null,
+      joined: "",
+      about: "",
+      userImage: "",
+      userArticles: [],
+      likedStories: [],
+      accountLicense: "free"
     },
-    session_started: new Date().toLocaleString()
+    session_started: new Date().toLocaleString(),
+    userProfile: null
   },
   getters,
   actions,

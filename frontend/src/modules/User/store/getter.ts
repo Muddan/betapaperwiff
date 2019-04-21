@@ -4,7 +4,14 @@ import userState from "../../types/userState"
 
 const getters: GetterTree<userState, RootState> = {
   isSignedIn: state => state.isSignedIn,
-  currentUser: state => state.current
+  currentUser: state => state.current,
+  getUserProfile: state => state.userProfile,
+  getAccessTokens: state => {
+    return {
+      acces_token: state.access_token,
+      refresh_token: state.refresh_token
+    }
+  }
 }
 
 export default getters

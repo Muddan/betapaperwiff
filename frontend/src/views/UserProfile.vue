@@ -2,8 +2,7 @@
   <v-container>
     <v-content>
       <v-layout>
-        <v-flex class="sidebar-section sidebar-left hidden-sm-and-down" md3 xs12>left sidebar</v-flex>
-        <v-flex class="content-section" md9 xs12>
+        <v-flex class="content-section" xs12>
           <component :is="activeComponent"></component>
         </v-flex>
       </v-layout>
@@ -13,24 +12,30 @@
 
 <script>
 import StoryDetails from "@/components/StoryDetails.vue";
+import Profile from "@/components/Profile.vue";
 export default {
   name: "UserProfile",
   components: {
-    StoryDetails
+    StoryDetails,
+    Profile
   },
   computed: {
     activeComponent() {
-      if (this.$route.params.story_id) {
+      if (this.$route.params.storyId) {
         return "story-details";
+      } else {
+        return "profile";
       }
     }
   },
   mounted() {
-    if (this.$route.params.story_id) {
+    if (this.$route.params.storyId) {
       this.$store.dispatch(
         "Stories/getCurrentStory",
-        this.$route.params.story_id
+        this.$route.params.storyId
       );
+    } else {
+      this.$store.dispatch("User/getUserDetails", this.$route.params.userName);
     }
   }
 };

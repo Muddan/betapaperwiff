@@ -3,30 +3,30 @@
     <v-list-tile avatar>
       <v-list-tile-avatar>
         <v-avatar>
-          <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
+          <img :src="currentUser.userImage" alt="John">
         </v-avatar>
       </v-list-tile-avatar>
 
       <v-list-tile-content>
-        <v-list-tile-title>{{ currentUser.first_name }} {{ currentUser.last_name }}</v-list-tile-title>
+        <v-list-tile-title>{{ currentUser.firstName }} {{ currentUser.lastName }}</v-list-tile-title>
         <router-link
           :to="{
         name: 'userprofile',
         params: {
-          username: '@' + currentUser.username,
+          userName: currentUser.userName,
         }
       }"
         >
-          <v-list-tile-sub-title>@{{ currentUser.username }}</v-list-tile-sub-title>
+          <v-list-tile-sub-title>{{ currentUser.userName }}</v-list-tile-sub-title>
         </router-link>
       </v-list-tile-content>
     </v-list-tile>
     <div
-      v-if="currentUser.following_tags && currentUser.following_tags.length > 0"
+      v-if="currentUser.followingTags && currentUser.followingTags.length > 0"
       class="following-tags-main"
     >
       <v-subheader class="tag-header">Your tags</v-subheader>
-      <story-tags :tags="currentUser.following_tags"></story-tags>
+      <story-tags :tags="currentUser.followingTags"></story-tags>
     </div>
     <v-subheader v-else class="tag-header">You are not following any tags</v-subheader>
   </div>

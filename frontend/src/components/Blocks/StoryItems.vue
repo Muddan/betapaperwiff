@@ -25,8 +25,8 @@
                 </v-list-tile>
               </v-flex>
               <v-flex xs10>
-                <v-subheader :key="item.user_email">{{ item.user_email }}</v-subheader>
-                <p :key="item.published_date">{{ item.published_date }}</p>
+                <v-subheader :key="item.userName">{{ item.userName }}</v-subheader>
+                <p :key="item.datePublished">{{ new Date(item.datePublished).toLocaleString() }}</p>
               </v-flex>
             </v-layout>
             <v-divider :key="Math.random()" :inset="true"></v-divider>
@@ -37,13 +37,12 @@
                   :to="{
                         name: 'userprofile',
                         params: {
-                          story_id: item.story_id ,
-                           username: '@Navaneethvijay',
-                          storyTitle: item.title.toLowerCase().replace(/ /g,'-')
+                          storyId: item.storyId ,
+                          userName: '@navaneeth',
                         }
                       }"
                 >
-                  <p>{{item.title}}</p>
+                  <p>{{item.storyTitle}}</p>
                 </router-link>
 
                 <p class="summary" v-html="item.content.substring(0, 460) + ' . . .'"></p>
@@ -56,9 +55,9 @@
               <v-btn icon>
                 <v-icon>favorite_border</v-icon>
               </v-btn>
-              <v-btn icon>
+              <!-- <v-btn icon>
                 <v-icon>share</v-icon>
-              </v-btn>
+              </v-btn>-->
             </v-card-actions>
           </template>
         </v-list>

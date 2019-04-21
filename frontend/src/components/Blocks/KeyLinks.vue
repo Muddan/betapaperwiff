@@ -1,4 +1,4 @@
-<template>
+<template >
   <div class="keylink-main">
     <v-subheader>
       <v-icon color="#fff">bolt</v-icon>
@@ -35,11 +35,11 @@ export default {
       ],
       keyLinks: [
         { title: "About", link: "/about" },
-        { title: "Sponsors", link: "/about" },
-        { title: " Privacy Policy", link: "/about" },
-        { title: "Contact", link: "/about" },
-        { title: "Faq", link: "/about" },
-        { title: "Code of conduct", link: "/about" }
+        { title: "Pricing", link: "/pricing" },
+        { title: " Privacy Policy", link: "/privacy-policy" },
+        { title: "Contact", link: "/contact" },
+        { title: "Faq", link: "/faq" },
+        { title: "Code of conduct", link: "/code-of-conduct" }
       ]
     };
   }

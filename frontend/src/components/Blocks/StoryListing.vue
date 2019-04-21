@@ -14,12 +14,12 @@
         <story-items :stories="getCurrentUserFeed"></story-items>
       </v-tab-item>
     </v-tabs>-->
-    <v-flex xs12 class="btn-group">
+    <!-- <v-flex xs12 class="btn-group">
       <v-btn-toggle flat v-model="toggle_one" mandatory>
         <v-btn>Feed</v-btn>
         <v-btn>Latest</v-btn>
       </v-btn-toggle>
-    </v-flex>
+    </v-flex>-->
     <story-items :stories="getCurrentUserFeed"></story-items>
   </div>
 </template>

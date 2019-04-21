@@ -35,10 +35,7 @@ const mutations: MutationTree<StoriesState> = {
   },
 
   [types.SET_CURRENT_STORY](state, payload) {
-    let afterFilter = state.allStories.filter(story => {
-      return story.story_id == payload
-    })
-    state.currentStory = afterFilter
+    state.currentStory = payload
   }
 }
 

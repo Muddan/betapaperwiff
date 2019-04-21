@@ -1,5 +1,5 @@
 <template>
-  <v-app id="mainlayout">
+  <v-app class="grey lighten-5" id="mainlayout">
     <navigation-drawer></navigation-drawer>
     <slot/>
     <footer-component></footer-component>

@@ -21,7 +21,7 @@ export default new Router({
         import(/* webpackChunkName: "about" */ "./views/TagView.vue")
     },
     {
-      path: "/a/:username/:storyTitle?",
+      path: "/a/:userName/:storyId?",
       name: "userprofile",
       component: () =>
         import(/* webpackChunkName: "about" */ "./views/UserProfile.vue")

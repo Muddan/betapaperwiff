@@ -1,14 +1,14 @@
 <template>
-  <div class="join-us">
+  <div class="join-us" v-if="!isSignedIn">
     <div class="join-us-content">
       <div class="header">
         <v-subheader>Join Paperwiff</v-subheader>
       </div>
-      <v-btn outline round>
+      <v-btn @click="authenticate('twitter')" outline round>
         Sign in with Twitter
         <v-icon size="18px" dark right>fab fa-twitter</v-icon>
       </v-btn>
-      <v-btn @click="signIn" outline round>
+      <v-btn @click="authenticate('google')" outline round>
         Sign in with Google
         <v-icon size="18px" dark right>fab fa-google</v-icon>
       </v-btn>
@@ -17,32 +17,22 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "JoinUs",
-  mounted() {
-    window.gapi.load("auth2", () => {
-      const auth2 = window.gapi.auth2.init({
-        client_id:
-          "430441876577-gpsarrij27132ir90dqb493hanfrn0og.apps.googleusercontent.com"
-      });
-    });
+  computed: {
+    ...mapGetters({
+      isSignedIn: "User/isSignedIn"
+    })
   },
   methods: {
-    signIn() {
-      var auth2 = window.gapi.auth2.getAuthInstance();
-      auth2.signIn().then(
-        function() {
-          var profile = auth2.currentUser.get().getBasicProfile();
-          let user = {
-            user_id: profile.getId(),
-            first_name: profile.getGivenName(),
-            last_name: profile.getFamilyName(),
-            username: profile.getGivenName(),
-            email: profile.getEmail()
-          };
-          this.$store.dispatch("User/loginUser", user);
-        }.bind(this)
-      );
+    authenticate: function(provider) {
+      this.$auth.authenticate(provider).then(authResponse => {
+        if (authResponse) {
+          this.$store.dispatch("User/loginUser", authResponse.data);
+        }
+      });
     }
   }
 };
@@ -52,6 +42,7 @@ export default {
   box-sizing: border-box;
   padding: 10px 0;
   .join-us-content {
+    background: #fff;
     border-radius: 8px;
     border: 1px solid #3e3e3e;
     border-bottom: 4px solid #3e3e3e;

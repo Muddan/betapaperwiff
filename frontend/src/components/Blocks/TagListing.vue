@@ -15,24 +15,26 @@
     </v-layout>
     <v-subheader class="tag-header">Design your experience</v-subheader>
     <div class="chip-content">
-      <v-chip
-        label
-        v-for="(tags, index) in currentTags"
-        :key="index"
-        color="#ffeaec"
-        text-color="white"
-      >
-        <router-link
-          :to="{
-        name: 'tags',
-        params: {
-          tagName: tags
-        }
-      }"
-        ># {{ tags }}</router-link>
-        <!-- <v-icon right color="#f45b69">check_circle</v-icon> -->
-        <v-icon right @click.stop="chipHandler(tags)" color="#f45b69">add</v-icon>
-      </v-chip>
+      <v-list>
+        <v-list-tile v-for="(tags, index) in currentTags" :key="index">
+          <v-chip color="transparent" label text-color="white">
+            <router-link
+              :to="{
+                name: 'tags',
+                params: {
+                  tagName: tags
+                }
+              }"
+            ># {{ tags }}</router-link>
+            <!-- <v-icon right color="#f45b69">check_circle</v-icon> -->
+          </v-chip>
+          <v-chip small @click.stop="chipHandler(tags)" label color="#ffeaec" text-color="#2e2e2e">
+            <v-avatar>
+              <v-icon right color="#f45b69">add</v-icon>
+            </v-avatar>Follow
+          </v-chip>
+        </v-list-tile>
+      </v-list>
     </div>
   </div>
 </template>
@@ -47,7 +49,8 @@ export default {
   data() {
     return {
       dialog: false,
-      added: false
+      added: false,
+      hover: false
     };
   },
 
@@ -95,6 +98,9 @@ export default {
     cursor: pointer;
   }
   .chip-content {
+    max-height: 400px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     a {
       color: #2e2e2e;
       text-decoration: none;
