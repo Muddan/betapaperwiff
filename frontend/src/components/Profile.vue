@@ -56,8 +56,8 @@ export default {
       return this.getUserProfile;
     }
   },
-  beforeMount() {
-    this.$store.dispatch("User/getUserDetails", "111704191453898225276");
+  mounted() {
+    this.$store.dispatch("User/getUserDetails", this.$route.params.userName);
   }
 };
 </script>
@@ -68,6 +68,7 @@ export default {
     border-radius: 4px;
     border-bottom: 4px solid #3e3e3e;
     box-sizing: border-box;
+    background: #fff;
     padding: 20px;
     .img-container {
       .profile-img {

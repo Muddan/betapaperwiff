@@ -115,6 +115,12 @@ $logosection-color: #043344;
   .sidebar-right {
     padding-top: 10px;
   }
+  .articles-tab {
+    padding-top: 10px;
+    .v-tabs__bar {
+      border-radius: 8px;
+    }
+  }
 }
 </style>
 

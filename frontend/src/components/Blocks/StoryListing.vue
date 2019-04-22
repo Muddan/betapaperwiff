@@ -1,6 +1,6 @@
 <template>
   <div class="articles-tab">
-    <!-- <v-tabs class="tab-header" centered color="#fff" icons-and-text>
+    <v-tabs class="tab-header" centered color="#fff" icons-and-text>
       <v-tabs-slider color="#114b5f"></v-tabs-slider>
 
       <v-tab v-if="isSignedIn" href="#feed">Feed</v-tab>
@@ -13,14 +13,13 @@
       <v-tab-item value="latest">
         <story-items :stories="getCurrentUserFeed"></story-items>
       </v-tab-item>
-    </v-tabs>-->
+    </v-tabs>
     <!-- <v-flex xs12 class="btn-group">
       <v-btn-toggle flat v-model="toggle_one" mandatory>
         <v-btn>Feed</v-btn>
         <v-btn>Latest</v-btn>
       </v-btn-toggle>
     </v-flex>-->
-    <story-items :stories="getCurrentUserFeed"></story-items>
   </div>
 </template>
 

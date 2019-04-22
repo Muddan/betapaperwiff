@@ -18,7 +18,7 @@
       <v-spacer class="hidden-sm-and-down"></v-spacer>
 
       <!-- Search icon -->
-      <v-dialog v-model="dialog" :full-width="true" :fullscreen="false">
+      <!-- <v-dialog v-model="dialog" :full-width="true" :fullscreen="false">
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon color="#337fb5">search</v-icon>
@@ -35,7 +35,7 @@
             <v-btn color="#337fb5" flat @click="dialog = false">Search</v-btn>
           </v-card-actions>
         </v-card>
-      </v-dialog>
+      </v-dialog>-->
 
       <!-- Write icon -->
       <router-link to="/write">

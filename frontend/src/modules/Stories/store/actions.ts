@@ -57,6 +57,12 @@ const actions: ActionTree<StoriesState, RootState> = {
           return "Error while saving data"
         }
       })
+  },
+  translate(context: any, payload: any) {
+    return Vue.axios.post(app.API_TRANSTLATE, {
+      query: payload.query,
+      language: payload.language
+    })
   }
 }
 

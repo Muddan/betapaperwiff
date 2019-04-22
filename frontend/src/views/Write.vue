@@ -21,7 +21,7 @@
           ></v-select>
         </v-flex>
         <v-layout row wrap>
-          <v-flex xs12 sm6>
+          <v-flex class="white" xs12 sm6>
             <vue-editor
               ref="editor"
               @text-change="textChange()"
@@ -30,7 +30,7 @@
               :editorToolbar="customToolbar"
             ></vue-editor>
           </v-flex>
-          <v-flex xs12 sm6 wrap>
+          <v-flex class="white" xs12 sm6 wrap>
             <vue-editor
               placeholder="Translated text..."
               v-model="translatedContent"
@@ -135,8 +135,8 @@ export default {
       let queryText = this.content;
 
       setTimeout(() => {
-        axios
-          .post("http://127.0.0.1:5000/api/story/translate", {
+        this.$store
+          .dispatch("Stories/translate", {
             query: queryText,
             language: this.selectedLanguage
           })
@@ -150,18 +150,16 @@ export default {
       }, 1000);
     },
     publishStory() {
-      console.log(this.selectedLanguage);
-
-      // this.$store
-      //   .dispatch("Stories/publishStory", {
-      //     storyTitle: this.title,
-      //     userId: "111704191453898225276",
-      //     content: this.translatedContent,
-      //     tags: this.selectedTags
-      //   })
-      //   .then(res => {
-      //     console.log(res);
-      //   });
+      this.$store
+        .dispatch("Stories/publishStory", {
+          storyTitle: this.title,
+          userId: this.$store.state.user,
+          content: this.translatedContent,
+          tags: this.selectedTags
+        })
+        .then(res => {
+          console.log(res);
+        });
     },
     limiter(e) {
       if (e.length > 2) {

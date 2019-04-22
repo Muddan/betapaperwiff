@@ -58,16 +58,16 @@ Vue.use(VueAxios, axios)
 
 Vue.use(VueAuthenticate, {
   tokenName: "access_token",
-  baseUrl: "http://localhost:5000", // Your API domain
+  baseUrl: `${process.env.VUE_APP_BASE_URL}:5000`, // Your API domain
 
   providers: {
     google: {
       clientId:
         "430441876577-0opc3qqi2ieoev8hnfqr9ftirc3oamuq.apps.googleusercontent.com",
-      redirectUri: "http://localhost:8080" // Your client app URL
+      redirectUri: `${process.env.VUE_APP_BASE_URL}` //  client app URL
     },
     twitter: {
-      redirectUri: '"http://localhost:8080',
+      redirectUri: `${process.env.VUE_APP_BASE_URL}`,
       popupOptions: { width: 495, height: 645 }
     }
   }
