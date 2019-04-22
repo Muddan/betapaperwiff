@@ -153,7 +153,7 @@ export default {
       this.$store
         .dispatch("Stories/publishStory", {
           storyTitle: this.title,
-          userId: this.$store.state.user,
+          userId: this.currentUser.userId,
           content: this.translatedContent,
           tags: this.selectedTags
         })

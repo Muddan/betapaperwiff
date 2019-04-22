@@ -11,7 +11,8 @@ const getters: GetterTree<userState, RootState> = {
       acces_token: state.access_token,
       refresh_token: state.refresh_token
     }
-  }
+  },
+  currentUserId: state => state.current.userId
 }
 
 export default getters

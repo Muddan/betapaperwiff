@@ -97,6 +97,8 @@ export default {
       this.$route.params.storyId
     );
 
+    console.log(this.$route.params.userName);
+
     await this.$store
       .dispatch("User/getUserDetails", this.$route.params.userName)
       .then(res => {

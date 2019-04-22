@@ -53,12 +53,17 @@ const actions: ActionTree<UserState, RootState> = {
       data: {
         userName: payload
       }
-    }).then(res => {
-      if (res.status == 200) context.commit(types.SET_USER_PROFILE, res.data)
-      else {
-        console.log("error fetching use details")
-      }
     })
+      .then(res => {
+        if (res.status == 200) {
+          context.commit(types.SET_USER_PROFILE, res.data)
+          return res
+        }
+      })
+      .catch(err => {
+        console.log("error fetching use details")
+        return Promise.reject(err)
+      })
   },
 
   addToFollowingFilters(context: any, payload: any) {
