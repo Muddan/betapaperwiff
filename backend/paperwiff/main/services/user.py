@@ -6,7 +6,6 @@ from paperwiff.main import get_db
 import time
 import datetime
 
-
 class UserClass:
     def __init__(self):
         db = get_db()

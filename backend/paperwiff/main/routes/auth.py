@@ -37,7 +37,6 @@ def twitter():
     print('called twitter')
     return 'some data from twitter'
 
-
 @Auth.route('/refresh', methods=['POST'])
 def refreshToken():
     return 'Refresh token'

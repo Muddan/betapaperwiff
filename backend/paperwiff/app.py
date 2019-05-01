@@ -14,7 +14,7 @@ from .main.routes.story import Story
 from .main.routes.auth import Auth
 
 app = Flask(__name__)
-
+app.config["DEBUG"]=True
 # Setup the Flask-JWT-Extended extension
 app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
 jwt = JWTManager(app)
@@ -27,3 +27,6 @@ with app.app_context():
     app.register_blueprint(User, url_prefix="/api/user")
     app.register_blueprint(Story, url_prefix="/api/story")
     app.register_blueprint(Auth, url_prefix="/auth")
+
+
+#set FLASK_ENV=development

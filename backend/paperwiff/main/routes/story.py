@@ -31,10 +31,24 @@ def allStories():
         return jsonify(result), 200
     except:
         return jsonify({
-            "message": 'Somethingwent wrong while getting tags',
+            "message": 'Something went wrong while getting stories',
             "status": 400
         }), 400
 
+@Story.route('/comment', methods=['POST'])
+def CommentAdd():
+    try:
+        data_json = json.loads(request.data)
+        storyService.addComment(data_json)
+        return jsonify({
+            "msg": 'comment added',
+            "status": 200
+        }),200
+    except :
+        return jsonify({
+            "message": 'Somethingwent wrong while adding comments',
+            "status": 400
+        }), 400
 
 @Story.route('/publish', methods=['POST'])
 def publishStory():
@@ -107,7 +121,6 @@ def translate():
         "message": translatedData,
         "status": 200
     }), 200
-
 
 def translateData(Input_json):
     translator = Translator(to_lang=Input_json["language"])
