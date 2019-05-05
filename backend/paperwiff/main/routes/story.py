@@ -18,7 +18,7 @@ userService = UserClass()
 def allTags():
     try:
         result = storyService.getAllAvailableTags()
-        return response(result), result['status'] 
+        return response(result), result['status']
     except Exception as e:
             return response("Something went wrong while retrieving tags: " + str(e)), 400
 
