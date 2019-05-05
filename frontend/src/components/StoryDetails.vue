@@ -1,13 +1,14 @@
 <template>
   <v-container>
     <div class="story-loader">
-      <v-progress-circular v-if="!getStoryDetails" indeterminate color="#f45b69"></v-progress-circular>
+      {{ story }}
+      <v-progress-circular v-if="!story" indeterminate color="#f45b69"></v-progress-circular>
     </div>
-    <div class="story-details" v-if="getStoryDetails">
+    <div class="story-details" v-if="story">
       <div class="main-content">
         <v-layout>
           <v-flex md1 xs12 class="hidden-sm-and-down">
-            <share-story v-if="storyUrl" :url="storyUrl"></share-story>
+            <!-- <share-story v-if="storyUrl" :url="storyUrl"></share-story> -->
           </v-flex>
           <v-flex md8 xs12>
             <div class="story-poster">
@@ -20,11 +21,11 @@
             <div class="content-section">
               <div class="title-section">
                 <header>
-                  <h1 class="main-title">{{ getStoryDetails.storyTitle }}</h1>
+                  <h1 class="main-title">{{ story.storyTitle }}</h1>
                   <v-layout class="mini-profile" align-center row spacer>
                     <v-flex xs4 sm2 md1>
                       <v-avatar class="profile-img" size="36px">
-                        <img :src="author.userImage" alt="Avatar">
+                        <!-- <img :src="author.userImage" alt="Avatar"> -->
                       </v-avatar>
                     </v-flex>
                     <v-flex xs4 sm2 md1>
@@ -33,24 +34,22 @@
                         :to="{
                         name: 'userprofile',
                         params: {
-                          userName: getStoryDetails.userName,
+                          userName: story.userName,
                         }
                       }"
                       >
-                        <span class="username">{{getStoryDetails.userName}}</span>
+                        <span class="username">{{story.userName}}</span>
                       </router-link>
                     </v-flex>
                   </v-layout>
-                  <p class="date">{{ new Date(getStoryDetails.datePublished).toLocaleString() }}</p>
-                  <story-tags :tags="getStoryDetails.tags"></story-tags>
+                  <p class="date">{{ new Date(story.datePublished).toLocaleString() }}</p>
+                  <story-tags :tags="story.tags"></story-tags>
                 </header>
               </div>
-              <div class="story-content" v-html="getStoryDetails.content"></div>
+              <div class="story-content" v-html="story.content"></div>
             </div>
           </v-flex>
           <v-flex class="sidebar-section sidebar-left hidden-sm-and-down" md3 xs12>
-            <author-info :author="author"></author-info>
-            <key-links></key-links>
           </v-flex>
         </v-layout>
       </div>
@@ -60,10 +59,10 @@
 
 <script>
 import { mapGetters } from "vuex";
-import KeyLinks from "@/components/Blocks/KeyLinks.vue";
-import AuthorInfo from "@/components/Blocks/AuthorInfo.vue";
-import StoryTags from "@/components/Blocks/StoryTags.vue";
-import ShareStory from "@/components/Blocks/ShareStory.vue";
+// import KeyLinks from "@/components/Blocks/KeyLinks.vue";
+// import AuthorInfo from "@/components/Blocks/AuthorInfo.vue";
+// import StoryTags from "@/components/Blocks/StoryTags.vue";
+// import ShareStory from "@/components/Blocks/ShareStory.vue";
 
 export default {
   name: "StoryDetails",
@@ -72,17 +71,17 @@ export default {
       author: {}
     };
   },
-  components: {
-    KeyLinks,
-    AuthorInfo,
-    StoryTags,
-    ShareStory
-  },
+  // components: {
+  //   KeyLinks,
+  //   AuthorInfo,
+  //   StoryTags,
+  //   ShareStory
+  // },
   computed: {
     ...mapGetters({
       getCurrentStory: "Stories/currentStory"
     }),
-    getStoryDetails() {
+    story() {
       return this.getCurrentStory;
     },
     storyUrl() {

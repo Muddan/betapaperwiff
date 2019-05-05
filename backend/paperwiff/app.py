@@ -1,5 +1,5 @@
 #   Flask packages
-from flask import Flask
+from flask import Flask, jsonify, request, redirect, current_app
 from flask_cors import CORS
 
 #   JWT authentication
@@ -27,3 +27,10 @@ with app.app_context():
     app.register_blueprint(User, url_prefix="/api/user")
     app.register_blueprint(Story, url_prefix="/api/story")
     app.register_blueprint(Auth, url_prefix="/auth")
+
+
+@app.route('/')
+def index():
+    response = current_app.make_response('/')
+    response.set_cookie('csrf_token', value='your are an idiot')
+    return response

@@ -6,7 +6,6 @@ from paperwiff.main import get_db
 import time
 import datetime
 
-
 class UserClass:
     def __init__(self):
         db = get_db()
@@ -36,7 +35,6 @@ class UserClass:
             # Login this user, return acess token
             return self.loginGoogleUser(user)
         else:
-            print('CREATING NEW USER')
             # Make the new user object
             newUser = {
                 "userId": str(user['sub']),
@@ -64,6 +62,7 @@ class UserClass:
                     "access_token": create_access_token(identity=identity),
                     'refresh_token': create_refresh_token(identity=identity),
                     "userDetails": userDetails,
+                    "newUser": True,
                     "status": 200
                 }
             except:
@@ -86,12 +85,13 @@ class UserClass:
             "status": 200
         }
 
-    def addFollowingTag(self, userId, tag):
+    def FollowTag(self, userId, tag):
         if not self.getUserDetailsByUserId(userId):
             return {
-                "message": "Invalid userId",
+                "msg": "Invalid userId",
                 "status": 400
             }
+
         try:
             if self.userCollection.find_one({"userId": userId, "followingTags": {"$in": [tag]}}):
                 self.userCollection.find_one_and_update(
@@ -99,20 +99,21 @@ class UserClass:
                     {"$pull": {"followingTags": {"$in": [tag]}}},
                 )
                 return {
-                    "message": "Sucessfully unfollowed the tag",
+                    "msg": "Successfully unfollowed the tag",
                     "status": 200
                 }
+
+
             else:
                 self.userCollection.find_one_and_update(
                     {"userId": userId},
                     {"$push": {"followingTags": tag}},
                 )
                 return {
-                    "message": "Sucessfully followed the tag",
+                    "msg": "Successfully followed the tag",
                     "status": 200
                 }
-        except:
-            return {
-                "message": "Error while unfollowing the tag",
-                "status": 400
-            }
+
+        except Exception as e:
+            return { "msg" : str(e), "status": 400 }
+

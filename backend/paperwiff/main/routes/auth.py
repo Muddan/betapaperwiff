@@ -8,12 +8,15 @@ from oauth2client import client
 #   Import user servies
 from ..services.user import UserClass
 
+from flask_jwt_extended import jwt_required, get_jwt_identity, jwt_refresh_token_required, create_access_token
+
+
 Auth = Blueprint('auth', __name__)
 userService = UserClass()
 
 
 @Auth.route('/google', methods=["POST"])
-def index():
+def googleUser():
     request_data = request.get_json()
 
     # Exchange auth code for access token, refresh token, and ID token
@@ -39,5 +42,10 @@ def twitter():
 
 
 @Auth.route('/refresh', methods=['POST'])
-def refreshToken():
-    return 'Refresh token'
+@jwt_refresh_token_required
+def refresh():
+    current_user = get_jwt_identity()
+    ret = {
+        'access_token': create_access_token(identity=current_user)
+    }
+    return jsonify(ret), 200

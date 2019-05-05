@@ -1,7 +1,10 @@
-from flask import Blueprint, request, jsonify, json
+from flask import Blueprint, request, jsonify, json, make_response
 from ..services.user import UserClass
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
+
+# Response Helper
+from ..helpers.response import response
 
 User = Blueprint('user', __name__)
 
@@ -13,13 +16,10 @@ def userDetails():
     try:
         data_json = json.loads(request.data)
         userName = data_json['userName']
-        response = userServices.getUserDetailsByuserName(userName)
-        return jsonify(response), 200
-    except:
-        return jsonify({
-            "message": 'userName does not exist, please try again',
-            "status": 400
-        }), 400
+        result = userServices.getUserDetailsByuserName(userName)
+        return make_response(response(result), result['status'])
+    except Exception as e:
+            return make_response(response(str(e)), 400)
 
 
 @User.route('/followtag', methods=['POST'])
@@ -29,32 +29,18 @@ def followTag():
         data_json = json.loads(request.data)
 
         if not data_json.get('userId'):
-            return jsonify({
-                "message": 'userId missing, please try again',
-                "status": 400
-            }), 400
-
+            return make_response(response('userId missing, please try again'), 400)
         if not data_json.get('tag'):
-            return jsonify({
-                "message": 'tag missing, please try again',
-                "status": 400
-            }), 400
+            return make_response(response('tag missing, please try again'), 400)
 
         if not userServices.userExistsInCollection(data_json['userId']):
-            return jsonify({
-                "message": 'userId does not exist, please try again',
-                "status": 400
-            }), 400
+            return make_response(response('userId does not exist, please try again'), 400)
 
-        userId = data_json['userId']
-        tag = data_json['tag']
+        userId = data_json.get('userId')
+        tag = data_json.get('tag')
 
-        response = userServices.addFollowingTag(userId, tag)
+        result = userServices.FollowTag(userId, tag)
+        return make_response(response(result), result['status'])
 
-        return jsonify(response), response['status']
-
-    except ValueError:
-        print(ValueError)
-        return jsonify({
-            "Message": "Something went wrong while saving tags"
-        }), 400
+    except Exception as e:
+            return make_response(response(str(e)), 400)
