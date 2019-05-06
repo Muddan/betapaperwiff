@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, create_refresh_token
 from flask import jsonify
 
@@ -35,10 +37,20 @@ class UserClass:
             # Login this user, return acess token
             return self.loginGoogleUser(user)
         else:
+            userId=str(user['sub'])
+            if self.getUserDetailsByUserId(userId) is not None:
+                userId=userId+((str(UUID.hex))[0:5])    #create a random string and use the first 5 letter with the user name if alredy present
+
+            userName='@' + user["given_name"].lower(),
+            if self.getUserDetailsByuserName(userName) is not None:
+                userName=userName+((str(UUID.hex))[0:5])
+
+
+
             # Make the new user object
             newUser = {
-                "userId": str(user['sub']),
-                "userName": '@' + user["given_name"].lower(),
+                "userId":userId,
+                "userName": userName,
                 "firstName": user["given_name"],
                 "lastName": user["family_name"],
                 "email": user["email"],
@@ -49,7 +61,8 @@ class UserClass:
                 "about": "",
                 "userImage": user['picture'],
                 "userArticles": [],
-                "likedStories": []
+                "likedStories": [],
+                "accountType":"free"
             }
             try:
                 self.userCollection.insert_one(newUser)
@@ -65,6 +78,7 @@ class UserClass:
                     "newUser": True,
                     "status": 200
                 }
+
             except:
                 return {
                     "data": 'Error saving user',
