@@ -37,19 +37,17 @@ class UserClass:
             # Login this user, return acess token
             return self.loginGoogleUser(user)
         else:
-            userId=str(user['sub'])
-            if self.getUserDetailsByUserId(userId) is not None:
-                userId=userId+((str(UUID.hex))[0:5])    #create a random string and use the first 5 letter with the user name if alredy present
+            # userId=str(user['sub'])
+            # if self.getUserDetailsByUserId(userId) is not None:
+            #     userId=userId+((str(UUID.hex))[0:5])    #create a random string and use the first 5 letter with the user name if alredy present
 
             userName='@' + user["given_name"].lower(),
             if self.getUserDetailsByuserName(userName) is not None:
                 userName=userName+((str(UUID.hex))[0:5])
 
-
-
             # Make the new user object
             newUser = {
-                "userId":userId,
+                "userId":str(user['sub']),
                 "userName": userName,
                 "firstName": user["given_name"],
                 "lastName": user["family_name"],
