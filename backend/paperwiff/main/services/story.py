@@ -180,7 +180,7 @@ class StoryClass:
 
 
 
-    def getStoryDetailsByStoryId( storyId):
+    def getStoryDetailsByStoryId(self, storyId):
         storyDetails = self.storyCollection.find_one(
             {"storyId": storyId},
             projection={"_id": False}
