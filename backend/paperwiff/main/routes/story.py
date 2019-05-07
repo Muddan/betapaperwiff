@@ -120,6 +120,18 @@ def storyDetails():
         return response(str(e)), 400
 
 
+@Story.route('/storyLike', methods=['POST'])
+def likeStory():
+    try:
+        data_json = request.get_json(request.data)
+        if  data_json.get('storyId') is None:
+            return make_response(response('storyId missing, please try again'), 400)
+
+        storyId = data_json.get('storyId')
+        result = storyService.storyLike(storyId=storyId)
+        return make_response(response(result), result['status'])
+    except Exception as e:
+        return response(str(e)), 400
 
 
 

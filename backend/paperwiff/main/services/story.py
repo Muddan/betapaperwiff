@@ -180,7 +180,7 @@ class StoryClass:
 
 
 
-    def getStoryDetailsByStoryId(self, storyId):
+    def getStoryDetailsByStoryId( storyId):
         storyDetails = self.storyCollection.find_one(
             {"storyId": storyId},
             projection={"_id": False}
@@ -193,5 +193,24 @@ class StoryClass:
         else:
             return {
                 "msg": "Story not found with " + storyId,
+                "status": 200
+            }
+
+
+    def storyLike(self, storyId):
+        story=self.storyCollection.find_one_and_update({"storyId": storyId},
+
+                   {"$inc": { "likes": 1 } }
+
+        )
+        print(story)
+
+        if story is None:
+            return {
+                "msg": "No story with that storyId",
+                "status": 200
+            }
+        return {
+                "msg": "Story liked " + storyId,
                 "status": 200
             }
