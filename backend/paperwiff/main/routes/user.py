@@ -44,3 +44,16 @@ def followTag():
 
     except Exception as e:
             return make_response(response(str(e)), 400)
+
+@User.route('/updateUser', methods=['POST'])
+def updateUserDetails():
+    try:
+        data_json = request.get_json(request.data)
+        userId = data_json.get('userId')
+        result = userServices.getUserDetailsByUserId(userId)
+        if result is not None:
+            return make_response(response(userServices.updateUserDetails(data_json)),200)
+        return make_response(response("userId not present", result.get('status')))
+    except Exception as e:
+
+            return make_response(response("Error occured :"+str(e)), 400)

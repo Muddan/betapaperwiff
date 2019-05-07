@@ -58,10 +58,15 @@ class UserClass:
                 "joined": (str(datetime.datetime.now())),
                 "about": "",
                 "userImage": user['picture'],
-                "userArticles": [],
+                "userStories": [],
                 "likedStories": [],
-                "accountType":"free"
+                "accountType":"free",
+                "language":[],
+                "location":"",
+                "education":"",
+                "saveForLater": []
             }
+
             try:
                 self.userCollection.insert_one(newUser)
                 userDetails = self.getUserDetailsByUserId(user['sub'])
@@ -128,4 +133,31 @@ class UserClass:
 
         except Exception as e:
             return { "msg" : str(e), "status": 400 }
+
+
+    #update UserDetails
+    def updateUserDetails(self,Input):
+        userId=Input.get("userId")
+        self.userCollection.find_one_and_update(
+            {
+                "userId": userId
+            },
+
+            {
+                "$set":{
+                "userName": "@"+Input.get("userName"),
+                "firstName": Input.get("firstName"),
+                "lastName": Input.get("lastName"),
+                "about": Input.get("about"),
+                #"userImage": user['picture'],
+                "language": Input.get("language"),
+                "location": Input.get("location"),
+                "education": Input.get("education")
+                }
+            }
+            )
+        return {
+            "msg": "successfull updated UserId:" + userId,
+            "status": 200
+        }
 

@@ -35,6 +35,20 @@ def allStories():
         return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
 
 
+@Story.route('/allstories/popular', methods=['GET'])
+def allPopularStories():
+    if not request.args['pageNo']:
+        page = 1
+    else:
+        page = int(request.args['pageNo'])
+    try:
+        result = storyService.getAllPopularStories(page)
+        return make_response(response(result), result['status'])
+    except Exception as e:
+        return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
+
+
+
 @Story.route('/comment', methods=['POST'])
 def CommentAdd():
     try:
@@ -47,7 +61,7 @@ def CommentAdd():
 
 
 @Story.route('/publish', methods=['POST'])
-@jwt_required
+#@jwt_required
 def publishStory():
 
     try:
@@ -80,7 +94,7 @@ def publishStory():
         datePublished = data_json["datePublished"]
         result = storyService.publishStory(userId=userId, tags=tags,
                                              storyTitle=storyTitle, content=content, language=language, datePublished=datePublished)
-        return response(result), result['status']
+        return make_response(response(result), result['status'])
 
     except Exception as e:
             return response(str(e)), 400
