@@ -22,21 +22,8 @@ def allTags():
     except Exception as e:
             return response("Something went wrong while retrieving tags: " + str(e)), 400
 
-@Story.route('/allstories', methods=['GET'])
-def allStories():
-    if not request.args['pageNo']:
-        page = 1
-    else:
-        page = int(request.args['pageNo'])
-    try:
-        result = storyService.getAllStories(page)
-        return make_response(response(result), result['status'])
-    except Exception as e:
-        return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
-
-
 @Story.route('/allstories/popular', methods=['GET'])
-def allPopularStories():
+def allStories():
     if not request.args['pageNo']:
         page = 1
     else:
@@ -47,6 +34,24 @@ def allPopularStories():
     except Exception as e:
         return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
 
+
+@Story.route('/allstories', methods=['GET'])
+def allPopularStories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    try:
+        if not request.args.get('userId'):
+            result = storyService.getAllStories(pageNo=pageNo)
+            return make_response(response(result), result.get('status'))
+
+        else :
+            userId=request.args.get('userId')
+            result = storyService.getCustomizedStories(pageNo=pageNo, userId=userId)
+            return make_response(response(result), result['status'])
+    except Exception as e:
+        return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
 
 
 @Story.route('/comment', methods=['POST'])
@@ -87,7 +92,7 @@ def publishStory():
             return response("language must be specified"), 400
 
         userId = data_json['userId']
-        tags = data_json['tags']
+        tags = list(data_json['tags'])
         storyTitle = data_json['storyTitle']
         content = data_json['content']
         language = data_json['language']
@@ -113,6 +118,10 @@ def storyDetails():
         return response(storyDetails), storyDetails['status']
     except Exception as e:
         return response(str(e)), 400
+
+
+
+
 
 # @Story.route("/translate", methods=["POST"])
 # def translate():

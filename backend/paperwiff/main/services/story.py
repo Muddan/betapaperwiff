@@ -62,10 +62,10 @@ class StoryClass:
             x = self.storyCollection.find_one_and_update(
                 {"storyId": str(Input_json["storyId"])},
                 {"$push": {"comments": {
-                "comment": Input_json["comment"],
-                "date": Input_json["date"],
-                "userName": Input_json["userName"]
-            }}})
+                    "comment": Input_json["comment"],
+                    "date": Input_json["date"],
+                    "userName": Input_json["userName"]
+                }}})
             if x is None:
                 return {
                     "msg": "Error Adding Comment, storyId not found",
@@ -135,6 +135,42 @@ class StoryClass:
                 "msg": "no more articles",
                 "status": 200
             }
+        return {
+            "pageNo": pageNo + 1,
+            "totalItems": totalItems,
+            "items": list(listofStories),
+            "status": 200
+        }
+
+
+    def getCustomizedStories(self, userId,pageNo=1):
+        listofStories = []
+        if pageNo <= 0:
+            pageNo = 1
+        pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
+        totalItems = self.storyCollection.count()
+
+        userTags=self.userCollection.find_one({"userId": userId}, projection={
+            "_id": False, "followingTags":True })
+
+        tags=userTags.get("followingTags")
+        if len(tags) == 0 :
+            return self.getAllPopularStories(pageNo+1)
+
+        for tag in tags:
+            print(tag)
+            stories = self.storyCollection.find({"tags": str(tag)},
+                projection={
+                "_id": False, "comments": False
+            }).sort("likes",decending).skip(pageNo * 10).limit(10)
+            for story in stories:
+                image = self.userCollection.find_one({"userId": story["userId"]}, projection={
+                    "_id": False, 'userImage': True })
+                story.update(image)
+                listofStories.append(story)
+        if (len(listofStories)) == 0:
+            return self.getAllPopularStories(pageNo + 1)
+
         return {
             "pageNo": pageNo + 1,
             "totalItems": totalItems,
