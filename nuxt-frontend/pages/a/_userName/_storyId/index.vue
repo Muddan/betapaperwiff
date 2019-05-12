@@ -125,7 +125,7 @@ export default {
       })
       .then(res => {
         return {
-          story: res.details[0],
+          story: res.result.item,
           storyUrl: `${process.env.baseUrl}${route.path}`
         }
       })

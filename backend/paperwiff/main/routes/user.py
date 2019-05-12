@@ -17,7 +17,7 @@ def userDetails():
         data_json = json.loads(request.data)
         userName = data_json['userName']
         result = userServices.getUserDetailsByuserName(userName)
-        return make_response(response(result), result['status'])
+        return make_response(response(result), 200)
     except Exception as e:
             return make_response(response(str(e)), 400)
 

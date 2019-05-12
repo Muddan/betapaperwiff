@@ -111,7 +111,7 @@ class StoryClass:
         )
         if storyDetails:
             return {
-                "item": list(storyDetails),
+                "item": storyDetails,
                 "status": 200
             }
         else:

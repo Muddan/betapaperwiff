@@ -81,7 +81,7 @@ export default {
       })
       .then(res => {
         return {
-          userProfile: res,
+          userProfile: res.result,
           storyUrl: `${process.env.baseUrl}${route.path}`
         }
       })

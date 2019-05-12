@@ -35,6 +35,9 @@ export default {
             title: 'Logged In',
             message: 'Successfully logged in to paperwiff'
           })
+          if (authResponse.data.newUser) {
+            this.$router.push('/profile')
+          }
         } else {
           this.$store.dispatch('notification/error', {
             title: 'Failed',

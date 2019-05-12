@@ -108,6 +108,7 @@ export default {
         message: 'Successfully logged out.'
       })
       this.$store.dispatch('user/logoutUser')
+      window.location.reload(true)
     }
   }
 }
