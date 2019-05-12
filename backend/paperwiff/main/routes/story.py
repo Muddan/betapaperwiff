@@ -22,15 +22,34 @@ def allTags():
     except Exception as e:
             return response("Something went wrong while retrieving tags: " + str(e)), 400
 
-@Story.route('/allstories', methods=['GET'])
+@Story.route('/allstories/popular', methods=['GET'])
 def allStories():
     if not request.args.get('pageNo'):
         page = 1
     else:
         page = int(request.args.get('pageNo'))
     try:
-        result = storyService.getAllStories(page)
+        result = storyService.getAllPopularStories(page)
         return make_response(response(result), result['status'])
+    except Exception as e:
+        return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
+
+
+@Story.route('/allstories', methods=['GET'])
+def allPopularStories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    try:
+        if not request.args.get('userId'):
+            result = storyService.getAllStories(pageNo=pageNo)
+            return make_response(response(result), result.get('status'))
+
+        else :
+            userId=request.args.get('userId')
+            result = storyService.getCustomizedStories(pageNo=pageNo, userId=userId)
+            return make_response(response(result), result['status'])
     except Exception as e:
         return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
 
@@ -47,7 +66,7 @@ def CommentAdd():
 
 
 @Story.route('/publish', methods=['POST'])
-@jwt_required
+#@jwt_required
 def publishStory():
 
     try:
@@ -73,14 +92,14 @@ def publishStory():
             return response("language must be specified"), 400
 
         userId = data_json['userId']
-        tags = data_json['tags']
+        tags = list(data_json['tags'])
         storyTitle = data_json['storyTitle']
         content = data_json['content']
         language = data_json['language']
         datePublished = data_json["datePublished"]
         result = storyService.publishStory(userId=userId, tags=tags,
                                              storyTitle=storyTitle, content=content, language=language, datePublished=datePublished)
-        return response(result), result['status']
+        return make_response(response(result), result['status'])
 
     except Exception as e:
             return response(str(e)), 400
@@ -99,6 +118,22 @@ def storyDetails():
         return response(storyDetails), storyDetails['status']
     except Exception as e:
         return response(str(e)), 400
+
+
+@Story.route('/storyLike', methods=['POST'])
+def likeStory():
+    try:
+        data_json = request.get_json(request.data)
+        if  data_json.get('storyId') is None:
+            return make_response(response('storyId missing, please try again'), 400)
+
+        storyId = data_json.get('storyId')
+        result = storyService.storyLike(storyId=storyId)
+        return make_response(response(result), result['status'])
+    except Exception as e:
+        return response(str(e)), 400
+
+
 
 # @Story.route("/translate", methods=["POST"])
 # def translate():

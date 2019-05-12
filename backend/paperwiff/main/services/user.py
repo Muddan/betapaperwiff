@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, create_refresh_token
 from flask import jsonify
 
@@ -35,10 +37,18 @@ class UserClass:
             # Login this user, return acess token
             return self.loginGoogleUser(user)
         else:
+            # userId=str(user['sub'])
+            # if self.getUserDetailsByUserId(userId) is not None:
+            #     userId=userId+((str(UUID.hex))[0:5])    #create a random string and use the first 5 letter with the user name if alredy present
+
+            userName='@' + user["given_name"].lower(),
+            if self.getUserDetailsByuserName(userName) is not None:
+                userName=userName+((str(UUID.hex))[0:5])
+
             # Make the new user object
             newUser = {
-                "userId": str(user['sub']),
-                "userName": '@' + user["given_name"].lower(),
+                "userId":str(user['sub']),
+                "userName": userName,
                 "firstName": user["given_name"],
                 "lastName": user["family_name"],
                 "email": user["email"],
@@ -48,9 +58,15 @@ class UserClass:
                 "joined": (str(datetime.datetime.now())),
                 "about": "",
                 "userImage": user['picture'],
-                "userArticles": [],
-                "likedStories": []
+                "userStories": [],
+                "likedStories": [],
+                "accountType":"free",
+                "language":[],
+                "location":"",
+                "education":"",
+                "saveForLater": []
             }
+
             try:
                 self.userCollection.insert_one(newUser)
                 userDetails = self.getUserDetailsByUserId(user['sub'])
@@ -65,6 +81,7 @@ class UserClass:
                     "newUser": True,
                     "status": 200
                 }
+
             except:
                 return {
                     "data": 'Error saving user',
@@ -116,4 +133,31 @@ class UserClass:
 
         except Exception as e:
             return { "msg" : str(e), "status": 400 }
+
+
+    #update UserDetails
+    def updateUserDetails(self,Input):
+        userId=Input.get("userId")
+        self.userCollection.find_one_and_update(
+            {
+                "userId": userId
+            },
+
+            {
+                "$set":{
+                "userName": "@"+Input.get("userName"),
+                "firstName": Input.get("firstName"),
+                "lastName": Input.get("lastName"),
+                "about": Input.get("about"),
+                #"userImage": user['picture'],
+                "language": Input.get("language"),
+                "location": Input.get("location"),
+                "education": Input.get("education")
+                }
+            }
+            )
+        return {
+            "msg": "successfull updated UserId:" + userId,
+            "status": 200
+        }
 
