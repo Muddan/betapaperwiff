@@ -5,6 +5,7 @@
         <header>
           <h2 class="ftitle">Settings for your paperwiff account</h2>
         </header>
+        {{ user }}
       </div>
       <v-layout wrap class="settings-content">
         <v-flex class="navigation-links" xs12 md3>
@@ -57,7 +58,7 @@
                       </v-flex>
                       <v-flex class="input-control">
                         <v-text-field
-                          v-model="email"
+                          v-model="user.email"
                           class="input"
                           label="Email"
                           :rules="emailRules"
@@ -68,29 +69,26 @@
                       </v-flex>
                       <v-flex class="input-control">
                         <v-text-field
-                          v-model="name"
+                          v-model="user.userName"
                           label="Username"
                           class="input"
-                          :counter="10"
                           :rules="nameRules"
                           name="userName"
                         ></v-text-field>
                       </v-flex>
                       <v-flex md3 class="input-control">
                         <v-text-field
-                          v-model="name"
+                          v-model="user.firstName"
                           label="Firstname"
                           class="input"
-                          :counter="10"
                           :rules="nameRules"
                           name="firstName"
                         ></v-text-field>
                       </v-flex>
                       <v-flex md3 class="input-control">
                         <v-text-field
-                          v-model="name"
+                          v-model="user.lastName"
                           class="input"
-                          :counter="10"
                           :rules="nameRules"
                           label="Lastname"
                           name="lastName"
@@ -98,6 +96,7 @@
                       </v-flex>
                       <v-flex class="input-control">
                         <v-textarea
+                          v-model="user.about"
                           label="About"
                           name="bio"
                           hint="Enter about yourself."
@@ -149,17 +148,24 @@ export default {
   },
   data() {
     return {
-      avatar: null,
+      user: {
+        email: '',
+        userName: '',
+        firstName: '',
+        lastName: '',
+        about: ''
+      },
+      avatar: {
+        imageURL: null
+      },
       saving: false,
       saved: false,
       active: false,
       valid: true,
-      name: '',
       nameRules: [
         v => !!v || 'Name is required',
         v => (v && v.length <= 10) || 'Name must be less than 10 characters'
       ],
-      email: '',
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+/.test(v) || 'E-mail must be valid'
@@ -174,15 +180,15 @@ export default {
         {
           title: 'Profile',
           icon: 'fa fa-users-cog'
-        },
-        {
-          title: 'Account',
-          icon: 'account_balance_wallet'
-        },
-        {
-          title: 'Misc',
-          icon: 'settings_ethernet'
         }
+        // {
+        //   title: 'Account',
+        //   icon: 'account_balance_wallet'
+        // },
+        // {
+        //   title: 'Misc',
+        //   icon: 'settings_ethernet'
+        // }
       ]
     }
   },
@@ -198,6 +204,10 @@ export default {
       },
       deep: true
     }
+  },
+  beforeMount() {
+    this.user = { ...this.currentUser }
+    this.avatar.imageURL = this.currentUser.userImage
   },
   methods: {
     validate() {
