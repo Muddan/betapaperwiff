@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, json, make_response
-from ..services.user import UserClass
 
+from ..helpers import addToArray
+from ..services.user import UserClass
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 # Response Helper
@@ -19,7 +20,7 @@ def userDetails():
         result = userServices.getUserDetailsByuserName(userName)
         return make_response(response(result), result['status'])
     except Exception as e:
-            return make_response(response(str(e)), 400)
+        return make_response(response(str(e)), 400)
 
 
 @User.route('/followtag', methods=['POST'])
@@ -43,7 +44,8 @@ def followTag():
         return make_response(response(result), result['status'])
 
     except Exception as e:
-            return make_response(response(str(e)), 400)
+        return make_response(response(str(e)), 400)
+
 
 @User.route('/updateUser', methods=['POST'])
 def updateUserDetails():
@@ -52,8 +54,24 @@ def updateUserDetails():
         userId = data_json.get('userId')
         result = userServices.getUserDetailsByUserId(userId)
         if result is not None:
-            return make_response(response(userServices.updateUserDetails(data_json)),200)
+            return make_response(response(userServices.updateUserDetails(data_json)), 200)
         return make_response(response("userId not present", result.get('status')))
     except Exception as e:
 
-            return make_response(response("Error occured :"+str(e)), 400)
+        return make_response(response("Error occured :" + str(e)), 400)
+
+
+@User.route('/saveForLater', methods=['POST'])
+def readLater():
+    Input = request.get_json(request.data)
+    try:
+        userId = Input["userId"]
+        storyId = Input.get("storyId")
+        result = addToArray.addToArrayUser(MongoDbFieldName="saveForLater", Value=storyId, userId=userId)
+        return make_response(response(result), 200)
+
+    except Exception as e:
+        return response({
+            "msg": str(e),
+            "status": 400
+        })

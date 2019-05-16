@@ -160,4 +160,3 @@ class UserClass:
             "msg": "successfull updated UserId:" + userId,
             "status": 200
         }
-
