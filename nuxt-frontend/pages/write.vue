@@ -242,6 +242,7 @@ export default {
             language: this.storyForm.selectedLanguage
           })
           .then(res => {})
+        window.location.reload(true)
       }
     },
     limiter(e) {

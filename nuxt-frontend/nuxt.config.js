@@ -4,10 +4,13 @@ import pkg from './package'
 export default {
   mode: 'universal',
   env: {
-    baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3000'
+    baseUrl:
+      process.env.BASE_URL ||
+      'http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com'
   },
   server: {
-    host: '127.0.0.1'
+    host: 'http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com',
+    port: 8000
   },
   /*
    ** Headers of the page

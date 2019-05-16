@@ -17,8 +17,8 @@ const actions = {
               'paperwiff/tags',
               JSON.stringify(response.data.result.tags)
             )
-            context.commit(types.SET_AVAILABLE_TAGS, response.data.result.tags)
           }
+          context.commit(types.SET_AVAILABLE_TAGS, response.data.result.tags)
         }
       })
     })
