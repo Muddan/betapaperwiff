@@ -13,11 +13,15 @@ export default function({ $axios, redirect, store }) {
         originalRequest._retry = true // now it can be retried
 
         return $axios
-          .$post('http://127.0.0.1:5000/auth/refresh', null, {
-            headers: {
-              Authorization: 'Bearer ' + store.state.user.refresh_token
+          .$post(
+            'http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com:5000/auth/refresh',
+            null,
+            {
+              headers: {
+                Authorization: 'Bearer ' + store.state.user.refresh_token
+              }
             }
-          })
+          )
           .then(data => {
             store.dispatch('user/setTokens', {
               access_token: data.access_token,

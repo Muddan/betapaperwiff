@@ -1,4 +1,4 @@
-const BASE_URL = `http://127.0.0.1:5000`
+const BASE_URL = `http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com:5000`
 
 export const endpoints = {
   BASE_URL: BASE_URL,
