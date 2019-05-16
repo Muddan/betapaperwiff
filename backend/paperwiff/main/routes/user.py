@@ -56,7 +56,6 @@ def updateUserDetails():
             return make_response(response(userServices.updateUserDetails(data_json)),200)
         return make_response(response("userId not present"), result.get('status'))
     except Exception as e:
-
             return make_response(response("Error occured :"+str(e)), 400)
 
 
