@@ -155,4 +155,3 @@ class UserClass:
             "msg": "successfully updated",
             "status": 200
         }
-
