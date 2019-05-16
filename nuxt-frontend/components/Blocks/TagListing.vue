@@ -18,14 +18,14 @@
     <v-subheader class="tag-header">Design your experience</v-subheader>
     <div class="chip-content">
       <v-list>
-        <v-list-tile v-for="(tags, index) in currentTags" :key="index">
+        <v-list-tile v-for="(tag, index) in storyTagsAvailable" :key="index">
           <v-chip color="transparent" label text-color="white">
             <nuxt-link
               :to="{
-                path: '/tags/' + tags
+                path: '/tags/' + tag.name
               }"
             >
-              <span class="tagname"> # {{ tags }} </span>
+              <span class="tagname"> # {{ tag.name }} </span>
             </nuxt-link>
             <!-- <v-icon right color="#f45b69">check_circle</v-icon> -->
           </v-chip>
@@ -34,10 +34,13 @@
             label
             color="#ffeaec"
             text-color="#2e2e2e"
-            @click.stop="chipHandler(tags)"
+            @click.stop="chipHandler(tag)"
           >
-            <v-avatar> <v-icon right color="#f45b69">add</v-icon> </v-avatar
-            >Follow
+            <v-avatar>
+              <v-icon right color="#f45b69">{{
+                !tag.status ? 'add' : 'check'
+              }}</v-icon> </v-avatar
+            >{{ !tag.status ? 'Follow' : 'Following' }}
           </v-chip>
         </v-list-tile>
       </v-list>
@@ -64,10 +67,7 @@ export default {
     ...mapGetters({
       storyTagsAvailable: 'stories/availableTags',
       isSignedIn: 'user/isSignedIn'
-    }),
-    currentTags() {
-      return this.storyTagsAvailable
-    }
+    })
   },
   methods: {
     chipHandler(tag) {
@@ -75,7 +75,7 @@ export default {
       if (!this.isSignedIn) {
         this.dialog = true
       } else {
-        this.$store.dispatch('user/addToFollowingFilters', { tag })
+        this.$store.dispatch('stories/addToFollowingFilters', tag)
       }
     }
   }

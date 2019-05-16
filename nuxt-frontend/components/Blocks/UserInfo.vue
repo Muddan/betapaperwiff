@@ -29,12 +29,9 @@
         </nuxt-link>
       </v-list-tile-content>
     </v-list-tile>
-    <div
-      v-if="currentUser.followingTags && currentUser.followingTags.length > 0"
-      class="following-tags-main"
-    >
+    <div v-if="userTags.length > 0" class="following-tags-main">
       <v-subheader class="tag-header">Your tags</v-subheader>
-      <StoryTags :tags="currentUser.followingTags"></StoryTags>
+      <StoryTags :story-tags="userTags"></StoryTags>
     </div>
     <v-subheader v-else class="tag-header"
       >You are not following any tags</v-subheader
@@ -52,8 +49,12 @@ export default {
   computed: {
     ...mapGetters({
       isSignedIn: 'user/isSignedIn',
-      currentUser: 'user/currentUser'
-    })
+      currentUser: 'user/currentUser',
+      currentTags: 'stories/availableTags'
+    }),
+    userTags() {
+      return this.currentUser.followingTags
+    }
   }
 }
 </script>

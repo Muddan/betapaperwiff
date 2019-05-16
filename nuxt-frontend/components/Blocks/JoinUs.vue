@@ -4,10 +4,10 @@
       <div class="header">
         <v-subheader>Join Paperwiff</v-subheader>
       </div>
-      <v-btn outline round @click="authenticate('twitter')">
+      <!-- <v-btn outline round @click="authenticate('twitter')">
         Sign in with Twitter
         <v-icon size="18px" dark right>fab fa-twitter</v-icon>
-      </v-btn>
+      </v-btn> -->
       <v-btn outline round @click="authenticate('google')">
         Sign in with Google
         <v-icon size="18px" dark right>fab fa-google</v-icon>

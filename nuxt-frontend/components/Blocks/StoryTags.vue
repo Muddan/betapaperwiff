@@ -2,22 +2,17 @@
   <div class="story-chips">
     <div class="chip-content">
       <v-chip
-        v-for="(tags, index) in storyTags"
+        v-for="(tag, index) in storyTags"
         :key="index"
         label
         color="white"
       >
-        <router-link
+        <nuxt-link
           :to="{
-            name: 'tags',
-            params: {
-              tagName: tags
-            }
+            path: '/tags/' + tag
           }"
-          >#{{ tags }}</router-link
+          >#{{ tag }}</nuxt-link
         >
-        <v-icon v-if="tagFollow" right color="#f45b69">check_circle</v-icon>
-        <!-- <v-icon :if="tagFollow"right color="#f45b69">add</v-icon> -->
       </v-chip>
     </div>
   </div>
@@ -30,15 +25,6 @@ export default {
     storyTags: {
       type: Array,
       default: null
-    },
-    tagFollow: {
-      type: Boolean,
-      default: false
-    }
-  },
-  methods: {
-    chipHandler(tag) {
-      this.$store.dispatch('user/addToFollowingFilters', { tag })
     }
   }
 }

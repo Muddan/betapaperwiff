@@ -18,10 +18,13 @@ export const state = () => ({
     userImage: '',
     userArticles: [],
     likedStories: [],
-    accountLicense: 'free'
+    accountLicense: 'free',
+    location: '',
+    skills: '',
+    languages: [],
+    availableFor: ''
   },
-  session_started: new Date().toLocaleString(),
-  userProfile: null
+  session_started: new Date().toLocaleString()
 })
 export const getters = () => ({
   getter
@@ -32,3 +35,4 @@ export const actions = () => ({
 export const mutations = () => ({
   mutation
 })
+export const strict = false

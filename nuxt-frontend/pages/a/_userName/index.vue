@@ -15,7 +15,7 @@
                 </h1>
                 <h3 class="user-name">{{ userProfile.userName }}</h3>
                 <v-btn
-                  v-if="!loggedInUser"
+                  v-if="loggedInUser"
                   outline
                   color="#6e6e6e"
                   @click="editProfile(userProfile)"
@@ -43,7 +43,8 @@
         </v-flex>
         <v-flex xs12 md9>
           <v-flex class="sidebar-section sidebar-main">
-            <story-items :stories="allStories"></story-items>
+            <h3 v-if="userStories.length == 0">No stories posted.</h3>
+            <story-items v-else :stories="userStories"></story-items>
           </v-flex>
         </v-flex>
       </v-layout>
@@ -52,7 +53,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import StoryItems from '@/components/Blocks/StoryItems.vue'
 import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 
@@ -64,27 +64,24 @@ export default {
     KeyLinks
   },
   computed: {
-    ...mapGetters({
-      getUserProfile: 'user/getUserProfile',
-      allStories: 'stories/allStories'
-    }),
     loggedInUser() {
       return (
         this.$store.state.user.current.userName === this.$route.params.userName
       )
     }
   },
-  asyncData({ app, route, store, env, error }) {
-    return app.$axios
-      .$post(endpoints.API_GET_USER_DETAILS, {
-        userName: route.params.userName
-      })
-      .then(res => {
-        return {
-          userProfile: res.result,
-          storyUrl: `${process.env.baseUrl}${route.path}`
-        }
-      })
+  async asyncData({ app, route, store, env, error }) {
+    const userProfile = await app.$axios.$post(endpoints.API_GET_USER_DETAILS, {
+      userName: route.params.userName
+    })
+    const userStories = await app.$axios({
+      method: 'GET',
+      url: `${endpoints.API_GET_STORIES}?userName=${route.params.userName}`
+    })
+    return {
+      userProfile: userProfile.result,
+      userStories: userStories.data.result.items
+    }
   },
   methods: {
     getDate(date) {

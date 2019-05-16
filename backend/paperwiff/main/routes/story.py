@@ -23,7 +23,7 @@ def allTags():
             return response("Something went wrong while retrieving tags: " + str(e)), 400
 
 @Story.route('/allstories/popular', methods=['GET'])
-def allStories():
+def allPopularStories():
     if not request.args.get('pageNo'):
         page = 1
     else:
@@ -36,20 +36,32 @@ def allStories():
 
 
 @Story.route('/allstories', methods=['GET'])
-def allPopularStories():
+def allStories():
     if not request.args.get('pageNo'):
         pageNo = 1
     else:
         pageNo = int(request.args.get('pageNo'))
     try:
-        if not request.args.get('userId'):
+
+        if  request.args.get('userId')==None and request.args.get('userName')==None:
             result = storyService.getAllStories(pageNo=pageNo)
             return make_response(response(result), result.get('status'))
 
-        else :
-            userId=request.args.get('userId')
+        elif request.args.get('userId'):
+            userId = request.args.get('userId')
+            if not userService.userExistsInCollection(userId):
+                return response('userId does not exist, please try again'), 400
             result = storyService.getCustomizedStories(pageNo=pageNo, userId=userId)
             return make_response(response(result), result['status'])
+
+        else:
+            userName = request.args.get('userName')
+            if not userService.userNameExistsInCollection(userName):
+                return response('userName does not exist, please try again'), 400
+            result = storyService.getUserStories(pageNo=pageNo, userName=userName)
+            return make_response(response(result), result['status'])
+
+
     except Exception as e:
         return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
 
@@ -64,11 +76,11 @@ def CommentAdd():
             return response("Something went wrong while retrieving tags: " + str(e)), 400
 
 
-
 @Story.route('/publish', methods=['POST'])
 #@jwt_required
 def publishStory():
 
+    print(request.files)
     try:
         data_json = request.get_json(request.data)
 
@@ -97,9 +109,11 @@ def publishStory():
         content = data_json['content']
         language = data_json['language']
         datePublished = data_json["datePublished"]
+        headerImage = data_json["headerImage"]
         result = storyService.publishStory(userId=userId, tags=tags,
-                                             storyTitle=storyTitle, content=content, language=language, datePublished=datePublished)
-        return make_response(response(result), result['status'])
+                                             storyTitle=storyTitle, content=content, language=language, datePublished=datePublished, headerImage=headerImage)
+        print(result)
+        return response(result), result['status']
 
     except Exception as e:
             return response(str(e)), 400

@@ -49,4 +49,4 @@ def close_db(e=None):
 # db = get_db()
 # tags = db['tags']
 # for tag in availableTags:
-#     tags.insert_one({"name": tag.lower().replace(" ", "")})
+#     tags.insert_one({"name": tag.lower().replace(" ", ""), 'status': False})

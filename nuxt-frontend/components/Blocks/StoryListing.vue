@@ -1,19 +1,29 @@
 <template>
   <div class="articles-tab">
-    <v-tabs class="tab-header" centered color="#fff" icons-and-text>
-      <v-tabs-slider color="#114b5f"></v-tabs-slider>
-
-      <v-tab v-if="isSignedIn" href="#feed">Feed</v-tab>
-
-      <v-tab href="#latest">Latest</v-tab>
-
-      <v-tab-item v-if="isSignedIn" value="feed">
-        <story-items :stories="getCurrentUserFeed"></story-items>
-      </v-tab-item>
-      <v-tab-item value="latest">
-        <story-items :stories="getCurrentUserFeed"></story-items>
-      </v-tab-item>
-    </v-tabs>
+    <v-btn-toggle v-model="toggleTab" mandatory>
+      <v-btn
+        v-for="(label, index) in FeedType"
+        :key="index"
+        flat
+        depressed
+        round
+        @click="changeTab(label)"
+      >
+        {{ label.title }}
+      </v-btn>
+      <v-btn
+        v-if="isSignedIn"
+        flat
+        depressed
+        round
+        @click="changeTab({ title: 'Feed', status: false })"
+      >
+        {{ 'Feed' }}
+      </v-btn>
+    </v-btn-toggle>
+    <v-scroll-y-transition>
+      <story-items :stories="getCurrentUserFeed()"></story-items>
+    </v-scroll-y-transition>
   </div>
 </template>
 
@@ -28,7 +38,13 @@ export default {
   data() {
     return {
       loader: null,
-      loading: false
+      loading: false,
+      FeedType: [
+        { title: 'Latest', status: true }
+        // { title: 'Popular', status: false }
+      ],
+      activeTab: 'Latest',
+      toggleTab: 0
     }
   },
   computed: {
@@ -36,14 +52,7 @@ export default {
       filteredStories: 'stories/filteredStories',
       allStories: 'stories/allStories',
       isSignedIn: 'user/isSignedIn'
-    }),
-    getCurrentUserFeed() {
-      if (this.filteredStories.length > 0) {
-        return this.filteredStories
-      } else {
-        return this.allStories
-      }
-    }
+    })
   },
   watch: {
     loader() {
@@ -53,6 +62,18 @@ export default {
       setTimeout(() => (this[l] = false), 3000)
 
       this.loader = null
+    }
+  },
+  methods: {
+    changeTab(tab) {
+      this.activeTab = tab.title
+    },
+    getCurrentUserFeed() {
+      if (this.activeTab === 'Feed') {
+        return this.filteredStories
+      } else {
+        return this.allStories
+      }
     }
   }
 }
@@ -78,6 +99,23 @@ export default {
   }
   .btn-group {
     text-align: center;
+  }
+  .v-item-group {
+    display: flex;
+    justify-content: space-evenly;
+    box-shadow: none;
+    background: none;
+    padding: 10px 0;
+    .v-btn {
+      border-radius: 25px;
+      padding: 20px;
+    }
+    .v-btn--active {
+      background-color: #337fb5 !important;
+      color: #fff !important;
+      border-radius: 25px;
+      padding: 20px;
+    }
   }
 }
 </style>

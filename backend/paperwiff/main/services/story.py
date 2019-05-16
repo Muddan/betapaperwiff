@@ -5,8 +5,7 @@ from paperwiff.main import get_db
 from pymongo import DESCENDING as decending
 
 from ..services.user import UserClass
-from uuid import UUID
-
+from uuid import uuid1
 userService = UserClass()
 
 
@@ -18,17 +17,17 @@ class StoryClass:
         self.userCollection = db['users']
 
 
-    def publishStory(self, userId, tags, storyTitle, content, language, datePublished):
+    def publishStory(self, userId, tags, storyTitle, content, language, datePublished, headerImage):
         userData = userService.getUsernameByUserId(userId)
         storyId = re.sub('[^A-Za-z0-9-"-"]+', '', storyTitle.lower().replace(" ", "-"))
         result = self.storyCollection.find({"storyId":storyId})
-        if result is not None:
-            storyId=storyId+((str(UUID.hex))[0:5])
-
+        if result:
+            storyId=storyId+((str(uuid1())[0:6]))
         newStory = {
             "storyId": storyId,
             "userId": userId,
             "userName": userData["userName"],
+            "headerImage": headerImage,
             "storyTitle": storyTitle,
             "content": content,
             "tags": tags,
@@ -37,10 +36,10 @@ class StoryClass:
             "comments": [],
             "language": language,
         }
-
+        print(newStory)
         try:
             self.storyCollection.insert_one(newStory)
-            # callmethd to add story Id in user collection "userStories"
+            # call method to add story Id in user collection "userStories"
             self.userCollection.find_one_and_update(
                 {"userId": userId},
                 {"$push": {"userStories": storyId}},
@@ -106,6 +105,7 @@ class StoryClass:
         if (len(listofStories)) == 0:
             return {
                 "msg": "no more articles",
+                "items": [],
                 "status": 200
             }
         return {
@@ -158,7 +158,6 @@ class StoryClass:
             return self.getAllPopularStories(pageNo+1)
 
         for tag in tags:
-            print(tag)
             stories = self.storyCollection.find({"tags": str(tag)},
                 projection={
                 "_id": False, "comments": False
@@ -167,7 +166,8 @@ class StoryClass:
                 image = self.userCollection.find_one({"userId": story["userId"]}, projection={
                     "_id": False, 'userImage': True })
                 story.update(image)
-                listofStories.append(story)
+                if story not in listofStories:
+                    listofStories.append(story)
         if (len(listofStories)) == 0:
             return self.getAllPopularStories(pageNo + 1)
 
@@ -178,6 +178,36 @@ class StoryClass:
             "status": 200
         }
 
+
+    def getUserStories(self, userName,pageNo=1):
+        listofStories = []
+        if pageNo <= 0:
+            pageNo = 1
+        pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
+        totalItems = self.storyCollection.count()
+
+        stories = self.storyCollection.find({"userName": userName},
+            projection={
+            "_id": False, "comments": False
+        }).sort("datePublished",decending).skip(pageNo * 10).limit(10)
+        for story in stories:
+            image = self.userCollection.find_one({"userName": story["userName"]}, projection={
+                "_id": False, 'userImage': True })
+            story.update(image)
+            listofStories.append(story)
+        if (len(listofStories)) == 0:
+            return {
+                "msg": "no story by User found",
+                "items": [],
+                "status": 200
+            }
+
+        return {
+                "pageNo": pageNo + 1,
+                "totalItems": totalItems,
+                "items": list(listofStories),
+                "status": 200
+            }
 
 
     def getStoryDetailsByStoryId(self, storyId):
@@ -196,15 +226,12 @@ class StoryClass:
                 "status": 200
             }
 
-
     def storyLike(self, storyId):
         story=self.storyCollection.find_one_and_update({"storyId": storyId},
 
                    {"$inc": { "likes": 1 } }
 
         )
-        print(story)
-
         if story is None:
             return {
                 "msg": "No story with that storyId",

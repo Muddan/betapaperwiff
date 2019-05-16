@@ -14,15 +14,18 @@
             <v-flex md1 xs12 class="hidden-sm-and-down">
               <div class="sticky-main">
                 <share-story :url="storyUrl"></share-story>
+                <v-btn flat color="pink" @click="likeStory(story)">
+                  <v-icon left>favorite</v-icon>
+                  <span>{{ likeCount }}</span>
+                </v-btn>
+                <!-- <v-btn flat icon>
+                  <v-icon>bookmarks</v-icon>
+                </v-btn> -->
               </div>
             </v-flex>
             <v-flex md8 xs12>
               <div class="story-poster">
-                <img
-                  class="poster"
-                  src="https://res.cloudinary.com/practicaldev/image/fetch/s--yUyi4zBB--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/pf9l84zqr2hpqg2nl6yi.jpg"
-                  alt
-                />
+                <img class="poster" :src="story.headerImage" alt />
               </div>
               <div class="content-section">
                 <div class="title-section">
@@ -94,6 +97,10 @@
           </v-btn>
         </template>
         <share-story :url="storyUrl"></share-story>
+        <v-btn flat color="pink" @click="likeStory(story)">
+          <v-icon left>favorite</v-icon>
+          <span>{{ likeCount }}</span>
+        </v-btn>
       </v-speed-dial>
     </v-container>
   </div>
@@ -114,10 +121,10 @@ export default {
   },
   data() {
     return {
-      fab: false
+      fab: false,
+      likeCount: 0
     }
   },
-  computed: {},
   asyncData({ app, store, route }) {
     return app.$axios
       .$post(endpoints.API_GET_STORY_DETAILS, {
@@ -130,12 +137,19 @@ export default {
         }
       })
   },
+  beforeMount() {
+    this.likeCount = this.story.likes
+  },
   methods: {
     getPublishedDate(date) {
       return getDate(date)
     },
     randomColor() {
       return '#' + Math.floor(Math.random() * 16777215).toString(16)
+    },
+    likeStory(story) {
+      this.likeCount++
+      this.$store.dispatch('stories/like', story.storyId)
     }
   }
 }
@@ -154,6 +168,12 @@ export default {
   .story-poster {
     padding: 0 30px;
     box-sizing: border-box;
+    max-height: 500px;
+    overflow: hidden;
+    img {
+      height: 500px;
+      object-fit: cover;
+    }
     @media (max-width: 768px) {
       padding: 0;
     }

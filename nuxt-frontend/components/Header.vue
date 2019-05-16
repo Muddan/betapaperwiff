@@ -90,10 +90,7 @@ export default {
     drawer: false,
     dialog: false,
     logout: false,
-    items: [
-      { title: 'Join', link: '/join' },
-      { title: 'settings', link: '/settings' }
-    ]
+    items: [{ title: 'settings', link: '/settings' }]
   }),
 
   computed: {
@@ -108,7 +105,7 @@ export default {
         message: 'Successfully logged out.'
       })
       this.$store.dispatch('user/logoutUser')
-      window.location.reload(true)
+      window.location.replace('/')
     }
   }
 }

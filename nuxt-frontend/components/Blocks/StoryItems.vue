@@ -1,84 +1,87 @@
 <template>
   <v-container class="padding-0" fluid>
-    <v-layout column wrap>
-      <div class="story-loader">
-        <v-progress-circular
-          v-if="stories && !stories.length"
-          indeterminate
-          color="#f45b69"
-        ></v-progress-circular>
-      </div>
+    <no-ssr>
+      <v-layout column wrap>
+        <div class="story-loader">
+          <v-progress-circular
+            v-if="stories && !stories.length"
+            indeterminate
+            color="#f45b69"
+          ></v-progress-circular>
+        </div>
 
-      <!-- Story items listing -->
-      <v-card
-        v-for="(story, index) in stories"
-        :key="index"
-        flat
-        ripple
-        class="story-items-main"
-      >
-        <div class="story-items-content">
-          <div class="item-header">
-            <span class="published-date">
-              {{ getPublishedDate(story.datePublished) }}
-            </span>
-            <nuxt-link
-              class="story-title"
-              :to="{
-                path: '/a/' + story.userName + '/' + story.storyId
-              }"
-            >
-              <h3 class="story-title">
-                {{ story.storyTitle }}
-              </h3>
-            </nuxt-link>
-          </div>
-          <div class="item-subheader">
-            <div class="flex items-left">
-              <v-avatar class="avatar-main" size="45px" color="red">
-                <span class="white--text avatar-name">{{
-                  story.userName[1]
-                }}</span>
-              </v-avatar>
-              <v-subheader class="username-header">
-                <nuxt-link
-                  class="story-title"
-                  :to="{
-                    path: '/a/' + story.userName
-                  }"
-                >
-                  <span class="username">
-                    {{ story.userName }}
-                  </span>
-                </nuxt-link>
-
-                <div class="chip-container">
+        <!-- Story items listing -->
+        <v-card
+          v-for="(story, index) in stories"
+          :key="index"
+          flat
+          ripple
+          class="story-items-main"
+          :to="{
+            path: '/a/' + story.userName + '/' + story.storyId
+          }"
+        >
+          <div class="story-items-content">
+            <div class="item-header">
+              <span class="published-date">
+                {{ getPublishedDate(story.datePublished) }}
+              </span>
+              <nuxt-link
+                class="story-title"
+                :to="{
+                  path: '/a/' + story.userName + '/' + story.storyId
+                }"
+              >
+                <h3 class="story-title">
+                  {{ story.storyTitle }}
+                </h3>
+              </nuxt-link>
+            </div>
+            <div class="item-subheader">
+              <div class="flex items-left">
+                <v-avatar class="avatar-main" size="45px" color="red">
+                  <span class="white--text avatar-name">{{
+                    story.userName[1]
+                  }}</span>
+                </v-avatar>
+                <v-subheader class="username-header">
                   <nuxt-link
-                    v-for="(tag, tagIndex) in story.tags"
-                    :key="tagIndex"
+                    class="story-title"
                     :to="{
-                      path: '/tags/' + tag
+                      path: '/a/' + story.userName
                     }"
                   >
-                    <span class="chip"> #{{ tag }}</span>
+                    <span class="username">
+                      {{ story.userName }}
+                    </span>
                   </nuxt-link>
+
+                  <div class="chip-container">
+                    <nuxt-link
+                      v-for="(tag, tagIndex) in story.tags"
+                      :key="tagIndex"
+                      :to="{
+                        path: '/tags/' + tag
+                      }"
+                    >
+                      <span class="chip"> #{{ tag }}</span>
+                    </nuxt-link>
+                  </div>
+                </v-subheader>
+              </div>
+              <div class="footer">
+                <div class="actions-main">
+                  <v-btn flat color="pink">
+                    <v-icon left>favorite</v-icon>
+                    <span>{{ story.likes }}</span>
+                  </v-btn>
                 </div>
-              </v-subheader>
-            </div>
-            <div class="footer">
-              <div class="actions-main">
-                <v-btn icon>
-                  <v-icon>favorite_border</v-icon>
-                </v-btn>
-                <v-btn icon>
-                  <v-icon>bookmark_border</v-icon>
-                </v-btn>
               </div>
             </div>
           </div>
-        </div>
-      </v-card>
-    </v-layout>
+        </v-card>
+      </v-layout>
+    </no-ssr>
   </v-container>
 </template>
 

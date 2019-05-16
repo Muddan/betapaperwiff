@@ -1,41 +1,69 @@
 <template>
-  <div id="footer">
-    <v-footer dark height="auto">
-      <v-card flat tile color="#2a7b9c" class="white--text text-xs-center">
-        <v-card-text>
-          <v-btn
-            v-for="icon in icons"
-            :key="icon"
-            class="mx-3 white--text"
-            icon
-          >
-            <v-icon size="24px">{{ icon }}</v-icon>
-          </v-btn>
-        </v-card-text>
-        <v-card-text class="white--text pt-0"
-          >Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet.
-          Mauris cursus commodo interdum. Praesent ut risus eget metus luctus
-          accumsan id ultrices nunc. Sed at orci sed massa consectetur dignissim
-          a sit amet dui. Duis commodo vitae velit et faucibus. Morbi vehicula
-          lacinia malesuada. Nulla placerat augue vel ipsum ultrices, cursus
-          iaculis dui sollicitudin. Vestibulum eu ipsum vel diam elementum
-          tempor vel ut orci. Orci varius natoque penatibus et magnis dis
-          parturient montes, nascetur ridiculus mus.</v-card-text
+  <v-footer height="auto" color="#5199c3">
+    <v-layout justify-center row wrap>
+      <v-flex class="site-links" xs12>
+        <v-btn
+          v-for="(link, index) in keyLinks"
+          :key="index"
+          :to="link.link"
+          color="white"
+          flat
+          round
         >
-
-        <v-card-text class="white--text">
-          &copy;2018 —
-          <strong>paperwiff</strong>
-        </v-card-text>
-      </v-card>
-    </v-footer>
-  </div>
+          {{ link.title }}
+        </v-btn>
+      </v-flex>
+      <v-flex xs12 class="footer-info">
+        <p class="footer-text">
+          A platform for Readers and Writers, for people to express themselves.
+          We'd like us to go beyond social media. We know you all have a lot to
+          say. Remember this, "there’s always someone out there who could
+          benefit from your experiences". We said “experiences”, not “expertise”
+          because Paperwiff is for everyone.
+        </p>
+      </v-flex>
+      <v-flex xs12 class="copyright" py-3 text-xs-center white--text>
+        &copy;2019 — <strong>Paperwiff</strong>
+      </v-flex>
+    </v-layout>
+  </v-footer>
 </template>
 <script>
 export default {
-  name: 'Footer',
   data: () => ({
-    icons: ['fab fa-facebook', 'fab fa-twitter', 'fab fa-instagram']
+    keyLinks: [
+      { title: 'About', link: '/about' },
+      // { title: 'Pricing', link: '/pricing' },
+      { title: ' Privacy Policy', link: '/privacy-policy' },
+      { title: 'Contact', link: '/contact' }
+      // { title: 'Faq', link: '/faq' },
+      // { title: 'Code of conduct', link: '/code-of-conduct' }
+    ]
   })
 }
 </script>
+<style lang="scss" scoped>
+.copyright {
+  background: #337fb5;
+}
+.footer-info {
+  max-width: 60%;
+  box-sizing: border-box;
+  padding: 20px;
+  border-top: 1px solid #fff;
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+  .footer-text {
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+}
+.site-links {
+  text-align: center;
+}
+</style>

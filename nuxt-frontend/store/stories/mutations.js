@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as types from './mutation-types'
 
 const mutations = {
@@ -33,6 +34,9 @@ const mutations = {
 
   [types.SET_CURRENT_STORY](state, payload) {
     state.currentStory = payload
+  },
+  [types.SET_USER_FEED](state, payload) {
+    state.filteredStories = payload
   }
 }
 

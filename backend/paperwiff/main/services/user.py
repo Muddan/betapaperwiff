@@ -1,4 +1,4 @@
-from uuid import UUID
+from uuid import uuid1
 
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, create_refresh_token
 from flask import jsonify
@@ -37,14 +37,9 @@ class UserClass:
             # Login this user, return acess token
             return self.loginGoogleUser(user)
         else:
-            # userId=str(user['sub'])
-            # if self.getUserDetailsByUserId(userId) is not None:
-            #     userId=userId+((str(UUID.hex))[0:5])    #create a random string and use the first 5 letter with the user name if alredy present
-
-            userName='@' + user["given_name"].lower(),
+            userName='@' + user["given_name"].lower()
             if self.getUserDetailsByuserName(userName) is not None:
-                userName=userName+((str(UUID.hex))[0:5])
-
+                userName = userName + ((str(uuid1())[0:6]))
             # Make the new user object
             newUser = {
                 "userId":str(user['sub']),
@@ -58,12 +53,12 @@ class UserClass:
                 "joined": (str(datetime.datetime.now())),
                 "about": "",
                 "userImage": user['picture'],
-                "userStories": [],
+                "userArticles": [],
                 "likedStories": [],
-                "accountType":"free",
-                "language":[],
+                "accountLicense":"free",
+                "languages":[],
                 "location":"",
-                "education":"",
+                "skills":"",
                 "saveForLater": []
             }
 
@@ -145,19 +140,19 @@ class UserClass:
 
             {
                 "$set":{
-                "userName": "@"+Input.get("userName"),
+                "userName": Input.get("userName"),
                 "firstName": Input.get("firstName"),
                 "lastName": Input.get("lastName"),
                 "about": Input.get("about"),
-                #"userImage": user['picture'],
-                "language": Input.get("language"),
+                "languages": Input.get("languages"),
                 "location": Input.get("location"),
-                "education": Input.get("education")
+                "skills": Input.get("skills"),
+                "availableFor": Input.get("availableFor"),
                 }
             }
             )
         return {
-            "msg": "successfull updated UserId:" + userId,
+            "msg": "successfully updated",
             "status": 200
         }
 

@@ -10,27 +10,53 @@
         </header>
       </div> -->
       <div class="form-section">
-        <v-flex xs12 sm6>
-          <image-input v-model="headerImage" class="header-img-main">
-            <div slot="activator">
-              <v-container
-                v-if="!headerImage"
-                v-ripple
-                class="bg-holder"
-                color="grey lighten-3"
-                height="300px"
-              >
-                <strong><span>Add banner for your post.</span></strong>
-              </v-container>
-              <v-container v-else v-ripple class="bg-holder">
-                <v-img :src="headerImage.imageURL" alt="avatar"></v-img>
-              </v-container>
-            </div>
-          </image-input>
-        </v-flex>
-        <v-flex xs12 sm6>
+        <v-flex xs12 sm6 class="header-img-main">
+          <!-- <image-input
+              v-model="storyForm.headerImage"
+              class="header-img-main"
+            >
+              <div slot="activator">
+                <v-container
+                  v-if="!storyForm.headerImage"
+                  v-ripple
+                  class="bg-holder"
+                  color="grey lighten-3"
+                  height="300px"
+                >
+                  <strong><span>Add banner for your post.</span></strong>
+                </v-container>
+                <v-container v-else v-ripple class="bg-holder">
+                  <v-img
+                    :src="storyForm.headerImage.imageURL"
+                    alt="avatar"
+                  ></v-img>
+                </v-container>
+              </div>
+            </image-input> -->
+          <v-container
+            v-ripple
+            class="bg-holder"
+            color="grey lighten-3"
+            height="300px"
+          >
+            <v-img
+              v-if="storyForm.headerImage.imageURL"
+              :src="storyForm.headerImage.imageURL"
+              alt="avatar"
+            ></v-img>
+          </v-container>
           <v-text-field
-            v-model="title"
+            v-model="storyForm.headerImage.imageURL"
+            required
+            label="Upload Image link"
+            single-line
+            solo
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 sm12>
+          <v-text-field
+            v-model="storyForm.title"
+            required
             label="Title"
             single-line
             solo
@@ -46,22 +72,22 @@
             @change="setLanguage"
           ></v-select>
         </v-flex> -->
-        <v-flex class="white" xs12 sm6 wrap>
+        <v-flex class="white" xs12 sm12 wrap>
           <section class="container">
             <div
               v-quill:myQuillEditor="editorOption"
               class="quill-editor"
-              :content="content"
+              :content="storyForm.content"
               @change="onEditorChange($event)"
             >
               >
             </div>
           </section>
         </v-flex>
-        <v-flex class="tags-input" sm6 xs12>
+        <v-flex class="tags-input" sm12 xs12>
           <v-combobox
-            v-model="selectedTags"
-            :items="storyTagsAvailable"
+            v-model="storyForm.selectedTags"
+            :items="tagsArray"
             label="Select Tags"
             chips
             clearable
@@ -102,25 +128,33 @@
 </template>
 
 <script>
-import ImageInput from '@/components/Blocks/ImageInput'
+// import ImageInput from '@/components/Blocks/ImageInput'
 
 import { mapGetters } from 'vuex'
 
 export default {
-  components: {
-    ImageInput
-  },
+  // components: {
+  //   ImageInput
+  // },
 
   data() {
     return {
+      file: '',
       saved: false,
-      headerImage: null,
+      storyForm: {
+        headerImage: {
+          imageURL: ''
+        },
+        title: '',
+        content: '',
+        translatedContent: '',
+        selectedLanguage: 'english',
+        selectedTags: []
+      },
+      validForm: true,
       loader: null,
       publishing: false,
-      title: '',
-      content: '',
-      translatedContent: '',
-      selectedLanguage: 'english',
+
       showEditor: false,
       editorOption: {
         modules: {
@@ -134,7 +168,6 @@ export default {
           ]
         }
       },
-      selectedTags: [],
       translateLanguages: [
         {
           text: 'kananda'
@@ -151,14 +184,14 @@ export default {
       isSignedIn: 'user/isSignedIn',
       currentUser: 'user/currentUser',
       storyTagsAvailable: 'stories/availableTags'
-    })
+    }),
+    tagsArray() {
+      return this.storyTagsAvailable.map(tag => {
+        return tag.name
+      })
+    }
   },
   methods: {
-    onEditorChange({ editor, html, text }) {
-      // eslint-disable-next-line no-console
-      console.log('editor change!', editor, html, text)
-      this.content = html
-    },
     isSigned() {
       return this.isSigned
     },
@@ -166,36 +199,50 @@ export default {
       this.selectedTags.splice(this.selectedTags.indexOf(item), 1)
       this.selectedTags = [...this.selectedTags]
     },
-    setLanguage(language) {
-      this.selectedLanguage = language
+    onEditorChange({ quill, html, text }) {
+      this.storyForm.content = html
     },
-    // textChange(quill) {
-    //   // const regex = /(<([^>]+)>)/gi
-    //   const queryText = this.content
-
-    //   setTimeout(() => {
-    //     this.$store
-    //       .dispatch('Stories/translate', {
-    //         query: queryText,
-    //         language: this.selectedLanguage
-    //       })
-    //       .then(res => {
-    //         this.translatedContent = res.data.message
-    //       })
-    //   }, 1000)
-    // },
     publishStory() {
-      this.$store.dispatch('notification/progress', {
-        title: 'Publishing your story...'
-      })
-      // this.$store
-      //   .dispatch('Stories/publishStory', {
-      //     storyTitle: this.title,
-      //     userId: this.currentUser.userId,
-      //     content: this.translatedContent,
-      //     tags: this.selectedTags
-      //   })
-      //   .then(res => {})
+      if (!this.storyForm.title.length) {
+        this.$store.dispatch('notification/warning', {
+          title: 'ah Oh!',
+          message: 'We need a title for your story'
+        })
+        this.validForm = false
+      }
+      if (!this.storyForm.selectedTags.length > 0) {
+        this.$store.dispatch('notification/warning', {
+          title: 'ah Oh!',
+          message: 'Please select atleast one tag'
+        })
+        this.validForm = false
+      }
+      if (
+        this.storyForm.content.length === 0 ||
+        this.storyForm.content.split(' ').length > 1000
+      ) {
+        this.$store.dispatch('notification/warning', {
+          title: 'ah Oh!',
+          message: 'Please use maximum of 1000 words to finish your story.'
+        })
+        this.validForm = false
+      }
+      if (this.validForm) {
+        this.$store.dispatch('notification/progress', {
+          title: 'Publishing your story...'
+        })
+        this.$store
+          .dispatch('stories/publishStory', {
+            storyTitle: this.storyForm.title,
+            userId: this.currentUser.userId,
+            content: this.storyForm.content,
+            tags: this.storyForm.selectedTags,
+            headerImage: this.storyForm.headerImage.imageURL,
+            datePublished: new Date(),
+            language: this.storyForm.selectedLanguage
+          })
+          .then(res => {})
+      }
     },
     limiter(e) {
       if (e.length > 3) {
@@ -226,10 +273,9 @@ export default {
         } else {
           // Append file into FormData and turn file into image URL
           const formData = new FormData()
-          const imageURL = URL.createObjectURL(imageFile)
-          formData.append(fieldName, imageFile)
+          formData.append('image', this.file)
           // Emit the FormData and image URL to the parent component
-          this.$emit('input', { formData, imageURL })
+          this.$emit('input', { formData })
         }
       }
     }
@@ -270,9 +316,6 @@ $logosection-color: #043344;
 }
 .form-section {
   .header-img-main {
-    min-height: 300px;
-    max-height: 300px;
-    overflow: hidden;
     margin: 20px 0;
     .bg-holder {
       display: flex;
@@ -282,14 +325,15 @@ $logosection-color: #043344;
       max-height: 300px;
       background: #dddddd;
       padding: 0;
+      overflow: hidden;
       @media (max-width: 768px) {
         min-height: 150px;
         max-height: 150px;
       }
     }
     @media (max-width: 768px) {
-      min-height: 150px;
-      max-height: 150px;
+      min-height: 200px;
+      max-height: 200px;
     }
   }
   .content-preview-main {

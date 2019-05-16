@@ -48,7 +48,7 @@ def followTag():
 @User.route('/updateUser', methods=['POST'])
 def updateUserDetails():
     try:
-        data_json = request.get_json(request.data)
+        data_json = json.loads(request.data)
         userId = data_json.get('userId')
         result = userServices.getUserDetailsByUserId(userId)
         if result is not None:

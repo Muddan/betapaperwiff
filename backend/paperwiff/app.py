@@ -1,6 +1,7 @@
 #   Flask packages
-from flask import Flask, jsonify, request, redirect, current_app
+from flask import Flask, jsonify, request, redirect, current_app, flash, request, redirect, url_for
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 
 #   JWT authentication
 from flask_jwt_extended import JWTManager
@@ -12,6 +13,14 @@ from paperwiff.main import get_db
 from .main.routes.user import User
 from .main.routes.story import Story
 from .main.routes.auth import Auth
+
+
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 app = Flask(__name__)
 

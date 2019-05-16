@@ -14,7 +14,7 @@ const mutations = {
   },
 
   [types.SET_USER_PROFILE](state, payload) {
-    state.userProfile = payload
+    state.current = payload
   },
   [types.FOLLOW_FILTERS](state, payload) {
     if (state.current.followingTags.includes(payload)) {

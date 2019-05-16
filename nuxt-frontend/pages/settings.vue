@@ -1,11 +1,10 @@
 <template>
   <div class="settings-main">
-    <v-container>
+    <v-container v-if="isSigned">
       <div class="form-header">
         <header>
           <h2 class="ftitle">Settings for your paperwiff account</h2>
         </header>
-        {{ user }}
       </div>
       <v-layout wrap class="settings-content">
         <v-flex class="navigation-links" xs12 md3>
@@ -73,7 +72,9 @@
                           label="Username"
                           class="input"
                           :rules="nameRules"
+                          readonly
                           name="userName"
+                          hint="This is not editable"
                         ></v-text-field>
                       </v-flex>
                       <v-flex md3 class="input-control">
@@ -92,6 +93,40 @@
                           :rules="nameRules"
                           label="Lastname"
                           name="lastName"
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md6 class="input-control">
+                        <v-text-field
+                          v-model="user.location"
+                          label="Location"
+                          class="input"
+                          name="location"
+                          hint="Ex: 'Bangalore'"
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md6 class="input-control">
+                        <v-text-field
+                          v-model="user.skills"
+                          label="Skills"
+                          class="input"
+                          name="location"
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md6 class="input-control">
+                        <v-text-field
+                          v-model="user.languages"
+                          label="Languages"
+                          class="input"
+                          name="location"
+                          hint="Ex: 'kannada', 'hindi'"
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md6 class="input-control">
+                        <v-text-field
+                          v-model="user.availableFor"
+                          label="Available For"
+                          class="input"
+                          name="location"
                         ></v-text-field>
                       </v-flex>
                       <v-flex class="input-control">
@@ -115,12 +150,12 @@
             </div>
           </v-scroll-y-transition>
         </v-flex>
-        <v-flex md2>
+        <!-- <v-flex md2>
           <v-card class="profile-card">
             <div class="img-main">
               <v-img
                 class="profile-img"
-                src="https://cdn.vuetifyjs.com/images/cards/desert.jpg"
+                :src="avatar.imageURL"
                 aspect-ratio="2.75"
               ></v-img>
             </div>
@@ -134,7 +169,7 @@
               </div>
             </v-card-title>
           </v-card>
-        </v-flex>
+        </v-flex> -->
       </v-layout>
     </v-container>
   </div>
@@ -142,6 +177,7 @@
 <script>
 import ImageInput from '@/components/Blocks/ImageInput'
 import { mapGetters } from 'vuex'
+import _ from 'lodash'
 export default {
   components: {
     ImageInput
@@ -153,19 +189,20 @@ export default {
         userName: '',
         firstName: '',
         lastName: '',
-        about: ''
+        about: '',
+        location: '',
+        skills: '',
+        languages: '',
+        availableFor: ''
       },
       avatar: {
-        imageURL: null
+        imageURL: ''
       },
       saving: false,
       saved: false,
       active: false,
       valid: true,
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters'
-      ],
+      nameRules: [v => !!v || 'Name is required'],
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+/.test(v) || 'E-mail must be valid'
@@ -194,7 +231,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      currentUser: 'user/currentUser'
+      currentUser: 'user/currentUser',
+      isSigned: 'user/isSignedIn'
     })
   },
   watch: {
@@ -205,17 +243,31 @@ export default {
       deep: true
     }
   },
-  beforeMount() {
+  mounted() {
     this.user = { ...this.currentUser }
     this.avatar.imageURL = this.currentUser.userImage
   },
   methods: {
     validate() {
-      this.snackbar = true
-      // eslint-disable-next-line no-console
-      console.log(this.$refs.profileUpdate)
-      if (this.$refs.profileUpdate.validate()) {
-      }
+      const currentUserData = _.cloneDeep(this.currentUser)
+      const updatedUserData = _.merge(currentUserData, this.user)
+      this.$store
+        .dispatch('user/updateUserDetails', updatedUserData)
+        .then(res => {
+          if (res) {
+            this.$store.dispatch('notification/success', {
+              title: 'Saved!',
+              message:
+                'we have saved your information, you can change it anytime'
+            })
+          } else {
+            this.$store.dispatch('notification/error', {
+              title: 'Oh Snap!',
+              message:
+                'Something went wrong while saving your data, please try again'
+            })
+          }
+        })
     },
     toggleSection(section) {
       if (section === 'Profile') {

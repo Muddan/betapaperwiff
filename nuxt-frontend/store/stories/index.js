@@ -16,3 +16,4 @@ export const actions = () => ({
 export const mutations = () => ({
   mutation
 })
+export const strict = false

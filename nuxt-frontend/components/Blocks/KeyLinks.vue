@@ -35,11 +35,11 @@ export default {
       ],
       keyLinks: [
         { title: 'About', link: '/about' },
-        { title: 'Pricing', link: '/pricing' },
+        // { title: 'Pricing', link: '/pricing' },
         { title: ' Privacy Policy', link: '/privacy-policy' },
-        { title: 'Contact', link: '/contact' },
-        { title: 'Faq', link: '/faq' },
-        { title: 'Code of conduct', link: '/code-of-conduct' }
+        { title: 'Contact', link: '/contact' }
+        // { title: 'Faq', link: '/faq' },
+        // { title: 'Code of conduct', link: '/code-of-conduct' }
       ]
     }
   }
@@ -48,12 +48,12 @@ export default {
 
 <style lang="scss" scoped>
 .keylink-main {
-  background: #2a7b9c;
+  background: #337fb5;
   border-radius: 8px;
   .v-list {
     border-radius: 8px;
-    border: 1px solid #2a7b9c;
-    border-bottom: 4px solid #2a7b9c;
+    border: 1px solid #337fb5;
+    border-bottom: 4px solid #337fb5;
   }
   .keylinks-title {
     color: #fff;
