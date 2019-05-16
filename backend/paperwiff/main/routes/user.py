@@ -18,9 +18,9 @@ def userDetails():
         data_json = json.loads(request.data)
         userName = data_json['userName']
         result = userServices.getUserDetailsByuserName(userName)
-        return make_response(response(result), result['status'])
+        return make_response(response(result), 200)
     except Exception as e:
-        return make_response(response(str(e)), 400)
+            return make_response(response(str(e)), 400)
 
 
 @User.route('/followtag', methods=['POST'])
@@ -46,7 +46,6 @@ def followTag():
     except Exception as e:
         return make_response(response(str(e)), 400)
 
-
 @User.route('/updateUser', methods=['POST'])
 def updateUserDetails():
     try:
@@ -54,11 +53,11 @@ def updateUserDetails():
         userId = data_json.get('userId')
         result = userServices.getUserDetailsByUserId(userId)
         if result is not None:
-            return make_response(response(userServices.updateUserDetails(data_json)), 200)
-        return make_response(response("userId not present", result.get('status')))
+            return make_response(response(userServices.updateUserDetails(data_json)),200)
+        return make_response(response("userId not present"), result.get('status'))
     except Exception as e:
 
-        return make_response(response("Error occured :" + str(e)), 400)
+            return make_response(response("Error occured :"+str(e)), 400)
 
 
 @User.route('/saveForLater', methods=['POST'])

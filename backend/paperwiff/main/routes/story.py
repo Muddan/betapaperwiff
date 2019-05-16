@@ -24,10 +24,10 @@ def allTags():
 
 @Story.route('/allstories/popular', methods=['GET'])
 def allStories():
-    if not request.args['pageNo']:
+    if not request.args.get('pageNo'):
         page = 1
     else:
-        page = int(request.args['pageNo'])
+        page = int(request.args.get('pageNo'))
     try:
         result = storyService.getAllPopularStories(page)
         return make_response(response(result), result['status'])

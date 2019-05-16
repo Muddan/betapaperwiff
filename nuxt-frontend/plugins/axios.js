@@ -17,7 +17,7 @@ export default ({ store }) => {
         originalRequest._retry = true // now it can be retried
 
         return axios
-          .post('http://192.168.0.6:5000/auth/refresh', null, {
+          .post('http://localhost:5000/auth/refresh', null, {
             headers: {
               Authorization: 'Bearer ' + store.state.user.refresh_token
             }

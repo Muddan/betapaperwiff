@@ -10,7 +10,7 @@ const actions = {
       url: endpoints.API_GET_TAGS
     }).then(response => {
       if (response.status === 200) {
-        const tags = response.data.map(tag => {
+        const tags = response.data.result.tags.map(tag => {
           return tag.name
         })
         context.commit(types.SET_AVAILABLE_TAGS, tags)
@@ -19,7 +19,7 @@ const actions = {
   },
   async getAllStories(context, payload) {
     await this.$axios.$get(endpoints.API_GET_STORIES).then(response => {
-      context.commit(types.SET_ALL_STORIES, response)
+      context.commit(types.SET_ALL_STORIES, response.result.items)
     })
   },
   setStoryFilters(context, payload) {
