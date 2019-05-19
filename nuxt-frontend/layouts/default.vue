@@ -32,3 +32,23 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+/** Transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+.slidedown-enter-active,
+.slidedown-leave-active {
+  transition: transform 0.3s, opacity 0.3s;
+}
+.slidedown-enter, .slidedown-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  transform: translateY(10%);
+  opacity: 0;
+  max-width: 1400px;
+  overflow: hidden;
+}
+</style>

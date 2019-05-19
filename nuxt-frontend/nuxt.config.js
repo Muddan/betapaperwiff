@@ -4,10 +4,10 @@ import pkg from './package'
 export default {
   mode: 'universal',
   env: {
-    baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3000'
+    baseUrl: process.env.BASE_URL || 'http://192.168.0.3:3000'
   },
   server: {
-    host: '127.0.0.1'
+    host: '192.168.0.3'
   },
   /*
    ** Headers of the page
@@ -45,7 +45,8 @@ export default {
     '~/assets/style/app.styl',
     'quill/dist/quill.snow.css',
     'quill/dist/quill.bubble.css',
-    'quill/dist/quill.core.css'
+    'quill/dist/quill.core.css',
+    'cloudinary-vue/dist/Cloudinary.css'
   ],
 
   /*
@@ -55,7 +56,8 @@ export default {
     '@/plugins/vuetify',
     { src: '~/plugins/authenticate', ssr: false },
     '~/plugins/axios',
-    { src: '~plugins/nuxtQuill.js', ssr: false }
+    { src: '~plugins/nuxtQuill.js', ssr: false },
+    { src: '~plugins/cloudinary', ssr: false }
   ],
 
   /*

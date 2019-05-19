@@ -1,6 +1,9 @@
 <template>
   <div class="story-details">
     <v-container>
+      <!-- <div class="preloader">
+        <span class="loader"></span>
+      </div> -->
       <div class="story-loader">
         <v-progress-circular
           v-if="!story"
@@ -29,30 +32,26 @@
               </div>
               <div class="content-section">
                 <div class="title-section">
-                  <span class="date">
-                    {{ getPublishedDate(story.datePublished) }}
-                  </span>
                   <header>
                     <h1 class="main-title">{{ story.storyTitle }}</h1>
                     <v-layout class="mini-profile" align-center>
-                      <v-flex xs12>
-                        <v-avatar
-                          class="profile-img"
-                          size="30px"
-                          :color="randomColor()"
-                        >
-                          <span class="white--text avatar-name">{{
-                            story.userName[1]
-                          }}</span>
+                      <v-flex xs12 class="details-flex">
+                        <v-avatar class="profile-img" size="55px">
+                          <img :src="user.userImage" />
                         </v-avatar>
-                        <nuxt-link
-                          class="user-profile"
-                          :to="{
-                            path: '/a/' + story.userName
-                          }"
-                        >
-                          <span class="username">{{ story.userName }}</span>
-                        </nuxt-link>
+                        <div class="details">
+                          <nuxt-link
+                            class="user-profile"
+                            :to="{
+                              path: '/a/' + story.userName
+                            }"
+                          >
+                            <span class="username">{{ user.firstName }}</span>
+                          </nuxt-link>
+                          <span class="date">
+                            {{ getPublishedDate(story.datePublished) }}
+                          </span>
+                        </div>
                       </v-flex>
                     </v-layout>
 
@@ -67,57 +66,28 @@
                   </header>
                 </div>
                 <div class="story-content" v-html="story.content"></div>
+                <author-info :author="user"></author-info>
               </div>
-            </v-flex>
-            <v-flex
-              class="sidebar-section sidebar-left hidden-sm-and-down"
-              md3
-              xs12
-            >
-              <key-links></key-links>
             </v-flex>
           </v-layout>
         </div>
       </div>
-      <v-speed-dial
-        v-model="fab"
-        right
-        bottom
-        color="teal"
-        flat
-        :fixed="true"
-        direction="top"
-        transition="slide-y-reverse-transition"
-        class="hidden-md-and-up"
-      >
-        <template v-slot:activator>
-          <v-btn v-model="fab" color="white" light fab>
-            <v-icon>share</v-icon>
-            <v-icon>close</v-icon>
-          </v-btn>
-        </template>
-        <share-story :url="storyUrl"></share-story>
-        <v-btn flat color="pink" @click="likeStory(story)">
-          <v-icon left>favorite</v-icon>
-          <span>{{ likeCount }}</span>
-        </v-btn>
-      </v-speed-dial>
     </v-container>
   </div>
 </template>
 
 <script>
-import KeyLinks from '@/components/Blocks/KeyLinks.vue'
-// import AuthorInfo from '@/components/Blocks/AuthorInfo.vue'
+import AuthorInfo from '@/components/Blocks/AuthorInfo.vue'
 import ShareStory from '@/components/Blocks/ShareStory.vue'
 
 import { endpoints } from '@/api/endpoints.js'
 import { getDate } from '@/helpers/dateHelper.js'
 
 export default {
+  transition: 'slidedown',
   components: {
-    KeyLinks,
-    ShareStory
+    ShareStory,
+    AuthorInfo
   },
   data() {
     return {
@@ -125,17 +95,21 @@ export default {
       likeCount: 0
     }
   },
-  asyncData({ app, store, route }) {
-    return app.$axios
-      .$post(endpoints.API_GET_STORY_DETAILS, {
+  async asyncData({ app, store, route }) {
+    const storyDetails = await app.$axios.$post(
+      endpoints.API_GET_STORY_DETAILS,
+      {
         storyId: route.params.storyId
-      })
-      .then(res => {
-        return {
-          story: res.result.item,
-          storyUrl: `${process.env.baseUrl}${route.path}`
-        }
-      })
+      }
+    )
+    const userProfile = await app.$axios.$post(endpoints.API_GET_USER_DETAILS, {
+      userName: route.params.userName
+    })
+    return {
+      story: storyDetails.result.item,
+      storyUrl: `${process.env.baseUrl}${route.path}`,
+      user: userProfile.result
+    }
   },
   beforeMount() {
     this.likeCount = this.story.likes
@@ -154,8 +128,42 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.preloader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.8;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+.loader {
+  height: 4rem;
+  width: 4rem;
+  border-bottom: 5px solid #66bbf8;
+  border-left: 5px solid #337fb5;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: rotate 0.5s infinite;
+}
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+</style>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .story-details {
   max-width: 1400px;
   margin: auto;
@@ -169,22 +177,25 @@ export default {
     padding: 0 30px;
     box-sizing: border-box;
     max-height: 500px;
-    overflow: hidden;
+    height: 500px;
     img {
       height: 500px;
       object-fit: cover;
     }
     @media (max-width: 768px) {
       padding: 0;
+      max-height: 300px;
+      height: 300px;
     }
     .poster {
       width: 100%;
       border-radius: 8px;
       display: inherit;
+      height: 100%;
     }
   }
   .content-section {
-    padding: 35px 30px 30px;
+    padding: 35px 10px 30px;
     box-sizing: border-box;
     border-radius: 8px;
     margin: 0 20px;
@@ -196,6 +207,14 @@ export default {
       margin-top: -20px;
       padding: 25px 20px 20px;
     }
+    .links-main {
+      text-align: center;
+      ul {
+        li {
+          display: inline-block;
+        }
+      }
+    }
     .title-section {
       padding: 20px 0;
       max-width: 90%;
@@ -206,6 +225,7 @@ export default {
       .user-profile {
         text-decoration: none;
         color: #2e2e2e;
+        font-size: 16px;
       }
       .main-title {
         font-family: 'Cormorant Garamond', serif;
@@ -218,8 +238,24 @@ export default {
       }
       .mini-profile {
         margin: 10px 0;
+        .details-flex {
+          display: flex;
+          .profile-img {
+            border-top: 1px solid #337fb5;
+            border-bottom: 1px solid #337fb5;
+            img {
+              padding: 5px;
+            }
+          }
+        }
         .avatar-name {
           text-transform: uppercase;
+        }
+        .details {
+          display: flex;
+          flex-direction: column;
+          box-sizing: border-box;
+          padding: 0 10px;
         }
       }
       .date {
@@ -252,14 +288,6 @@ export default {
       padding-bottom: 20px;
       @media (max-width: 768px) {
         max-width: 100%;
-      }
-      &::after {
-        content: '';
-        width: 80%;
-        margin: auto;
-        background: #2e2e2e;
-        height: 1px;
-        display: block;
       }
       line-height: 2;
     }

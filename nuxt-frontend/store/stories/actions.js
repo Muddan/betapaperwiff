@@ -40,8 +40,14 @@ const actions = {
         context.commit(types.SET_CURRENT_STORY, res.details[0])
       })
   },
-  publishStory(context, payload) {
-    return this.$axios.$post(endpoints.API_PUBLISH_STORY, payload)
+  async publishStory(context, payload) {
+    const formData = new FormData()
+    formData.append('file', payload.headerImage)
+    formData.append('upload_preset', endpoints.upload_preset)
+    await this.$axios.$post(endpoints.IMAGE_UPLOAD, formData).then(res => {
+      payload.headerImage = res.secure_url
+      return this.$axios.$post(endpoints.API_PUBLISH_STORY, payload)
+    })
   },
 
   addToFollowingFilters(context, payload) {
