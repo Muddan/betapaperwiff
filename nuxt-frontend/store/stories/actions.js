@@ -103,7 +103,7 @@ const actions = {
         storyId: payload
       })
       .then(res => {
-        console.log(res)
+        context.dispatch('getAllStories')
       })
   },
   userFeed(context, payload) {

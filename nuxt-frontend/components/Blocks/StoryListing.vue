@@ -1,26 +1,22 @@
 <template>
   <div class="articles-tab">
-    <v-btn-toggle v-model="toggleTab" mandatory>
-      <v-btn
-        v-for="(label, index) in FeedType"
-        :key="index"
-        flat
-        depressed
-        round
-        @click="changeTab(label)"
-      >
-        {{ label.title }}
-      </v-btn>
-      <v-btn
-        v-if="isSignedIn"
-        flat
-        depressed
-        round
-        @click="changeTab({ title: 'Feed', status: false })"
-      >
-        {{ 'Feed' }}
-      </v-btn>
-    </v-btn-toggle>
+    <v-btn
+      v-for="(label, index) in FeedType"
+      :key="index"
+      depressed
+      :class="{ 'v-btn--active': activeTab === label.title }"
+      @click="changeTab(label)"
+    >
+      {{ label.title }}
+    </v-btn>
+    <v-btn
+      v-if="isSignedIn"
+      depressed
+      :class="{ 'v-btn--active': activeTab === 'Feed' }"
+      @click.stop="changeTab({ title: 'Feed', status: false })"
+    >
+      {{ 'Feed' }}
+    </v-btn>
     <v-scroll-y-transition>
       <story-items :stories="getCurrentUserFeed()"></story-items>
     </v-scroll-y-transition>
@@ -107,15 +103,14 @@ export default {
     background: none;
     padding: 10px 0;
     .v-btn {
-      border-radius: 25px;
       padding: 20px;
+      border-radius: 8px;
     }
-    .v-btn--active {
-      background-color: #337fb5 !important;
-      color: #fff !important;
-      border-radius: 25px;
-      padding: 20px;
-    }
+  }
+  .v-btn--active {
+    background-color: #337fb5 !important;
+    color: #fff !important;
+    border-radius: 8px;
   }
 }
 </style>

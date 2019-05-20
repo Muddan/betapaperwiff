@@ -26,7 +26,9 @@
             </div>
           </div>
         </v-flex>
-        <v-flex> <v-btn outline color="indigo">Follow</v-btn></v-flex>
+        <v-flex>
+          <!-- <v-btn outline color="indigo">Follow</v-btn> -->
+        </v-flex>
       </v-layout>
     </v-container>
   </div>
@@ -58,6 +60,7 @@ export default {
 
   .info-main {
     display: flex;
+    border-right: 1px solid #c2c2c2;
     @media (max-width: 768px) {
       flex-direction: column;
     }

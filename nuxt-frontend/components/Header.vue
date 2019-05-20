@@ -19,28 +19,6 @@
 
       <v-spacer class="hidden-md-and-up"></v-spacer>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
-
-      <!-- Search icon -->
-      <!-- <v-dialog v-model="dialog" :full-width="true" :fullscreen="false">
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-icon color="#337fb5">search</v-icon>
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-text>
-            <v-flex xs12 sm12>
-              <v-text-field label="Outline" single-line outline clearable></v-text-field>
-            </v-flex>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="#337fb5" flat @click="dialog = false">Search</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>-->
-
-      <!-- Write icon -->
       <router-link to="/write">
         <v-btn color="#337fb5" flat value="help">
           <v-icon size="18px" left>fas fa-feather</v-icon>
@@ -105,7 +83,7 @@ export default {
         message: 'Successfully logged out.'
       })
       this.$store.dispatch('user/logoutUser')
-      window.location.replace('/')
+      this.$router.push('/')
     }
   }
 }
@@ -130,6 +108,8 @@ export default {
         width: 100%;
       }
     }
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05) !important;
+
     .v-toolbar__content {
       max-width: 1400px;
       margin: auto;

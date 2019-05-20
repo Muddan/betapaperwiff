@@ -1,24 +1,33 @@
 <template>
-  <div class="keylink-main">
-    <v-subheader>
-      <v-icon color="#fff">bolt</v-icon>
-      <span class="keylinks-title">Important Links</span>
-    </v-subheader>
-    <div class="social-icons">
-      <v-btn v-for="icon in socialIcons" :key="icon" dark class="mx-2" icon>
-        <v-icon class="socialIcon" size="24px">{{ icon }}</v-icon>
-      </v-btn>
+  <v-scroll-y-transition>
+    <div class="keylink-main">
+      <v-subheader>
+        <v-icon left color="#fff">flare</v-icon>
+        <span class="keylinks-title">Important Links</span>
+      </v-subheader>
+      <div class="social-icons">
+        <v-btn
+          v-for="(icon, index) in socialIcons"
+          :key="index"
+          :href="icon.link"
+          dark
+          class="mx-2"
+          icon
+        >
+          <v-icon class="socialIcon" size="24px">{{ icon.name }}</v-icon>
+        </v-btn>
+      </div>
+      <v-list class="link-list">
+        <v-list-tile v-for="(keyLink, i) in keyLinks" :key="i">
+          <v-list-tile-content>
+            <nuxt-link class="page-link" :to="keyLink.link">
+              <v-list-tile-title>{{ keyLink.title }}</v-list-tile-title>
+            </nuxt-link>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
     </div>
-    <v-list class="link-list">
-      <v-list-tile v-for="(keyLink, i) in keyLinks" :key="i">
-        <v-list-tile-content>
-          <v-btn flat :to="keyLink.link">
-            <v-list-tile-title>{{ keyLink.title }}</v-list-tile-title>
-          </v-btn>
-        </v-list-tile-content>
-      </v-list-tile>
-    </v-list>
-  </div>
+  </v-scroll-y-transition>
 </template>
 
 <script>
@@ -27,11 +36,18 @@ export default {
   data() {
     return {
       socialIcons: [
-        'fab fa-facebook',
-        'fab fa-twitter',
-        'fab fa-instagram',
-        'fab fa-linkedin',
-        'fa fa-envelope'
+        {
+          name: 'fab fa-facebook',
+          link: 'https://www.facebook.com/paperwiff/'
+        },
+        {
+          name: 'fab fa-twitter',
+          link: 'https://twitter.com/paperwiff?lang=en'
+        },
+        {
+          name: 'fab fa-instagram',
+          link: 'https://www.instagram.com/paperwiff/'
+        }
       ],
       keyLinks: [
         { title: 'About', link: '/about' },
@@ -50,23 +66,28 @@ export default {
 .keylink-main {
   background: #337fb5;
   border-radius: 8px;
+  margin-top: 20px;
   .v-list {
     border-radius: 8px;
-    border: 1px solid #337fb5;
+    // border: 1px solid #337fb5;
     border-bottom: 4px solid #337fb5;
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
+    @media (max-width: 768px) {
+      box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.356);
+    }
   }
   .keylinks-title {
     color: #fff;
     font-size: 18px;
     letter-spacing: 2px;
   }
-  .social-icons {
-    text-align: center;
-  }
   .link-list {
     background: #fff;
-    .v-btn {
+    .page-link {
       text-transform: capitalize;
+      &:hover {
+        color: #337fb5;
+      }
     }
   }
 }

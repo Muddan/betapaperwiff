@@ -77,10 +77,10 @@
               </div>
               <div class="footer">
                 <div class="actions-main">
-                  <v-btn flat color="pink">
-                    <v-icon left>favorite</v-icon>
-                    <span>{{ story.likes }}</span>
+                  <v-btn small flat icon color="pink">
+                    <v-icon small>favorite</v-icon>
                   </v-btn>
+                  <span>{{ story.likes }}</span>
                 </div>
               </div>
             </div>
@@ -146,12 +146,12 @@ a {
 }
 .story-items-main {
   border-radius: 8px;
-  border: 1px solid #114b5f;
-  border-bottom: 4px solid #114b5f;
   margin: 10px 0;
   background: #fff;
   padding: 10px 15px;
   box-sizing: border-box;
+  border-bottom: 4px solid #5199c3;
+  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
   @media (max-width: 1024px) {
     padding-bottom: 0;
   }
@@ -243,6 +243,13 @@ a {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    .actions-main {
+      display: flex;
+      align-items: center;
+      button {
+        margin: 0;
+      }
+    }
   }
 }
 </style>

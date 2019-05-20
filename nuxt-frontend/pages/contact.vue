@@ -9,8 +9,14 @@
               <p>We would love to hear from you!</p>
             </div>
           </v-card-title>
-          <v-btn v-for="icon in socialIcons" :key="icon" class="mx-2" icon>
-            <v-icon class="socialIcon" size="24px">{{ icon }}</v-icon>
+          <v-btn
+            v-for="(icon, index) in socialIcons"
+            :key="index"
+            :href="icon.link"
+            class="mx-2"
+            icon
+          >
+            <v-icon class="socialIcon" size="24px">{{ icon.name }}</v-icon>
           </v-btn>
         </v-card>
       </v-layout>
@@ -25,11 +31,18 @@ export default {
   data() {
     return {
       socialIcons: [
-        'fab fa-facebook',
-        'fab fa-twitter',
-        'fab fa-instagram',
-        'fab fa-linkedin',
-        'fa fa-envelope'
+        {
+          name: 'fab fa-facebook',
+          link: 'https://www.facebook.com/paperwiff/'
+        },
+        {
+          name: 'fab fa-twitter',
+          link: 'https://twitter.com/paperwiff?lang=en'
+        },
+        {
+          name: 'fab fa-instagram',
+          link: 'https://www.instagram.com/paperwiff/'
+        }
       ]
     }
   }

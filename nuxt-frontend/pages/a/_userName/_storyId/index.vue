@@ -1,9 +1,6 @@
 <template>
   <div class="story-details">
     <v-container>
-      <!-- <div class="preloader">
-        <span class="loader"></span>
-      </div> -->
       <div class="story-loader">
         <v-progress-circular
           v-if="!story"
@@ -17,10 +14,17 @@
             <v-flex md1 xs12 class="hidden-sm-and-down">
               <div class="sticky-main">
                 <share-story :url="storyUrl"></share-story>
-                <v-btn flat color="pink" @click="likeStory(story)">
-                  <v-icon left>favorite</v-icon>
-                  <span>{{ likeCount }}</span>
+                <v-btn
+                  :disabled="disableLike"
+                  flat
+                  icon
+                  color="pink"
+                  @click="likeStory(story)"
+                >
+                  <v-icon>favorite</v-icon>
                 </v-btn>
+                <span>{{ likeCount }}</span>
+
                 <!-- <v-btn flat icon>
                   <v-icon>bookmarks</v-icon>
                 </v-btn> -->
@@ -92,7 +96,8 @@ export default {
   data() {
     return {
       fab: false,
-      likeCount: 0
+      likeCount: 0,
+      disableLike: false
     }
   },
   async asyncData({ app, store, route }) {
@@ -184,8 +189,9 @@ export default {
     }
     @media (max-width: 768px) {
       padding: 0;
-      max-height: 300px;
-      height: 300px;
+      max-height: 200px;
+      height: 200px;
+      margin: 0 10px;
     }
     .poster {
       width: 100%;
@@ -202,7 +208,7 @@ export default {
     background: #fff;
     margin-top: -40px;
     @media (max-width: 768px) {
-      margin: 0 10px;
+      margin: 0 0;
       background: #fff;
       margin-top: -20px;
       padding: 25px 20px 20px;

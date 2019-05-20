@@ -55,7 +55,8 @@ export default {
     { src: '~/plugins/authenticate', ssr: false },
     '~/plugins/axios',
     { src: '~plugins/nuxtQuill.js', ssr: false },
-    { src: '~plugins/cloudinary', ssr: false }
+    { src: '~plugins/cloudinary', ssr: false },
+    { src: '~plugins/firebase', ssr: false }
   ],
 
   /*
@@ -71,10 +72,10 @@ export default {
   /*
    ** Axios module configuration
    */
-  axios: {
-    // See https://github.com/nuxt-community/axios-module#options
-    baseURL: 'http://localhost:5000'
-  },
+  // axios: {
+  //   // See https://github.com/nuxt-community/axios-module#options
+  //   baseURL: 'http://localhost:5000'
+  // },
   izitoast: {
     position: 'topRight',
     transitionIn: 'bounceInLeft',

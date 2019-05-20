@@ -90,14 +90,15 @@ export default {
 
   border-radius: 8px;
   // box-shadow: 0 10px 20px 0 #ffb3b978;
-  border: 1px solid #ffb3b9;
+  // border: 1px solid #ffb3b9;
   border-bottom: 4px solid #ffb3b9;
-
+  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
+  @media (max-width: 768px) {
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.356);
+  }
   .tag-header {
     color: #000;
-    letter-spacing: 1px;
     font-size: 16px;
-    border-radius: 8px;
     margin: 0 0 5px 0;
   }
   .v-icon {

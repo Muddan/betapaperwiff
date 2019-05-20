@@ -10,7 +10,7 @@
         </header>
       </div>
       <div class="form-section">
-        <v-flex xs12 sm6 class="header-img-main">
+        <v-flex xs12 sm12 class="header-img-main">
           <image-input v-model="storyForm.headerImage" class="header-img-main">
             <div slot="activator">
               <v-container
@@ -27,28 +27,10 @@
                   :src="storyForm.headerImage.imageURL"
                   alt="avatar"
                 ></v-img>
+                <h3>Select an Image for your post</h3>
               </v-container>
             </div>
           </image-input>
-          <!-- <v-container
-            v-ripple
-            class="bg-holder"
-            color="grey lighten-3"
-            height="300px"
-          >
-            <v-img
-              v-if="storyForm.headerImage.imageURL"
-              :src="storyForm.headerImage.imageURL"
-              alt="avatar"
-            ></v-img>
-          </v-container>
-          <v-text-field
-            v-model="storyForm.headerImage.imageURL"
-            required
-            label="Upload Image link"
-            single-line
-            solo
-          ></v-text-field> -->
         </v-flex>
         <v-flex xs12 sm12>
           <v-text-field
@@ -70,7 +52,7 @@
           ></v-select>
         </v-flex> -->
         <v-flex class="white" xs12 sm12 wrap>
-          <section class="container">
+          <section class="editor-content">
             <div
               v-quill:myQuillEditor="editorOption"
               class="quill-editor"
@@ -233,6 +215,9 @@ export default {
         })
         this.validForm = false
       }
+      if (!this.isSigned) {
+        this.validForm = false
+      }
       if (this.validForm) {
         this.$store.dispatch('notification/progress', {
           title: 'Publishing your story...'
@@ -269,7 +254,9 @@ $logosection-color: #043344;
   max-width: 1400px;
   margin: auto;
 }
-.container {
+.editor-content {
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   .quill-editor {
     min-height: 200px;
     max-height: 400px;
@@ -298,15 +285,20 @@ $logosection-color: #043344;
 .form-section {
   .header-img-main {
     margin: 20px 0;
+    background: #f2f2f2;
     .bg-holder {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 300px;
-      max-height: 300px;
-      background: #dddddd;
+      height: 300px;
+      width: 100%;
+      background: #f2f2f2;
       padding: 0;
       overflow: hidden;
+      h3 {
+        width: 100%;
+        text-align: center;
+      }
       @media (max-width: 768px) {
         min-height: 150px;
         max-height: 150px;

@@ -195,9 +195,12 @@ export default {
       text-transform: capitalize;
     }
     .desc {
-      font-size: 15px;
+      font-size: 12px;
       line-height: 2;
       color: #6e6e6e;
+      @media (min-width: 768px) {
+        font-size: 15px;
+      }
     }
   }
   .content-main {

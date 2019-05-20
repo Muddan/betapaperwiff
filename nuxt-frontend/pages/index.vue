@@ -40,6 +40,7 @@
             class="sidebar-section sidebar-left hidden-sm-and-down"
             md3
             xs12
+            sm12
           >
             <user-info></user-info>
             <tag-listing></tag-listing>
@@ -51,9 +52,14 @@
             class="sidebar-section sidebar-right hidden-sm-and-down"
             md3
             xs12
+            sm12
           >
-            <join-us></join-us>
-            <key-links></key-links>
+            <v-scroll-y-transition>
+              <join-us></join-us>
+            </v-scroll-y-transition>
+            <v-scroll-y-transition>
+              <key-links></key-links>
+            </v-scroll-y-transition>
           </v-flex>
         </v-layout>
       </div>
@@ -70,6 +76,8 @@ import JoinUs from '@/components/Blocks/JoinUs.vue'
 import { mapGetters } from 'vuex'
 
 export default {
+  transition: 'fade',
+
   name: 'Home',
   components: {
     TagListing,
@@ -90,25 +98,6 @@ export default {
       filteredStories: 'stories/filteredStories',
       allStories: 'stories/allStories'
     })
-  },
-  mounted() {
-    this.scroll()
-  },
-  methods: {
-    scroll() {
-      // eslint-disable-next-line no-console
-      console.log('called')
-
-      window.onscroll = () => {
-        const bottomOfWindow =
-          document.documentElement.scrollTop + window.innerHeight ===
-          document.documentElement.offsetHeight
-
-        if (bottomOfWindow) {
-          // Do something, anything!
-        }
-      }
-    }
   }
 }
 </script>
@@ -123,7 +112,8 @@ export default {
 }
 $logosection-color: #043344;
 #home {
-  min-height: calc(100vh - 80px);
+  min-height: calc(93vh - 80px);
+  margin-top: 20px;
   .logo-section {
     .main-title {
       font-family: 'Marck Script', cursive;
