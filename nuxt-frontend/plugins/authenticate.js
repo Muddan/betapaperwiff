@@ -5,7 +5,7 @@ import axios from 'axios'
 
 Vue.use(VueAxios, axios)
 Vue.use(VueAuthenticate, {
-  baseUrl: 'http://172.31.24.211:5000', // Your API domain
+  baseUrl: 'http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com:5000', // Your API domain
 
   providers: {
     google: {

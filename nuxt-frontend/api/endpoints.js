@@ -1,4 +1,4 @@
-const BASE_URL = `http://172.31.24.211:5000`
+const BASE_URL = `http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com:5000`
 const CLOUDINARY = {
   cloud_name: 'wokong'
 }
