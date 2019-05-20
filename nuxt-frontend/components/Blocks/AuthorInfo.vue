@@ -13,10 +13,7 @@
             <router-link
               class="user-link"
               :to="{
-                name: 'userprofile',
-                params: {
-                  userName: author.userName
-                }
+                path: '/a/' + author.userName
               }"
             >
               {{ author.userName }}
