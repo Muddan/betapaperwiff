@@ -16,13 +16,13 @@ class StoryClass:
         self.tagsCollection = db['tags']
         self.userCollection = db['users']
 
-
     def publishStory(self, userId, tags, storyTitle, content, language, datePublished, headerImage):
         userData = userService.getUsernameByUserId(userId)
-        storyId = re.sub('[^A-Za-z0-9-"-"]+', '', storyTitle.lower().replace(" ", "-"))
-        result = self.storyCollection.find({"storyId":storyId})
+        storyId = re.sub('[^A-Za-z0-9-"-"]+', '',
+                         storyTitle.lower().replace(" ", "-"))
+        result = self.storyCollection.find({"storyId": storyId})
         if result:
-            storyId=storyId+((str(uuid1())[0:6]))
+            storyId = storyId+((str(uuid1())[0:6]))
         newStory = {
             "storyId": storyId,
             "userId": userId,
@@ -55,7 +55,6 @@ class StoryClass:
                 "status": 200
             }
 
-
     def addComment(self, Input_json):
         try:
             x = self.storyCollection.find_one_and_update(
@@ -77,7 +76,7 @@ class StoryClass:
                 }
         except Exception as e:
             return {
-                "msg":"problem found in " + str(e),
+                "msg": "problem found in " + str(e),
                 "status": 400
             }
 
@@ -99,7 +98,7 @@ class StoryClass:
         listofStories = []
         for story in stories:
             image = self.userCollection.find_one({"userId": story["userId"]}, projection={
-                "_id": False, 'userImage': True, })
+                "_id": False, 'userImage': True, 'firstName': True })
             story.update(image)
             listofStories.append(story)
         if (len(listofStories)) == 0:
@@ -215,6 +214,7 @@ class StoryClass:
             {"storyId": storyId},
             projection={"_id": False}
         )
+        
         if storyDetails:
             return {
                 "item": storyDetails,

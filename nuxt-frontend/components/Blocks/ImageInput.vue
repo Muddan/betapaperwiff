@@ -59,12 +59,9 @@ export default {
           this.errorText =
             'Your file is too big! Please select an image under 1MB'
         } else {
-          // Append file into FormData and turn file into image URL
-          const formData = new FormData()
           const imageURL = URL.createObjectURL(imageFile)
-          formData.append(fieldName, imageFile)
           // Emit the FormData and image URL to the parent component
-          this.$emit('input', { formData, imageURL, imageFile })
+          this.$parent.$emit('input', { imageURL, imageFile })
         }
       }
     }

@@ -47,9 +47,7 @@ export default {
     li {
       box-sizing: border-box;
       padding: 10px;
-      background: #fff;
       margin-bottom: 5px;
-      border-radius: 8px;
 
       cursor: pointer;
       i {

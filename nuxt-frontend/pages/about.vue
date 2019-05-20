@@ -89,7 +89,9 @@
 </template>
 
 <script>
-export default {}
+export default {
+  transition: 'slidedown'
+}
 </script>
 <style lang="scss">
 .about-container {

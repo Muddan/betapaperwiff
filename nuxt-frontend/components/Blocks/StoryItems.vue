@@ -23,9 +23,17 @@
         >
           <div class="story-items-content">
             <div class="item-header">
-              <span class="published-date">
-                {{ getPublishedDate(story.datePublished) }}
-              </span>
+              <div class="chip-container">
+                <nuxt-link
+                  v-for="(tag, tagIndex) in story.tags"
+                  :key="tagIndex"
+                  :to="{
+                    path: '/tags/' + tag
+                  }"
+                >
+                  <span class="chip"> #{{ tag }}</span>
+                </nuxt-link>
+              </div>
               <nuxt-link
                 class="story-title"
                 :to="{
@@ -36,13 +44,20 @@
                   {{ story.storyTitle }}
                 </h3>
               </nuxt-link>
+              <!-- <p
+                class="story-desc"
+                v-html="
+                  story.content
+                    .split(' ')
+                    .splice(0, 20)
+                    .join(' ')
+                "
+              ></p> -->
             </div>
             <div class="item-subheader">
               <div class="flex items-left">
-                <v-avatar class="avatar-main" size="45px" color="red">
-                  <span class="white--text avatar-name">{{
-                    story.userName[1]
-                  }}</span>
+                <v-avatar class="avatar-main" size="50px">
+                  <img :src="story.userImage" />
                 </v-avatar>
                 <v-subheader class="username-header">
                   <nuxt-link
@@ -52,21 +67,12 @@
                     }"
                   >
                     <span class="username">
-                      {{ story.userName }}
+                      {{ story.firstName }}
                     </span>
                   </nuxt-link>
-
-                  <div class="chip-container">
-                    <nuxt-link
-                      v-for="(tag, tagIndex) in story.tags"
-                      :key="tagIndex"
-                      :to="{
-                        path: '/tags/' + tag
-                      }"
-                    >
-                      <span class="chip"> #{{ tag }}</span>
-                    </nuxt-link>
-                  </div>
+                  <span class="published-date">
+                    {{ getPublishedDate(story.datePublished) }}
+                  </span>
                 </v-subheader>
               </div>
               <div class="footer">
@@ -127,6 +133,13 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+a {
+  text-decoration: none;
+  color: inherit;
+}
+</style>
+
 <style lang="scss" scoped>
 .padding-0 {
   padding: initial 0;
@@ -143,7 +156,7 @@ export default {
     padding-bottom: 0;
   }
   .published-date {
-    color: #114b5f;
+    color: #b1b1b1;
     font-size: 12px;
     @media (max-width: 768px) {
       font-size: 10px;
@@ -151,15 +164,41 @@ export default {
   }
   .item-header {
     .story-title {
-      font-family: 'EB Garamond', serif;
+      font-family: 'Cormorant Garamond', serif;
       font-style: normal;
-      font-weight: 200;
-      font-size: 32px;
+      font-weight: normal;
+      font-size: 34px;
       color: #161616;
-      text-decoration: underline;
-      text-transform: capitalize;
+      text-decoration: none;
       @media (max-width: 1024px) {
         font-size: 22px;
+      }
+    }
+    .story-desc {
+      color: #757575;
+      font-size: 16px;
+      @media (max-width: 1024px) {
+        font-size: 14px;
+      }
+    }
+    .chip-container {
+      padding: 5px;
+      > a {
+        text-decoration: none;
+      }
+      .chip {
+        border-radius: 4px;
+        padding: 0 2px;
+        color: #9b9b9b;
+        margin-right: 5px;
+        font-size: 12px;
+        @media (max-width: 768px) {
+          font-size: 10px;
+        }
+        &:hover {
+          text-decoration: underline;
+          cursor: pointer;
+        }
       }
     }
   }
@@ -173,12 +212,21 @@ export default {
       display: flex;
       align-items: center;
     }
+    .avatar-main {
+      border-top: 1px solid #337fb5;
+      border-bottom: 1px solid #337fb5;
+      img {
+        padding: 5px;
+      }
+    }
     .avatar-name {
       text-transform: uppercase;
     }
     .username-header {
-      display: block;
-      padding: 0 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 10px;
       a {
         text-decoration: none;
         color: #2e2e2e;
@@ -186,24 +234,6 @@ export default {
       .username {
         font-weight: bold;
         padding-left: 5px;
-      }
-    }
-    .chip-container {
-      padding: 5px;
-      .chip {
-        border-radius: 4px;
-        padding: 5px;
-        background: #2e2e2e;
-        color: #f2f2f2;
-        margin-right: 5px;
-        font-size: 12px;
-        @media (max-width: 768px) {
-          font-size: 10px;
-        }
-        &:hover {
-          text-decoration: underline;
-          cursor: pointer;
-        }
       }
     }
   }

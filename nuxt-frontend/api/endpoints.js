@@ -1,7 +1,11 @@
-const BASE_URL = `http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com:5000`
+const BASE_URL = `http://172.31.24.211:5000`
+const CLOUDINARY = {
+  cloud_name: 'wokong'
+}
 
 export const endpoints = {
   BASE_URL: BASE_URL,
+  upload_preset: 'paperwiff',
 
   // USER ENDPOINTS
   API_GET_USER_DETAILS: `${BASE_URL}/api/user/details`,
@@ -15,5 +19,10 @@ export const endpoints = {
   API_GET_TAGS: `${BASE_URL}/api/story/alltags`,
   API_GET_STORY_DETAILS: `${BASE_URL}/api/story/storydetails`,
   API_TRANSTLATE: `${BASE_URL}/api/story/translate`,
-  API_STORY_LIKE: `${BASE_URL}/api/story/storyLike`
+  API_STORY_LIKE: `${BASE_URL}/api/story/storyLike`,
+
+  // Misc Apis
+  IMAGE_UPLOAD: `https://api.cloudinary.com/v1_1/${
+    CLOUDINARY.cloud_name
+  }/upload`
 }

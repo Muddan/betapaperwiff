@@ -3,11 +3,6 @@ import pkg from './package'
 
 export default {
   mode: 'universal',
-  env: {
-    baseUrl:
-      process.env.BASE_URL ||
-      'http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com'
-  },
   server: {
     host: 'http://ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com',
     port: 8000
@@ -48,7 +43,8 @@ export default {
     '~/assets/style/app.styl',
     'quill/dist/quill.snow.css',
     'quill/dist/quill.bubble.css',
-    'quill/dist/quill.core.css'
+    'quill/dist/quill.core.css',
+    'cloudinary-vue/dist/Cloudinary.css'
   ],
 
   /*
@@ -58,7 +54,8 @@ export default {
     '@/plugins/vuetify',
     { src: '~/plugins/authenticate', ssr: false },
     '~/plugins/axios',
-    { src: '~plugins/nuxtQuill.js', ssr: false }
+    { src: '~plugins/nuxtQuill.js', ssr: false },
+    { src: '~plugins/cloudinary', ssr: false }
   ],
 
   /*
