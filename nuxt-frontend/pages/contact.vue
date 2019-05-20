@@ -20,6 +20,8 @@
 
 <script>
 export default {
+  transition: 'slidedown',
+
   data() {
     return {
       socialIcons: [

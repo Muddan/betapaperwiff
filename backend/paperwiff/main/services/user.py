@@ -8,6 +8,7 @@ from paperwiff.main import get_db
 import time
 import datetime
 
+
 class UserClass:
     def __init__(self):
         db = get_db()
@@ -37,12 +38,12 @@ class UserClass:
             # Login this user, return acess token
             return self.loginGoogleUser(user)
         else:
-            userName='@' + user["given_name"].lower()
+            userName = '@' + user["given_name"].lower()
             if self.getUserDetailsByuserName(userName) is not None:
                 userName = userName + ((str(uuid1())[0:6]))
             # Make the new user object
             newUser = {
-                "userId":str(user['sub']),
+                "userId": str(user['sub']),
                 "userName": userName,
                 "firstName": user["given_name"],
                 "lastName": user["family_name"],
@@ -55,10 +56,10 @@ class UserClass:
                 "userImage": user['picture'],
                 "userArticles": [],
                 "likedStories": [],
-                "accountLicense":"free",
-                "languages":[],
-                "location":"",
-                "skills":"",
+                "accountLicense": "free",
+                "languages": [],
+                "location": "",
+                "skills": "",
                 "saveForLater": []
             }
 
@@ -115,7 +116,6 @@ class UserClass:
                     "status": 200
                 }
 
-
             else:
                 self.userCollection.find_one_and_update(
                     {"userId": userId},
@@ -127,32 +127,30 @@ class UserClass:
                 }
 
         except Exception as e:
-            return { "msg" : str(e), "status": 400 }
+            return {"msg": str(e), "status": 400}
 
-
-    #update UserDetails
-    def updateUserDetails(self,Input):
-        userId=Input.get("userId")
+    # update UserDetails
+    def updateUserDetails(self, Input):
+        userId = Input.get("userId")
         self.userCollection.find_one_and_update(
             {
                 "userId": userId
             },
 
             {
-                "$set":{
-                "userName": Input.get("userName"),
-                "firstName": Input.get("firstName"),
-                "lastName": Input.get("lastName"),
-                "about": Input.get("about"),
-                "languages": Input.get("languages"),
-                "location": Input.get("location"),
-                "skills": Input.get("skills"),
-                "availableFor": Input.get("availableFor"),
+                "$set": {
+                    "userName": Input.get("userName"),
+                    "firstName": Input.get("firstName"),
+                    "lastName": Input.get("lastName"),
+                    "about": Input.get("about"),
+                    "languages": Input.get("languages"),
+                    "location": Input.get("location"),
+                    "skills": Input.get("skills"),
+                    "availableFor": Input.get("availableFor"),
                 }
             }
-            )
+        )
         return {
             "msg": "successfully updated",
             "status": 200
         }
-

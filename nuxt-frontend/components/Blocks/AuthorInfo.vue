@@ -1,28 +1,34 @@
 <template>
-  <div class="user-info">
-    <v-list-tile avatar>
-      <v-list-tile-avatar>
-        <v-avatar>
-          <img :src="author.userImage" alt="John" />
-        </v-avatar>
-      </v-list-tile-avatar>
-
-      <v-list-tile-content>
-        <v-list-tile-title
-          >{{ author.firstName }} {{ author.lastName }}</v-list-tile-title
-        >
-        <router-link
-          :to="{
-            name: 'userprofile',
-            params: {
-              userName: author.userName
-            }
-          }"
-        >
-          <v-list-tile-sub-title>{{ author.userName }}</v-list-tile-sub-title>
-        </router-link>
-      </v-list-tile-content>
-    </v-list-tile>
+  <div class="author-info">
+    <v-container>
+      <v-layout justify-center main-layout>
+        <v-flex sm6 xs12 info-main>
+          <div class="user-img">
+            <v-avatar size="80px">
+              <img :src="author.userImage" :alt="author.userName" />
+            </v-avatar>
+          </div>
+          <div class="user-info">
+            <h3 class="name">{{ author.firstName }} {{ author.lastName }}</h3>
+            <router-link
+              class="user-link"
+              :to="{
+                name: 'userprofile',
+                params: {
+                  userName: author.userName
+                }
+              }"
+            >
+              {{ author.userName }}
+            </router-link>
+            <div class="user-bio">
+              {{ author.about }}
+            </div>
+          </div>
+        </v-flex>
+        <v-flex> <v-btn outline color="indigo">Follow</v-btn></v-flex>
+      </v-layout>
+    </v-container>
   </div>
 </template>
 <script>
@@ -36,19 +42,29 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.user-info {
-  // background: #cfefff;
+<style lang="scss" scoped>
+.author-info {
   background: #fff;
 
   box-sizing: border-box;
   padding: 10px;
   margin: 0 0 30px 0;
+  border-top: 1px solid #2e2e2e;
+  width: 80%;
+  margin: auto;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 
-  border-radius: 8px;
-  border: 1px solid #2a7b9c;
-  border-bottom: 4px solid #2a7b9c;
-  // box-shadow: 0 10px 30px 0 #cfefff80;
+  .info-main {
+    display: flex;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+    .user-info {
+      padding: 0 10px;
+    }
+  }
 
   .chip-content {
     .v-chip.v-chip--label {

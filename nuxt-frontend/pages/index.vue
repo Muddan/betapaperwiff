@@ -90,12 +90,32 @@ export default {
       filteredStories: 'stories/filteredStories',
       allStories: 'stories/allStories'
     })
+  },
+  mounted() {
+    this.scroll()
+  },
+  methods: {
+    scroll() {
+      // eslint-disable-next-line no-console
+      console.log('called')
+
+      window.onscroll = () => {
+        const bottomOfWindow =
+          document.documentElement.scrollTop + window.innerHeight ===
+          document.documentElement.offsetHeight
+
+        if (bottomOfWindow) {
+          // Do something, anything!
+        }
+      }
+    }
   }
 }
 </script>
 <style lang="scss">
 .main-container {
   max-width: 1400px;
+  width: 100%;
   margin: auto;
   @media (max-width: 1024px) {
     padding: 0;
@@ -103,6 +123,7 @@ export default {
 }
 $logosection-color: #043344;
 #home {
+  min-height: calc(100vh - 80px);
   .logo-section {
     .main-title {
       font-family: 'Marck Script', cursive;
