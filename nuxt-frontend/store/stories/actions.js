@@ -46,7 +46,29 @@ const actions = {
     formData.append('upload_preset', endpoints.upload_preset)
     await this.$axios.$post(endpoints.IMAGE_UPLOAD, formData).then(res => {
       payload.headerImage = res.secure_url
-      return this.$axios.$post(endpoints.API_PUBLISH_STORY, payload)
+      this.$axios.$post(endpoints.API_PUBLISH_STORY, payload).then(res => {
+        console.log(res)
+        if (res.result.status === 200) {
+          context.dispatch(
+            'notification/success',
+            {
+              title: 'Success!',
+              message: res.result.msg
+            },
+            { root: true }
+          )
+        } else {
+          context.dispatch(
+            'notification/error',
+            {
+              title: 'Failed!',
+              message: res.result.msg
+            },
+            { root: true }
+          )
+        }
+      })
+      context.dispatch('getAllStories')
     })
   },
 

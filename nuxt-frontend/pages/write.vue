@@ -20,14 +20,15 @@
                 color="grey lighten-3"
                 height="300px"
               >
-                <strong><span>Add banner for your post.</span></strong>
+                <strong>
+                  <span>Add banner for your post.</span>
+                </strong>
               </v-container>
               <v-container v-else v-ripple class="bg-holder">
                 <v-img
                   :src="storyForm.headerImage.imageURL"
                   alt="avatar"
                 ></v-img>
-                <h3>Select an Image for your post</h3>
               </v-container>
             </div>
           </image-input>
@@ -50,7 +51,7 @@
             label="Select translation language"
             @change="setLanguage"
           ></v-select>
-        </v-flex> -->
+        </v-flex>-->
         <v-flex class="white" xs12 sm12 wrap>
           <section class="editor-content">
             <div
@@ -222,18 +223,15 @@ export default {
         this.$store.dispatch('notification/progress', {
           title: 'Publishing your story...'
         })
-        this.$store
-          .dispatch('stories/publishStory', {
-            storyTitle: this.storyForm.title,
-            userId: this.currentUser.userId,
-            content: this.storyForm.content,
-            tags: this.storyForm.selectedTags,
-            headerImage: this.storyForm.headerImage.imageFile,
-            datePublished: new Date(),
-            language: this.storyForm.selectedLanguage
-          })
-          .then(res => {})
-        window.location.reload(true)
+        this.$store.dispatch('stories/publishStory', {
+          storyTitle: this.storyForm.title,
+          userId: this.currentUser.userId,
+          content: this.storyForm.content,
+          tags: this.storyForm.selectedTags,
+          headerImage: this.storyForm.headerImage.imageFile,
+          datePublished: new Date(),
+          language: this.storyForm.selectedLanguage
+        })
       }
     },
     limiter(e) {

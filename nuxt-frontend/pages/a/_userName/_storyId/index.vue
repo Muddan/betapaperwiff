@@ -53,7 +53,20 @@
                             <span class="username">{{ user.firstName }}</span>
                           </nuxt-link>
                           <span class="date">
-                            {{ getPublishedDate(story.datePublished) }}
+                            {{
+                              new Date(story.datePublished).toLocaleString(
+                                'en-us',
+                                {
+                                  month: 'long',
+                                  day: 'numeric'
+                                }
+                              )
+                            }}
+                            <span>&#9733;</span>
+                            {{
+                              getPublishedDate(new Date(story.datePublished))
+                            }}
+                            <span>ago</span>
                           </span>
                         </div>
                       </v-flex>
@@ -74,6 +87,7 @@
               </div>
             </v-flex>
           </v-layout>
+          <!-- <comments-listing></comments-listing> -->
         </div>
       </div>
     </v-container>
@@ -83,6 +97,7 @@
 <script>
 import AuthorInfo from '@/components/Blocks/AuthorInfo.vue'
 import ShareStory from '@/components/Blocks/ShareStory.vue'
+// import commentsListing from '@/components/Blocks/comments/commentsListing.vue'
 
 import { endpoints } from '@/api/endpoints.js'
 import { getDate } from '@/helpers/dateHelper.js'
@@ -92,6 +107,7 @@ export default {
   components: {
     ShareStory,
     AuthorInfo
+    // commentsListing
   },
   data() {
     return {

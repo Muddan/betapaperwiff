@@ -118,7 +118,9 @@ export default {
     }
     .v-list {
       .v-list__tile {
-        padding: 0;
+        padding: 0 5px;
+        display: flex;
+        justify-content: space-between;
       }
     }
   }

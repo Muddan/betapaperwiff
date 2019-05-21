@@ -1,12 +1,7 @@
 <template>
   <div class="story-chips">
     <div class="chip-content">
-      <v-chip
-        v-for="(tag, index) in storyTags"
-        :key="index"
-        label
-        color="white"
-      >
+      <v-chip v-for="(tag, index) in storyTags" :key="index" small label>
         <nuxt-link
           :to="{
             path: '/tags/' + tag
@@ -33,10 +28,13 @@ export default {
 .story-chips {
   .chip-content {
     .v-chip.v-chip--label {
+      border-radius: 8px;
+      overflow: hidden;
       .v-chip__content {
-        background: #f2f2f2;
+        background: #f4faff;
         a {
           color: #2e2e2e;
+          font-size: 13px;
         }
       }
     }
