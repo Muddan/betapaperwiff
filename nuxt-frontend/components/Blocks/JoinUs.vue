@@ -5,10 +5,10 @@
         <v-subheader>Join Paperwiff</v-subheader>
       </div>
       <div class="social-btn">
-        <!-- <v-btn outline round @click="authenticate('twitter')">
+        <v-btn outline round @click="authenticate('twitter')">
           Sign in with Twitter
           <img src="https://img.icons8.com/color/25/000000/twitter.png" />
-        </v-btn> -->
+        </v-btn>
         <v-btn outline round @click="authenticate('google')">
           Sign in with Google
           <img
@@ -57,16 +57,12 @@ export default {
 <style lang="scss">
 .join-us {
   box-sizing: border-box;
-  padding: 10px 0;
   .join-us-content {
     background: #fff;
     border-radius: 8px;
     // border: 1px solid #3e3e3e;
     border-bottom: 4px solid #1f1f1f;
     box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
-    @media (max-width: 768px) {
-      box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.356);
-    }
 
     box-sizing: border-box;
     padding: 10px 0;

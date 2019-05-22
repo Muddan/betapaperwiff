@@ -1,5 +1,5 @@
 <template>
-  <v-app class="grey lighten-5">
+  <v-app>
     <Header></Header>
     <v-content>
       <nuxt />
@@ -34,6 +34,9 @@ export default {
 </script>
 <style lang="scss">
 /** Transitions */
+.application {
+  background: #f9f9f9 !important;
+}
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.1s;

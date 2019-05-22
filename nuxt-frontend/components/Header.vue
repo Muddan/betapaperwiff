@@ -1,10 +1,50 @@
 <template>
   <div class="nav-bar">
-    <v-navigation-drawer v-model="drawer" app disable-resize-watcher>
-      <v-flex class="container">
-        <user-info></user-info>
+    <v-navigation-drawer
+      v-model="drawer"
+      class="grey lighten-5"
+      app
+      disable-resize-watcher
+      :temporary="true"
+    >
+      <v-flex xs12>
+        <user-info :only-image="true"></user-info>
         <join-us></join-us>
-        <key-links></key-links>
+        <v-list class="pt-0">
+          <v-subheader>
+            Important Links
+          </v-subheader>
+          <v-list-tile v-for="item in keyLinks" :key="item.title">
+            <v-list-tile-title>
+              <nuxt-link :to="item.link">{{ item.title }}</nuxt-link>
+            </v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile>
+            <v-list-tile-title>Settings</v-list-tile-title>
+          </v-list-tile>
+          <v-divider></v-divider>
+          <v-list-tile>
+            <v-list-tile-title><h3>Become a member</h3></v-list-tile-title>
+          </v-list-tile>
+          <v-divider></v-divider>
+          <v-subheader>
+            Social Media
+          </v-subheader>
+          <v-btn
+            v-for="(icon, index) in socialIcons"
+            :key="index"
+            :href="icon.link"
+            class="mx-2"
+            icon
+          >
+            <v-icon class="socialIcon">{{ icon.name }}</v-icon>
+          </v-btn>
+          <v-list-tile class="list-footer">
+            <v-list-tile-title>
+              &copy;2019 — <strong>Paperwiff</strong></v-list-tile-title
+            >
+          </v-list-tile>
+        </v-list>
       </v-flex>
     </v-navigation-drawer>
     <v-toolbar height="80px" app flat color="white" :scroll-off-screen="true">
@@ -49,14 +89,14 @@
 import { mapGetters } from 'vuex'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
 import JoinUs from '@/components/Blocks/JoinUs.vue'
-import KeyLinks from '@/components/Blocks/KeyLinks.vue'
+// import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 
 export default {
   name: 'NavigationDrawer',
   components: {
     UserInfo,
-    JoinUs,
-    KeyLinks
+    JoinUs
+    // KeyLinks
   },
   props: {
     source: {
@@ -68,7 +108,30 @@ export default {
     drawer: false,
     dialog: false,
     logout: false,
-    items: [{ title: 'settings', link: '/settings' }]
+    items: [{ title: 'settings', link: '/settings' }],
+    links: ['Home', 'Contacts', 'Settings'],
+    socialIcons: [
+      {
+        name: 'fab fa-facebook',
+        link: 'https://www.facebook.com/paperwiff/'
+      },
+      {
+        name: 'fab fa-twitter',
+        link: 'https://twitter.com/paperwiff?lang=en'
+      },
+      {
+        name: 'fab fa-instagram',
+        link: 'https://www.instagram.com/paperwiff/'
+      }
+    ],
+    keyLinks: [
+      { title: 'About', link: '/about' },
+      // { title: 'Pricing', link: '/pricing' },
+      { title: ' Privacy Policy', link: '/privacy-policy' },
+      { title: 'Contact', link: '/contact' }
+      // { title: 'Faq', link: '/faq' },
+      // { title: 'Code of conduct', link: '/code-of-conduct' }
+    ]
   }),
 
   computed: {
@@ -114,6 +177,14 @@ export default {
       max-width: 1400px;
       margin: auto;
     }
+  }
+  .list-footer {
+    position: absolute;
+    background: #fff;
+    z-index: 1;
+    width: 100%;
+    bottom: 0;
+    left: 0;
   }
 }
 </style>

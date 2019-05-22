@@ -121,8 +121,8 @@
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
                         <div class="label">
-                          <v-btn small flat icon color="#337fb5" v-on="on">
-                            <v-icon small>fas fa-book-open</v-icon>
+                          <v-btn small flat icon color="#9b9b9b" v-on="on">
+                            <v-icon small>fas fa-eye</v-icon>
                           </v-btn>
                           <span class="value">{{ story.views }}</span>
                         </div>
@@ -199,7 +199,7 @@ a {
   background: #fff;
   padding: 10px 15px 0 15px;
   box-sizing: border-box;
-  border-bottom: 4px solid #5199c3;
+  border-bottom: 4px solid #5199c3 !important;
   box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
   @media (max-width: 1024px) {
     padding-bottom: 0;
@@ -248,7 +248,8 @@ a {
       }
     }
     .story-desc {
-      color: #757575;
+      color: #161616;
+      opacity: 0.5;
       font-size: 16px;
       @media (max-width: 1024px) {
         font-size: 14px;
@@ -326,6 +327,7 @@ a {
         height: 100%;
         display: flex;
         align-items: center;
+        padding: 12px 5px;
       }
       .info-icons {
         display: flex;
@@ -337,6 +339,7 @@ a {
         display: flex;
         justify-content: center;
         align-items: center;
+        color: #8b8b8b;
         button {
           margin: 6px 0;
         }

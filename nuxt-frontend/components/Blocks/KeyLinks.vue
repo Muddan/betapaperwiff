@@ -2,8 +2,8 @@
   <v-scroll-y-transition>
     <div class="keylink-main">
       <v-subheader>
-        <v-icon left color="#fff">flare</v-icon>
-        <span class="keylinks-title">Important Links</span>
+        <v-icon small left color="#fff">flare</v-icon>
+        <h3 class="keylinks-title">Important Links</h3>
       </v-subheader>
       <div class="social-icons">
         <v-btn
@@ -14,7 +14,7 @@
           class="mx-2"
           icon
         >
-          <v-icon class="socialIcon" size="24px">{{ icon.name }}</v-icon>
+          <v-icon class="socialIcon">{{ icon.name }}</v-icon>
         </v-btn>
       </div>
       <v-list class="link-list">
@@ -72,19 +72,18 @@ export default {
     // border: 1px solid #337fb5;
     border-bottom: 4px solid #337fb5;
     box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
-    @media (max-width: 768px) {
-      box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.356);
-    }
   }
   .keylinks-title {
     color: #fff;
-    font-size: 18px;
-    letter-spacing: 2px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
   }
   .link-list {
     background: #fff;
     .page-link {
       text-transform: capitalize;
+      font-size: 14px;
       &:hover {
         color: #337fb5;
       }

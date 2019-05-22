@@ -8,8 +8,7 @@
         disable-resize-watcher
       >
         <v-flex class="container">
-          <user-info></user-info>
-          <key-links></key-links>
+          <tag-listing></tag-listing>
         </v-flex>
       </v-navigation-drawer>
       <v-navigation-drawer
@@ -26,11 +25,11 @@
       <div class="logo-section">
         <v-layout class="hidden-md-and-up">
           <v-btn flat icon color="#337fb5" @click="leftDrawer = !leftDrawer">
-            <v-icon>fas fa-clipboard-list </v-icon>
+            <v-icon small>fas fa-clipboard-list </v-icon>
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn flat icon color="#337fb5" @click="rightDrawer = !rightDrawer">
-            <v-icon>fa fa-coins</v-icon>
+            <v-icon small>fa fa-coins</v-icon>
           </v-btn>
         </v-layout>
       </div>

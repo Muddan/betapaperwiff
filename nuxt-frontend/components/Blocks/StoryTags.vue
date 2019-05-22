@@ -6,7 +6,7 @@
           :to="{
             path: '/tags/' + tag
           }"
-          >#{{ tag }}</nuxt-link
+          ># {{ tag }}</nuxt-link
         >
       </v-chip>
     </div>

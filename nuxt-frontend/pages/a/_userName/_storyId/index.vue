@@ -24,20 +24,18 @@
                   <v-icon>favorite</v-icon>
                 </v-btn>
                 <span>{{ likeCount }}</span>
-
-                <!-- <v-btn flat icon>
-                  <v-icon>bookmarks</v-icon>
-                </v-btn> -->
+                <v-btn flat icon color="#232323">
+                  <v-icon>bookmark_border</v-icon>
+                </v-btn>
               </div>
             </v-flex>
-            <v-flex md8 xs12>
+            <v-flex content-layout md8 xs12>
               <div class="story-poster">
                 <img class="poster" :src="story.headerImage" alt />
               </div>
               <div class="content-section">
                 <div class="title-section">
                   <header>
-                    <h1 class="main-title">{{ story.storyTitle }}</h1>
                     <v-layout class="mini-profile" align-center>
                       <v-flex xs12 class="details-flex">
                         <v-avatar class="profile-img" size="55px">
@@ -71,7 +69,7 @@
                         </div>
                       </v-flex>
                     </v-layout>
-
+                    <h1 class="main-title">{{ story.storyTitle }}</h1>
                     <div class="chip-container">
                       <span
                         v-for="(tag, tagIndex) in story.tags"
@@ -79,6 +77,10 @@
                         class="chip"
                         >#{{ tag }}</span
                       >
+                      <span class="read-time">
+                        {{ Math.floor(story.content.split(' ').length / 160) }}
+                        min read
+                      </span>
                     </div>
                   </header>
                 </div>
@@ -188,26 +190,32 @@ export default {
 .story-details {
   max-width: 1400px;
   margin: auto;
+  padding-top: 20px;
   .sticky-main {
     overflow: hidden;
     position: sticky;
     top: 100px;
     text-align: center;
   }
+  .content-layout {
+    background: #fff;
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+  }
   .story-poster {
-    padding: 0 30px;
+    padding: 0 25px;
     box-sizing: border-box;
     max-height: 500px;
     height: 500px;
+    transform: translateY(-25px);
     img {
       height: 500px;
       object-fit: cover;
     }
     @media (max-width: 768px) {
-      padding: 0;
+      padding: 15px;
       max-height: 200px;
       height: 200px;
-      margin: 0 10px;
     }
     .poster {
       width: 100%;
@@ -217,17 +225,16 @@ export default {
     }
   }
   .content-section {
-    padding: 35px 10px 30px;
+    padding: 20px 10px 30px 10px;
     box-sizing: border-box;
-    border-radius: 8px;
     margin: 0 20px;
-    background: #fff;
     margin-top: -40px;
+
     @media (max-width: 768px) {
       margin: 0 0;
       background: #fff;
       margin-top: -20px;
-      padding: 25px 20px 20px;
+      padding: 0px 20px 20px;
     }
     .links-main {
       text-align: center;
@@ -251,9 +258,10 @@ export default {
       }
       .main-title {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 57px;
+        font-size: 47px;
         text-align: left;
         line-height: 1.5;
+        font-weight: normal;
         @media (max-width: 768px) {
           font-size: 24px;
         }
@@ -293,9 +301,9 @@ export default {
         background: #2e2e2e;
         color: #f2f2f2;
         margin-right: 5px;
-        font-size: 12px;
+        font-size: 14px;
         @media (max-width: 768px) {
-          font-size: 10px;
+          font-size: 12px;
         }
         &:hover {
           text-decoration: underline;
