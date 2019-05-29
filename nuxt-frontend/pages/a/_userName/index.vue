@@ -41,9 +41,6 @@
           </v-flex>
         </v-layout>
       </div>
-      <v-tabs fixed-tabs>
-        <v-tab>  </v-tab>
-      </v-tabs>
       <v-layout>
         <v-flex xs3 md3 class="hidden-sm-and-down">
           <v-flex class="sidebar-section sidebar-left ">
