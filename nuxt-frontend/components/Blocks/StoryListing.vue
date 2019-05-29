@@ -1,6 +1,6 @@
 <template>
   <div class="articles-tab">
-    <v-btn
+    <!-- <v-btn
       v-for="(label, index) in FeedType"
       :key="index"
       depressed
@@ -16,7 +16,10 @@
       @click.stop="changeTab({ title: 'Feed', status: false })"
     >
       {{ 'Feed' }}
-    </v-btn>
+    </v-btn> -->
+    <v-subheader>
+      Latest Stories
+    </v-subheader>
     <v-scroll-y-transition>
       <story-items :stories="getCurrentUserFeed()"></story-items>
     </v-scroll-y-transition>
@@ -60,16 +63,27 @@ export default {
       this.loader = null
     }
   },
+  mounted() {
+    if (typeof window !== 'undefined' && window) {
+      let pageNo = 2
+      window.onscroll = () => {
+        const bottomOfWindow =
+          document.documentElement.scrollTop + window.innerHeight ===
+          document.documentElement.offsetHeight
+
+        if (bottomOfWindow) {
+          this.$store.dispatch('stories/loadMoreStories', pageNo)
+          pageNo++
+        }
+      }
+    }
+  },
   methods: {
     changeTab(tab) {
       this.activeTab = tab.title
     },
     getCurrentUserFeed() {
-      if (this.activeTab === 'Feed') {
-        return this.filteredStories
-      } else {
-        return this.allStories
-      }
+      return this.allStories
     }
   }
 }

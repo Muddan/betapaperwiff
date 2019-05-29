@@ -41,7 +41,7 @@
             xs12
             sm12
           >
-            <user-info></user-info>
+            <user-info :image-only="false" :only-mobile="true"></user-info>
             <tag-listing></tag-listing>
           </v-flex>
           <v-flex class="content-section" md6 xs12>

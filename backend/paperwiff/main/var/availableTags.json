@@ -1,0 +1,144 @@
+{
+    "tags": [
+        {
+            "name": "fiction",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "action&adventure",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "crime",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "drama",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "fairytale",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "historicalfiction",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "horror",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "mystery",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "paranormalromance",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "poetry",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "romance",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "sattire",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "sciencefiction",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "suspense",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "thriller",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "non-fiction",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "art",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "biography",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "bookreview",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "guide",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "travel",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "health",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "history",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "memoir",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "spirituality",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "self-help",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "politics",
+            "status": "False",
+            "type": "tag"
+        },
+        {
+            "name": "shayari",
+            "status": "False",
+            "type": "tag"
+        }
+    ]
+}

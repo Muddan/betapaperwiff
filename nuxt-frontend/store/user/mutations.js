@@ -1,5 +1,4 @@
 import * as types from './mutation-types'
-
 const mutations = {
   [types.SET_SIGNED_STATE](state, payload) {
     state.isSignedIn = payload

@@ -1,5 +1,5 @@
 import firebase from 'firebase'
-
+import 'firebase/app'
 // Initialize Firebase
 
 // Your web app's Firebase configuration
@@ -13,4 +13,6 @@ const firebaseConfig = {
   appId: '1:430441876577:web:b977ab9b0fe0607b'
 }
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig)
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig)
+}

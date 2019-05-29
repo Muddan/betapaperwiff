@@ -1,98 +1,145 @@
 <template>
   <div class="story-details">
-    <v-container>
-      <div class="story-loader">
-        <v-progress-circular
-          v-if="!story"
-          indeterminate
-          color="#f45b69"
-        ></v-progress-circular>
-      </div>
-      <div v-if="story" class="story-details">
-        <div class="main-content">
-          <v-layout>
-            <v-flex md1 xs12 class="hidden-sm-and-down">
-              <div class="sticky-main">
-                <share-story :url="storyUrl"></share-story>
-                <v-btn
-                  :disabled="disableLike"
-                  flat
-                  icon
-                  color="pink"
-                  @click="likeStory(story)"
-                >
-                  <v-icon>favorite</v-icon>
-                </v-btn>
-                <span>{{ likeCount }}</span>
-                <v-btn flat icon color="#232323">
-                  <v-icon>bookmark_border</v-icon>
-                </v-btn>
-              </div>
-            </v-flex>
-            <v-flex content-layout md8 xs12>
-              <div class="story-poster">
-                <img class="poster" :src="story.headerImage" alt />
-              </div>
-              <div class="content-section">
-                <div class="title-section">
-                  <header>
-                    <v-layout class="mini-profile" align-center>
-                      <v-flex xs12 class="details-flex">
-                        <v-avatar class="profile-img" size="55px">
-                          <img :src="user.userImage" />
-                        </v-avatar>
-                        <div class="details">
-                          <nuxt-link
-                            class="user-profile"
-                            :to="{
-                              path: '/a/' + story.userName
-                            }"
-                          >
-                            <span class="username">{{ user.firstName }}</span>
-                          </nuxt-link>
-                          <span class="date">
-                            {{
-                              new Date(story.datePublished).toLocaleString(
-                                'en-us',
-                                {
-                                  month: 'long',
-                                  day: 'numeric'
-                                }
-                              )
-                            }}
-                            <span>&#9733;</span>
-                            {{
-                              getPublishedDate(new Date(story.datePublished))
-                            }}
-                            <span>ago</span>
-                          </span>
-                        </div>
-                      </v-flex>
-                    </v-layout>
-                    <h1 class="main-title">{{ story.storyTitle }}</h1>
-                    <div class="chip-container">
-                      <span
-                        v-for="(tag, tagIndex) in story.tags"
-                        :key="tagIndex"
-                        class="chip"
-                        >#{{ tag }}</span
-                      >
-                      <span class="read-time">
-                        {{ Math.floor(story.content.split(' ').length / 160) }}
-                        min read
-                      </span>
-                    </div>
-                  </header>
-                </div>
-                <div class="story-content" v-html="story.content"></div>
-                <author-info :author="user"></author-info>
-              </div>
-            </v-flex>
-          </v-layout>
-          <!-- <comments-listing></comments-listing> -->
+    <no-ssr>
+      <v-container>
+        <div class="story-loader">
+          <v-progress-circular
+            v-if="!story"
+            indeterminate
+            color="#f45b69"
+          ></v-progress-circular>
         </div>
-      </div>
-    </v-container>
+        <div v-if="story" class="story-details">
+          <div class="main-content">
+            <v-layout>
+              <v-flex md1></v-flex>
+              <v-flex md1 xs12 class="hidden-sm-and-down">
+                <div class="sticky-main">
+                  <share-story :url="storyUrl"></share-story>
+                  <div class="action-btns">
+                    <v-btn
+                      flat
+                      icon
+                      :class="{ likedStory: savedStory }"
+                      color="grey darken-4"
+                      @click="saveStory(story.storyId)"
+                    >
+                      <v-icon>{{
+                        savedStory ? 'bookmarks' : 'bookmark_border'
+                      }}</v-icon>
+                    </v-btn>
+                    <div class="like-btn">
+                      <v-btn
+                        flat
+                        icon
+                        color="grey darken-4"
+                        :class="{ likedStory: likedStatus }"
+                        @click="likeStory(story.storyId)"
+                      >
+                        <v-icon>{{
+                          likedStatus ? 'favorite' : 'favorite_border'
+                        }}</v-icon>
+                      </v-btn>
+                      <span class="like-counter">{{ likeCount }}</span>
+                    </div>
+                  </div>
+                </div>
+              </v-flex>
+              <v-flex content-layout md8 xs12>
+                <div class="story-poster">
+                  <img class="poster" :src="story.headerImage" alt />
+                </div>
+                <div class="content-section">
+                  <div class="title-section">
+                    <header>
+                      <v-layout class="mini-profile" align-center>
+                        <v-flex xs12 class="details-flex">
+                          <v-avatar class="profile-img" size="55px">
+                            <img :src="user.userImage" />
+                          </v-avatar>
+                          <div class="details">
+                            <nuxt-link
+                              class="user-profile"
+                              :to="{
+                                path: '/a/' + story.userName
+                              }"
+                            >
+                              <span class="username">{{ user.firstName }}</span>
+                            </nuxt-link>
+                            <span class="date">
+                              {{
+                                new Date(story.datePublished).toLocaleString(
+                                  'en-us',
+                                  {
+                                    month: 'long',
+                                    day: 'numeric'
+                                  }
+                                )
+                              }}
+                              <v-icon class="dot-icon" size="8px">
+                                fas fa-star
+                              </v-icon>
+                              <span class="ago-time">
+                                {{
+                                  getPublishedDate(
+                                    new Date(story.datePublished)
+                                  )
+                                }}
+                              </span>
+                              <span>ago</span>
+                            </span>
+                          </div>
+                          <div class="reading">
+                            <v-btn small flat icon color="#9b9b9b">
+                              <v-icon small>fas fa-book-reader</v-icon>
+                            </v-btn>
+                            <span class="value">
+                              {{
+                                Math.floor(
+                                  story.content.split(' ').length / 160
+                                )
+                              }}
+                              min read
+                            </span>
+                          </div>
+                        </v-flex>
+                      </v-layout>
+                      <h1 class="main-title">{{ story.storyTitle }}</h1>
+                      <span class="summary">
+                        <p>{{ story.summary }}</p>
+                      </span>
+                      <div class="chip-container">
+                        <span
+                          v-for="(tag, tagIndex) in story.tags"
+                          :key="tagIndex"
+                          class="chip"
+                          ># {{ tag }}</span
+                        >
+                      </div>
+                    </header>
+                  </div>
+                  <div class="story-content" v-html="story.content"></div>
+                  <div class="footer-share">
+                    <share-story :url="storyUrl"></share-story>
+                  </div>
+                  <div class="footer-author">
+                    <author-info :author="user"
+                      ><v-btn
+                        outline
+                        color="indigo"
+                        @click="followAuthor(story.userId)"
+                        >{{ followedAuthor ? 'Following' : 'Follow' }}</v-btn
+                      ></author-info
+                    >
+                  </div>
+                </div>
+              </v-flex>
+            </v-layout>
+            <!-- <comments-listing></comments-listing> -->
+          </div>
+        </div>
+      </v-container>
+    </no-ssr>
   </div>
 </template>
 
@@ -100,10 +147,10 @@
 import AuthorInfo from '@/components/Blocks/AuthorInfo.vue'
 import ShareStory from '@/components/Blocks/ShareStory.vue'
 // import commentsListing from '@/components/Blocks/comments/commentsListing.vue'
-
+import { SocialFeatures } from '@/mixins/SocialFeatures.js'
 import { endpoints } from '@/api/endpoints.js'
 import { getDate } from '@/helpers/dateHelper.js'
-
+import { mapGetters } from 'vuex'
 export default {
   transition: 'slidedown',
   components: {
@@ -111,11 +158,40 @@ export default {
     AuthorInfo
     // commentsListing
   },
+  mixins: [SocialFeatures],
   data() {
     return {
       fab: false,
-      likeCount: 0,
-      disableLike: false
+      likeCount: 0
+    }
+  },
+  computed: {
+    ...mapGetters({
+      isSignedIn: 'user/isSignedIn',
+      likedStories: 'user/likedStories',
+      followingAuthors: 'user/followingAuthors',
+      savedStories: 'user/savedStories'
+    }),
+    likedStatus() {
+      if (this.isSignedIn) {
+        return this.likedStories.includes(this.story.storyId)
+      } else {
+        return false
+      }
+    },
+    followedAuthor() {
+      if (this.isSignedIn) {
+        return this.followingAuthors.includes(this.story.userId)
+      } else {
+        return false
+      }
+    },
+    savedStory() {
+      if (this.isSignedIn) {
+        return this.savedStories.includes(this.story.storyId)
+      } else {
+        return false
+      }
     }
   },
   async asyncData({ app, store, route }) {
@@ -125,9 +201,12 @@ export default {
         storyId: route.params.storyId
       }
     )
-    const userProfile = await app.$axios.$post(endpoints.API_GET_USER_DETAILS, {
-      userName: route.params.userName
-    })
+    const userProfile = await app.$axios.$post(
+      endpoints.API_GET_AUTHOR_DETAILS,
+      {
+        userName: route.params.userName
+      }
+    )
     return {
       story: storyDetails.result.item,
       storyUrl: `${process.env.baseUrl}${route.path}`,
@@ -143,59 +222,38 @@ export default {
     },
     randomColor() {
       return '#' + Math.floor(Math.random() * 16777215).toString(16)
-    },
-    likeStory(story) {
-      this.likeCount++
-      this.$store.dispatch('stories/like', story.storyId)
     }
   }
 }
 </script>
-<style lang="scss">
-.preloader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #000;
-  opacity: 0.8;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  overflow: hidden;
-}
-.loader {
-  height: 4rem;
-  width: 4rem;
-  border-bottom: 5px solid #66bbf8;
-  border-left: 5px solid #337fb5;
-  border-right-color: transparent;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: rotate 0.5s infinite;
-}
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
-}
-</style>
 
 <style lang="scss">
 .story-details {
   max-width: 1400px;
   margin: auto;
   padding-top: 20px;
+  @media (max-width: 767px) {
+    padding-top: 10px;
+  }
   .sticky-main {
     overflow: hidden;
     position: sticky;
     top: 100px;
     text-align: center;
+    .action-btns {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .likedStory {
+      &:hover {
+        background: #deedf8;
+      }
+      .v-icon {
+        color: #42a5f5;
+      }
+    }
   }
   .content-layout {
     background: #fff;
@@ -213,7 +271,7 @@ export default {
       object-fit: cover;
     }
     @media (max-width: 768px) {
-      padding: 15px;
+      padding: 15px 15px 0px 15px;
       max-height: 200px;
       height: 200px;
     }
@@ -250,6 +308,7 @@ export default {
       margin: auto;
       @media (max-width: 768px) {
         max-width: 100%;
+        padding-top: 0;
       }
       .user-profile {
         text-decoration: none;
@@ -270,12 +329,18 @@ export default {
         margin: 10px 0;
         .details-flex {
           display: flex;
+          position: relative;
           .profile-img {
             border-top: 1px solid #337fb5;
             border-bottom: 1px solid #337fb5;
             img {
               padding: 5px;
             }
+          }
+          .reading {
+            position: absolute;
+            right: 0;
+            top: 5px;
           }
         }
         .avatar-name {
@@ -291,15 +356,36 @@ export default {
       .date {
         font-size: 12px;
         color: #b1b1b1;
+        display: flex;
+        align-items: center;
+        .dot-icon {
+          padding: 0 10px;
+          color: #b1b1b1;
+        }
+        .ago-time {
+          padding-right: 5px;
+        }
+      }
+    }
+    .summary {
+      p {
+        margin: 10px 0;
+        line-height: 1.5;
+        padding: 0;
+        font-size: 18px;
+        opacity: 0.6;
+        letter-spacing: 0.5px;
       }
     }
     .chip-container {
-      padding: 5px;
+      padding: 5px 0;
+      border-bottom: 1px solid #f2f2f2;
+      padding-bottom: 20px;
       .chip {
         border-radius: 4px;
         padding: 5px;
-        background: #2e2e2e;
-        color: #f2f2f2;
+        background: #f2f2f2;
+        color: #2e2e2e;
         margin-right: 5px;
         font-size: 14px;
         @media (max-width: 768px) {
@@ -310,9 +396,14 @@ export default {
           cursor: pointer;
         }
       }
+      .read-time {
+        float: right;
+        font-size: 12px;
+        color: #b1b1b1;
+      }
     }
     .story-content {
-      font-size: 16px;
+      font-size: 18px;
       max-width: 90%;
       margin: auto;
       padding-bottom: 20px;
@@ -320,6 +411,26 @@ export default {
         max-width: 100%;
       }
       line-height: 2;
+    }
+    .footer-share {
+      max-width: 90%;
+      margin: auto;
+      box-sizing: border-box;
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      .links-main {
+        i {
+          color: #3d3d3d;
+          &:hover {
+            color: #1d1d1d;
+          }
+        }
+      }
+    }
+    .footer-author {
+      border-top: 1px solid #f2f2f2;
     }
   }
 }

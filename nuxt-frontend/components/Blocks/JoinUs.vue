@@ -5,11 +5,11 @@
         <v-subheader>Join Paperwiff</v-subheader>
       </div>
       <div class="social-btn">
-        <v-btn outline round @click="authenticate('twitter')">
+        <v-btn outline round @click="twitter()">
           Sign in with Twitter
           <img src="https://img.icons8.com/color/25/000000/twitter.png" />
         </v-btn>
-        <v-btn outline round @click="authenticate('google')">
+        <v-btn outline round @click="google()">
           Sign in with Google
           <img
             class="icon-img"
@@ -23,34 +23,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { Login } from '@/mixins/Login'
 export default {
   name: 'JoinUs',
+  mixins: [Login],
   computed: {
     ...mapGetters({
       isSignedIn: 'user/isSignedIn'
     })
-  },
-  methods: {
-    authenticate: function(provider) {
-      this.$auth.authenticate(provider).then(authResponse => {
-        if (authResponse) {
-          this.$store.dispatch('user/loginUser', authResponse.data)
-          this.$store.dispatch('notification/success', {
-            title: 'Logged In',
-            message: 'Successfully logged in to paperwiff'
-          })
-          if (authResponse.data.newUser) {
-            this.$router.push('/profile')
-          }
-        } else {
-          this.$store.dispatch('notification/error', {
-            title: 'Failed',
-            message: 'Something went wrong, please try again'
-          })
-        }
-      })
-    }
   }
 }
 </script>

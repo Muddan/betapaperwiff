@@ -65,6 +65,22 @@
           <span>Write</span>
         </v-btn>
       </router-link>
+      <div class="text-xs-center">
+        <v-menu left bottom offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn flat icon color="#337fb5" v-on="on">
+              <v-icon>
+                notifications
+              </v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-tile>
+              <v-subheader>No notifications</v-subheader>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </div>
       <v-menu left bottom offset-y transition="slide-y-reverse-transition">
         <template v-slot:activator="{ on }">
           <v-btn class="hidden-md-and-down" flat icon color="#337fb5" v-on="on">
@@ -142,7 +158,7 @@ export default {
   methods: {
     signOut() {
       this.$store.dispatch('notification/success', {
-        title: 'Logged Out!',
+        title: '',
         message: 'Successfully logged out.'
       })
       this.$store.dispatch('user/logoutUser')

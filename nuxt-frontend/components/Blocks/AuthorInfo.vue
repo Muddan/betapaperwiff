@@ -23,9 +23,7 @@
             </div>
           </div>
         </v-flex>
-        <v-flex>
-          <!-- <v-btn outline color="indigo">Follow</v-btn> -->
-        </v-flex>
+        <v-flex class="follow-flex"> <slot /> </v-flex>
       </v-layout>
     </v-container>
   </div>
@@ -48,7 +46,6 @@ export default {
   box-sizing: border-box;
   padding: 10px;
   margin: 0 0 30px 0;
-  border-top: 1px solid #2e2e2e;
   width: 80%;
   margin: auto;
   @media (max-width: 768px) {
@@ -77,6 +74,11 @@ export default {
         cursor: pointer;
       }
     }
+  }
+  .follow-flex {
+    justify-content: center;
+    align-items: center;
+    display: flex;
   }
 }
 </style>
