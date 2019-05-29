@@ -14,55 +14,64 @@
         <v-card
           v-for="(story, index) in stories"
           :key="index"
+          v-ripple="{ class: `blue-grey--text` }"
           flat
-          ripple
           class="story-items-main"
-          :to="{
-            path: '/a/' + story.userName + '/' + story.storyId
-          }"
         >
           <div class="story-items-content">
-            <div class="item-subheader">
-              <div class="flex items-left">
-                <v-avatar class="avatar-main" size="50px">
-                  <img :src="story.userImage" />
-                </v-avatar>
-                <v-subheader class="username-header">
-                  <nuxt-link
-                    class="story-title"
-                    :to="{
-                      path: '/a/' + story.userName
-                    }"
-                  >
-                    <span class="username">
-                      {{ story.firstName }}
-                    </span>
-                  </nuxt-link>
+            <div class="item-header">
+              <div class="item-subheader">
+                <div class="flex items-left">
+                  <v-avatar class="avatar-main" size="50px">
+                    <img :src="story.userImage" />
+                  </v-avatar>
+                  <v-subheader class="username-header">
+                    <nuxt-link
+                      class="user-link"
+                      :to="{
+                        path: '/a/' + story.userName
+                      }"
+                    >
+                      <span class="username">
+                        {{ story.firstName }}
+                      </span>
+                    </nuxt-link>
 
-                  <span class="published-date">
-                    <span class="full-date">
-                      {{
-                        new Date(story.datePublished).toLocaleString('en-us', {
-                          month: 'long',
-                          day: 'numeric'
-                        })
-                      }}
+                    <span class="published-date">
+                      <span class="full-date">
+                        {{
+                          new Date(story.datePublished).toLocaleString(
+                            'en-us',
+                            {
+                              month: 'long',
+                              day: 'numeric'
+                            }
+                          )
+                        }}
+                      </span>
+                      <span>&#9733;</span>
+                      <span class="relative-date">
+                        {{ getPublishedDate(story.datePublished) }}
+                        <span>ago</span>
+                      </span>
                     </span>
-                    <span>&#9733;</span>
-                    <span class="relative-date">
-                      {{ getPublishedDate(story.datePublished) }}
-                      <span>ago</span>
-                    </span>
-                  </span>
-                </v-subheader>
-                <div class="save-later">
-                  <v-btn flat icon color="grey darken-5">
-                    <v-icon>bookmark_border</v-icon>
-                  </v-btn>
+                  </v-subheader>
+                  <div class="save-later">
+                    <v-btn
+                      flat
+                      icon
+                      color="grey darken-5"
+                      @click="saveStory(story.storyId)"
+                    >
+                      <v-icon>{{
+                        savedStory(story.storyId)
+                          ? 'bookmarks'
+                          : 'bookmark_border'
+                      }}</v-icon>
+                    </v-btn>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="item-header">
               <div class="chip-container">
                 <nuxt-link
                   v-for="(tag, tagIndex) in story.tags"
@@ -74,9 +83,16 @@
                   <span class="chip"> #{{ tag }}</span>
                 </nuxt-link>
               </div>
-              <div v-if="story.headerImage" class="post-header">
-                <img class="header-img" :src="story.headerImage" />
-              </div>
+              <nuxt-link
+                :to="{
+                  path: '/a/' + story.userName + '/' + story.storyId
+                }"
+              >
+                <div v-if="story.headerImage" class="post-header">
+                  <img class="header-img" :src="story.headerImage" />
+                </div>
+              </nuxt-link>
+
               <nuxt-link
                 class="story-title"
                 :to="{
@@ -87,15 +103,7 @@
                   {{ story.storyTitle }}
                 </h3>
               </nuxt-link>
-              <p
-                class="story-desc"
-                v-html="
-                  story.content
-                    .split(' ')
-                    .splice(0, 20)
-                    .join(' ')
-                "
-              ></p>
+              <p class="story-desc" v-html="story.summary"></p>
             </div>
             <div class="item-footer">
               <div class="actions-main">
@@ -110,7 +118,13 @@
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
                         <div class="label">
-                          <v-btn small flat icon color="pink" v-on="on">
+                          <v-btn
+                            small
+                            flat
+                            icon
+                            color="grey darken-5"
+                            v-on="on"
+                          >
                             <v-icon small>favorite</v-icon>
                           </v-btn>
                           <span class="value">{{ story.likes }}</span>
@@ -142,13 +156,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import StoryTags from '@/components/Blocks/StoryTags.vue'
 import { getDate } from '@/helpers/dateHelper.js'
+import { SocialFeatures } from '@/mixins/SocialFeatures.js'
 export default {
   name: 'StoryItems',
-  components: {
-    // StoryTags
-  },
+  mixins: [SocialFeatures],
   props: {
     stories: {
       type: Array,
@@ -165,7 +177,10 @@ export default {
     ...mapGetters({
       filteredStories: 'stories/filteredStories',
       allStories: 'stories/allStories',
-      isSignedIn: 'user/isSignedIn'
+      isSignedIn: 'user/isSignedIn',
+      likedStories: 'user/likedStories',
+      followingAuthors: 'user/followingAuthors',
+      savedStories: 'user/savedStories'
     }),
     getCurrentUserFeed() {
       if (this.filteredStories.length > 0) {
@@ -175,9 +190,17 @@ export default {
       }
     }
   },
+
   methods: {
     getPublishedDate(date) {
       return getDate(new Date(date))
+    },
+    savedStory(storyId) {
+      if (this.isSignedIn) {
+        return this.savedStories.includes(storyId)
+      } else {
+        return false
+      }
     }
   }
 }
@@ -272,45 +295,43 @@ a {
         }
       }
     }
-  }
-
-  .item-subheader {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 5px 0;
-    .items-left {
+    .item-subheader {
       display: flex;
       align-items: center;
-      position: relative;
-      .save-later {
-        position: absolute;
-        right: 0;
+      flex-wrap: wrap;
+      padding: 5px 0;
+      .items-left {
+        display: flex;
+        align-items: center;
+        position: relative;
+        .save-later {
+          position: absolute;
+          right: 0;
+        }
       }
-    }
-    .avatar-main {
-      border-top: 1px solid #337fb5;
-      border-bottom: 1px solid #337fb5;
-      img {
-        padding: 5px;
+      .avatar-main {
+        border-top: 1px solid #337fb5;
+        border-bottom: 1px solid #337fb5;
+        img {
+          padding: 5px;
+        }
       }
-    }
-    .avatar-name {
-      text-transform: uppercase;
-    }
-    .username-header {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 0 10px;
-      a {
-        text-decoration: none;
-        color: #2e2e2e;
-        width: 100%;
+      .avatar-name {
+        text-transform: uppercase;
       }
-      .username {
-        font-weight: bold;
-        padding-left: 5px;
+      .username-header {
+        display: inline-block;
+        padding: 0 10px;
+        .user-link {
+          text-decoration: none;
+          display: inherit;
+          color: #2e2e2e;
+          width: 100%;
+        }
+        .username {
+          font-weight: bold;
+          padding-left: 5px;
+        }
       }
     }
   }

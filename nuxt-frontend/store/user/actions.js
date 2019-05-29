@@ -1,33 +1,41 @@
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import Vue from 'vue'
+import firebase from 'firebase'
 import { endpoints } from '../../api/endpoints'
 import * as types from './mutation-types'
+import 'firebase/auth'
 
 const actions = {
-  async sessionStart(context, payload) {
-    if (localStorage.getItem('paperwiff/user')) {
-      const userDetails = JSON.parse(
-        localStorage.getItem('paperwiff/user') || '{}'
-      )
-      const tokens = {
-        access_token: userDetails.access_token,
-        refresh_token: userDetails.refresh_token
+  sessionStart(context, payload) {
+    firebase.auth().onAuthStateChanged(async function(user) {
+      if (user) {
+        const currentUser = firebase.auth().currentUser
+        context.commit(types.SET_SIGNED_STATE, true)
+
+        const accessKeys = localStorage.getItem('paperwiff/user') || {}
+        context.commit(types.SET_ACCESS_TOKENS, JSON.parse(accessKeys))
+
+        await context.dispatch('getUserDetails', currentUser.uid)
+        await context.dispatch('stories/userFeed', currentUser.uid, {
+          root: true
+        })
+        await context.dispatch('stories/getStoryTags', null, { root: true })
       }
-      context.commit(types.SET_SIGNED_STATE, true)
-      context.commit(types.SET_ACCESS_TOKENS, tokens)
-      await context.dispatch('getUserDetails', userDetails.userName)
-      await context.dispatch('stories/userFeed', userDetails.userId, {
-        root: true
-      })
-      await context.dispatch(
-        'stories/updateAvailableTags',
-        userDetails.followingTags,
-        { root: true }
-      )
-    }
+    })
   },
-  loginUser(context, payload) {
+
+  authenticate(context, payload) {
+    this.$axios
+      .$post(endpoints.API_USER_AUTH, {
+        id_token: payload
+      })
+      .then(res => {
+        context.dispatch('loginUser', res)
+      })
+  },
+
+  async loginUser(context, payload) {
     const tokens = {
       access_token: payload.access_token,
       refresh_token: payload.refresh_token
@@ -36,30 +44,39 @@ const actions = {
       'paperwiff/user',
       JSON.stringify({
         access_token: payload.access_token,
-        refresh_token: payload.refresh_token,
-        userName: payload.userDetails.userName,
-        userId: payload.userDetails.userId,
-        followingTags: payload.userDetails.followingTags
+        refresh_token: payload.refresh_token
       })
     )
     context.commit(types.SET_ACCESS_TOKENS, tokens)
-    context.commit(types.SET_SIGNED_STATE, true)
-    context.commit(types.SET_CURRENT_USER, payload.userDetails)
+    await context.commit(types.SET_SIGNED_STATE, true)
+    await context.commit(types.SET_CURRENT_USER, payload.userDetails)
     context.dispatch(
-      'stories/userFeed',
-      context.rootState.user.current.userId,
+      'notification/success',
+      {
+        title: 'Logged In',
+        message: 'Welcome to paperwiff'
+      },
       { root: true }
     )
-    context.dispatch(
-      'stories/updateAvailableTags',
-      context.rootState.user.current.followingTags,
-      { root: true }
-    )
+    if (context.rootState.user.current.userId) {
+      context.dispatch(
+        'stories/userFeed',
+        context.rootState.user.current.userId,
+        { root: true }
+      )
+    }
   },
   setTokens(context, payload) {
     context.commit(types.SET_ACCESS_TOKENS, payload)
   },
+
   logoutUser(context, payload) {
+    firebase
+      .auth()
+      .signOut()
+      .then(function() {
+        console.log('FIREBASE SIGNOUT')
+      })
     const tokens = {
       access_token: '',
       refresh_token: ''
@@ -75,7 +92,10 @@ const actions = {
       method: 'POST',
       url: endpoints.API_GET_USER_DETAILS,
       data: {
-        userName: payload
+        userId: payload
+      },
+      headers: {
+        Authorization: 'Bearer ' + context.rootState.user.access_token
       }
     }).then(res => {
       if (res.status === 200) {
@@ -86,7 +106,11 @@ const actions = {
   updateUserDetails(context, payload) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .$post(endpoints.API_USER_UPDATE, payload)
+        .$post(endpoints.API_USER_UPDATE, payload, {
+          headers: {
+            Authorization: 'Bearer ' + context.rootState.user.access_token
+          }
+        })
         .then(res => {
           if (res.status === 200) {
             // context.dispatch('getUserDetails', payload.userName)
@@ -97,6 +121,72 @@ const actions = {
         .catch(e => {
           resolve(false)
         })
+    })
+  },
+  followAuthor(context, payload) {
+    this.$axios(
+      {
+        method: 'POST',
+        url: endpoints.API_FOLLOW_AUTHOR,
+        data: {
+          userId: context.rootState.user.current.userId,
+          authorId: payload
+        }
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + context.rootState.user.access_token
+        }
+      }
+    ).then(async res => {
+      if (res.status === 200) {
+        await context.dispatch(
+          'getUserDetails',
+          context.rootState.user.current.userId
+        )
+
+        context.dispatch(
+          'notification/success',
+          {
+            title: '',
+            message: res.data.result.msg
+          },
+          { root: true }
+        )
+      }
+    })
+  },
+  saveLater(context, payload) {
+    this.$axios(
+      {
+        method: 'POST',
+        url: endpoints.API_STORY_SAVE,
+        data: {
+          userId: context.rootState.user.current.userId,
+          storyId: payload
+        }
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + context.rootState.user.access_token
+        }
+      }
+    ).then(async res => {
+      if (res.status === 200) {
+        await context.dispatch(
+          'getUserDetails',
+          context.rootState.user.current.userId
+        )
+
+        context.dispatch(
+          'notification/success',
+          {
+            title: '',
+            message: res.data.result.msg
+          },
+          { root: true }
+        )
+      }
     })
   }
 }

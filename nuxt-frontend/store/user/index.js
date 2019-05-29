@@ -12,7 +12,7 @@ export const state = () => ({
     userName: '',
     email: '',
     followingTags: [],
-    followingAuthors: null,
+    followingAuthors: [],
     joined: '',
     about: '',
     userImage: '',
@@ -22,7 +22,8 @@ export const state = () => ({
     location: '',
     skills: '',
     languages: [],
-    availableFor: ''
+    availableFor: '',
+    saveForLater: []
   },
   session_started: new Date().toLocaleString()
 })

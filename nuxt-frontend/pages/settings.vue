@@ -182,6 +182,7 @@ export default {
   components: {
     ImageInput
   },
+  middleware: 'auth',
   data() {
     return {
       user: {

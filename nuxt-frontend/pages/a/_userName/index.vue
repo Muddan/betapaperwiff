@@ -27,16 +27,25 @@
           </v-flex>
         </v-layout>
         <v-layout class="joined-details">
-          <v-flex xs12>
+          <v-flex xs4>
             <h3 class="label">Joined</h3>
             <p class="value">
               {{ getDate(userProfile.joined) }}
             </p>
           </v-flex>
+          <v-flex row xs4>
+            <h3 class="label">Stories published</h3>
+            <p class="value">
+              {{ userProfile.userArticles.length }}
+            </p>
+          </v-flex>
         </v-layout>
       </div>
+      <v-tabs fixed-tabs>
+        <v-tab>  </v-tab>
+      </v-tabs>
       <v-layout>
-        <v-flex xs3 class="hidden-sm-and-down">
+        <v-flex xs3 md3 class="hidden-sm-and-down">
           <v-flex class="sidebar-section sidebar-left ">
             <key-links></key-links>
           </v-flex>
@@ -71,9 +80,17 @@ export default {
     }
   },
   async asyncData({ app, route, store, env, error }) {
-    const userProfile = await app.$axios.$post(endpoints.API_GET_USER_DETAILS, {
-      userName: route.params.userName
-    })
+    let userProfile = ''
+    if (store.state.user.isSignedIn) {
+      userProfile = await app.$axios.$post(endpoints.API_GET_USER_DETAILS, {
+        userId: store.state.user.current.userId
+      })
+    } else {
+      userProfile = await app.$axios.$post(endpoints.API_GET_AUTHOR_DETAILS, {
+        userName: route.params.userName
+      })
+    }
+
     const userStories = await app.$axios({
       method: 'GET',
       url: `${endpoints.API_GET_STORIES}?userName=${route.params.userName}`

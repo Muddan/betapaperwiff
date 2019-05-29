@@ -9,8 +9,11 @@
               path: '/a/' + currentUser.userName
             }"
           >
-            <v-avatar>
-              <img :src="currentUser.userImage" alt="John" />
+            <v-avatar v-show="currentUser.userImage">
+              <img :src="currentUser.userImage" />
+            </v-avatar>
+            <v-avatar v-show="!currentUser.userImage" color="grey">
+              <span class="white--text ">{{ currentUser.firstName[0] }}</span>
             </v-avatar>
           </nuxt-link>
         </v-list-tile-avatar>
@@ -32,8 +35,8 @@
           </nuxt-link>
         </v-list-tile-content>
       </v-list-tile>
-      <div v-show="!imageOnly">
-        <div v-if="userTags.length > 0" class="following-tags-main">
+      <div v-show="!imageOnly && onlyMobile">
+        <div v-if="userTags && userTags.length > 0" class="following-tags-main">
           <v-subheader class="tag-header">Your tags</v-subheader>
           <StoryTags :story-tags="userTags"></StoryTags>
         </div>
@@ -42,6 +45,7 @@
         >
       </div>
 
+      <div class="user-info-footer"></div>
       <v-btn
         v-if="isSignedIn"
         small
@@ -67,6 +71,10 @@ export default {
     imageOnly: {
       type: Boolean,
       default: true
+    },
+    onlyMobile: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -140,5 +148,9 @@ export default {
       font-size: 12px;
     }
   }
+}
+.user-info-footer {
+  border-top: 1px solid #f2f2f2;
+  margin-top: 10px;
 }
 </style>

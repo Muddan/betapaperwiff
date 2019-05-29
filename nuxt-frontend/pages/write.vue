@@ -14,15 +14,16 @@
           <image-input v-model="storyForm.headerImage" class="header-img-main">
             <div slot="activator">
               <v-container
-                v-if="!storyForm.headerImage"
+                v-if="!storyForm.headerImage.imageURL"
                 v-ripple
-                class="bg-holder"
-                color="grey lighten-3"
                 height="300px"
+                class="placeholder"
               >
-                <strong>
-                  <span>Add banner for your post.</span>
-                </strong>
+                <v-img
+                  height="300px"
+                  src="~assets/images/placeholder-image.png"
+                  alt=""
+                />
               </v-container>
               <v-container v-else v-ripple class="bg-holder">
                 <v-img
@@ -42,6 +43,14 @@
             solo
           ></v-text-field>
         </v-flex>
+        <v-flex xs12 sm12>
+          <v-textarea
+            v-model="storyForm.summary"
+            solo
+            name="input-7-4"
+            label="Summary"
+          ></v-textarea>
+        </v-flex>
 
         <!-- <v-flex xs12 sm6>
           <v-select
@@ -52,7 +61,10 @@
             @change="setLanguage"
           ></v-select>
         </v-flex>-->
-        <v-flex class="white" xs12 sm12 wrap>
+        <v-flex xs12 sm12 wrap>
+          <v-subheader>
+            Start your story
+          </v-subheader>
           <section class="editor-content">
             <div
               v-quill:myQuillEditor="editorOption"
@@ -118,18 +130,19 @@ export default {
   components: {
     ImageInput
   },
-
+  middleware: 'auth',
   data() {
     return {
       file: '',
       saved: false,
       storyForm: {
         headerImage: {
-          imageURL: '',
+          imageURL: null,
           imageFile: null
         },
         title: '',
         content: '',
+        summary: '',
         translatedContent: '',
         selectedLanguage: 'english',
         selectedTags: []
@@ -227,11 +240,24 @@ export default {
           storyTitle: this.storyForm.title,
           userId: this.currentUser.userId,
           content: this.storyForm.content,
+          summary: this.storyForm.summary,
           tags: this.storyForm.selectedTags,
           headerImage: this.storyForm.headerImage.imageFile,
           datePublished: new Date(),
           language: this.storyForm.selectedLanguage
         })
+        this.storyForm = {
+          headerImage: {
+            imageURL: null,
+            imageFile: null
+          },
+          title: '',
+          content: '',
+          summary: '',
+          translatedContent: '',
+          selectedLanguage: 'english',
+          selectedTags: []
+        }
       }
     },
     limiter(e) {
@@ -253,6 +279,7 @@ $logosection-color: #043344;
   margin: auto;
 }
 .editor-content {
+  background: #fff;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
     0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   .quill-editor {
@@ -283,14 +310,21 @@ $logosection-color: #043344;
 .form-section {
   .header-img-main {
     margin: 20px 0;
-    background: #f2f2f2;
+    background: #f1f2f4;
+    .placeholder {
+      text-align: center;
+      background: url('~assets/images/placeholder-image.png');
+      background-size: 32%;
+      background-origin: padding-box;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
     .bg-holder {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 300px;
       width: 100%;
-      background: #f2f2f2;
       padding: 0;
       overflow: hidden;
       h3 {

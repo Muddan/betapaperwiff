@@ -1,63 +1,46 @@
 <template>
   <div class="tags-main">
-    <v-layout row justify-center>
-      <v-dialog v-model="dialog" persistent max-width="290">
-        <v-card>
-          <v-card-text>
-            <join-us></join-us>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat @click="dialog = false"
-              >Ok</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-layout>
     <h3 class="tag-header">Design your experience</h3>
-    <div class="chip-content">
-      <v-list>
-        <v-list-tile v-for="(tag, index) in storyTagsAvailable" :key="index">
-          <v-chip color="transparent" label text-color="white">
-            <nuxt-link
-              :to="{
-                path: '/tags/' + tag.name
-              }"
+    <no-ssr>
+      <div class="chip-content">
+        <v-list>
+          <v-list-tile v-for="(tag, index) in storyTagsAvailable" :key="index">
+            <v-chip color="transparent" label text-color="white">
+              <nuxt-link
+                :to="{
+                  path: '/tags/' + tag.name
+                }"
+              >
+                <span class="tagname"> # {{ tag.name }} </span>
+              </nuxt-link>
+              <!-- <v-icon right color="#f45b69">check_circle</v-icon> -->
+            </v-chip>
+            <v-chip
+              small
+              label
+              color="#ffeaec"
+              text-color="#2e2e2e"
+              @click.stop="chipHandler(tag)"
             >
-              <span class="tagname"> # {{ tag.name }} </span>
-            </nuxt-link>
-            <!-- <v-icon right color="#f45b69">check_circle</v-icon> -->
-          </v-chip>
-          <v-chip
-            small
-            label
-            color="#ffeaec"
-            text-color="#2e2e2e"
-            @click.stop="chipHandler(tag)"
-          >
-            <v-avatar>
-              <v-icon right color="#f45b69">{{
-                !tag.status ? 'add' : 'check'
-              }}</v-icon> </v-avatar
-            >{{ !tag.status ? 'Follow' : 'Following' }}
-          </v-chip>
-        </v-list-tile>
-      </v-list>
-    </div>
+              <v-avatar>
+                <v-icon right color="#f45b69">{{
+                  !followedTags(tag.name) ? 'add' : 'check'
+                }}</v-icon>
+              </v-avatar>
+              {{ !followedTags(tag.name) ? 'Follow' : 'Following' }}
+            </v-chip>
+          </v-list-tile>
+        </v-list>
+      </div>
+    </no-ssr>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import JoinUs from '@/components/Blocks/JoinUs.vue'
 export default {
   name: 'TagListing',
-  components: {
-    JoinUs
-  },
   data() {
     return {
-      dialog: false,
       added: false,
       hover: false
     }
@@ -66,14 +49,25 @@ export default {
   computed: {
     ...mapGetters({
       storyTagsAvailable: 'stories/availableTags',
-      isSignedIn: 'user/isSignedIn'
+      isSignedIn: 'user/isSignedIn',
+      followingTags: 'user/followingTags'
     })
   },
   methods: {
+    followedTags(tag) {
+      if (this.isSignedIn) {
+        return this.followingTags.includes(tag)
+      } else {
+        return false
+      }
+    },
     chipHandler(tag) {
       this.added = !this.added
       if (!this.isSignedIn) {
-        this.dialog = true
+        this.$store.commit('ui/SET_SHOW_POPUP', {
+          status: true,
+          component: 'SignUp'
+        })
       } else {
         this.$store.dispatch('stories/addToFollowingFilters', tag)
       }
@@ -87,7 +81,6 @@ export default {
   background: #fff;
   box-sizing: border-box;
   padding: 10px;
-  margin-top: 25px;
   border-radius: 8px;
   // border: 1px solid #ffb3b9;
   border-bottom: 4px solid #ffb3b9;
@@ -105,9 +98,10 @@ export default {
     cursor: pointer;
   }
   .chip-content {
-    max-height: 400px;
+    height: 400px;
     overflow-y: scroll;
     overflow-x: hidden;
+    transition: all 0.5s ease-in-out;
     a {
       color: #2e2e2e;
       text-decoration: none;

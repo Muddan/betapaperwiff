@@ -4,8 +4,8 @@ import pkg from './package'
 export default {
   mode: 'universal',
   server: {
-    host: 'ec2-52-221-226-186.ap-southeast-1.compute.amazonaws.com',
-    port: 80
+    host: '127.0.0.1',
+    port: 3000
   },
   /*
    ** Headers of the page
@@ -56,7 +56,7 @@ export default {
     '~/plugins/axios',
     { src: '~plugins/nuxtQuill.js', ssr: false },
     { src: '~plugins/cloudinary', ssr: false },
-    { src: '~plugins/firebase', ssr: false }
+    { src: '~plugins/firebase', ssr: true }
   ],
 
   /*
@@ -79,7 +79,8 @@ export default {
   izitoast: {
     position: 'topRight',
     transitionIn: 'bounceInLeft',
-    transitionOut: 'fadeOutRight'
+    transitionOut: 'fadeOutRight',
+    class: 'izi-notification'
   },
 
   /*

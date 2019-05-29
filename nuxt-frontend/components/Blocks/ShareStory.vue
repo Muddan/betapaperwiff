@@ -48,10 +48,15 @@ export default {
       box-sizing: border-box;
       padding: 10px;
       margin-bottom: 5px;
-
+      text-align: left;
+      margin-left: 7px;
       cursor: pointer;
       i {
         font-size: 24px;
+        color: #3d3d3d;
+        &:hover {
+          color: #1d1d1d;
+        }
       }
     }
   }

@@ -4,6 +4,7 @@ import mutation from './mutations'
 export const state = () => ({
   availableTags: [],
   allStories: [],
+  totalStories: 0,
   filteredStories: [],
   currentStory: null
 })
