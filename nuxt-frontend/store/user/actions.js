@@ -124,21 +124,17 @@ const actions = {
     })
   },
   followAuthor(context, payload) {
-    this.$axios(
-      {
-        method: 'POST',
-        url: endpoints.API_FOLLOW_AUTHOR,
-        data: {
-          userId: context.rootState.user.current.userId,
-          authorId: payload
-        }
+    this.$axios({
+      method: 'POST',
+      url: endpoints.API_FOLLOW_AUTHOR,
+      data: {
+        userId: context.rootState.user.current.userId,
+        authorId: payload
       },
-      {
-        headers: {
-          Authorization: 'Bearer ' + context.rootState.user.access_token
-        }
+      headers: {
+        Authorization: 'Bearer ' + context.rootState.user.access_token
       }
-    ).then(async res => {
+    }).then(async res => {
       if (res.status === 200) {
         await context.dispatch(
           'getUserDetails',
@@ -157,21 +153,17 @@ const actions = {
     })
   },
   saveLater(context, payload) {
-    this.$axios(
-      {
-        method: 'POST',
-        url: endpoints.API_STORY_SAVE,
-        data: {
-          userId: context.rootState.user.current.userId,
-          storyId: payload
-        }
+    this.$axios({
+      method: 'POST',
+      url: endpoints.API_STORY_SAVE,
+      data: {
+        userId: context.rootState.user.current.userId,
+        storyId: payload
       },
-      {
-        headers: {
-          Authorization: 'Bearer ' + context.rootState.user.access_token
-        }
+      headers: {
+        Authorization: 'Bearer ' + context.rootState.user.access_token
       }
-    ).then(async res => {
+    }).then(async res => {
       if (res.status === 200) {
         await context.dispatch(
           'getUserDetails',
@@ -191,3 +183,4 @@ const actions = {
   }
 }
 export default actions
+

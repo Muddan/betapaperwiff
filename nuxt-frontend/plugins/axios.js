@@ -13,7 +13,7 @@ export default function({ $axios, redirect, store }) {
         originalRequest._retry = true // now it can be retried
 
         return $axios
-          .$post('http://localhost:5000/api/auth/refresh', null, {
+          .$post('localhost:5000/api/auth/refresh', null, {
             headers: {
               Authorization: 'Bearer ' + store.state.user.refresh_token
             }

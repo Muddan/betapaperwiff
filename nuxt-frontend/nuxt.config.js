@@ -4,7 +4,7 @@ import pkg from './package'
 export default {
   mode: 'universal',
   server: {
-    host: '127.0.0.1',
+    host: '172.31.24.211',
     port: 3000
   },
   /*
@@ -52,7 +52,6 @@ export default {
    */
   plugins: [
     '@/plugins/vuetify',
-    { src: '~/plugins/authenticate', ssr: false },
     '~/plugins/axios',
     { src: '~plugins/nuxtQuill.js', ssr: false },
     { src: '~plugins/cloudinary', ssr: false },
@@ -65,7 +64,6 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa',
     '@nuxtjs/toast',
     'nuxt-izitoast'
   ],
