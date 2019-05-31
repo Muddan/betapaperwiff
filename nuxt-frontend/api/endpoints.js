@@ -29,6 +29,7 @@ export const endpoints = {
   API_GET_TAGS: `${BASE_URL}/api/story/alltags`,
   API_GET_STORY_DETAILS: `${BASE_URL}/api/story/details`,
   API_TRANSTLATE: `${BASE_URL}/api/story/translate`,
+  API_GET_TAG_STORIES: `${BASE_URL}/api/story/tag/stories`,
 
   // Misc Apis
   IMAGE_UPLOAD: `https://api.cloudinary.com/v1_1/${

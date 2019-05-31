@@ -5,7 +5,22 @@
         <div class="tagDetails">
           <div class="tagname-section">
             <header>
+              <p class="label">Stories in</p>
               <h3 class="main-title">{{ tagName }}</h3>
+              <div class="follow-tag-wrapper">
+                <v-btn
+                  small
+                  round
+                  outline
+                  color="#337fb5"
+                  @click.stop="followTag()"
+                  >{{ !followedTags ? 'Follow' : 'Following' }}</v-btn
+                >
+              </div>
+              <!-- <div class="tag-stats">
+                <span class="stat-value">{{ stories.length }} </span>
+                <span class="stat-label">posts</span>
+              </div> -->
             </header>
           </div>
           <div class="main-content">
@@ -15,12 +30,13 @@
                 md3
                 xs12
               >
-                <key-links></key-links>
+                <h3 class="available-tags">Available tags</h3>
+                <TagListNormal></TagListNormal>
               </v-flex>
-              <v-flex class="content-section" md9 xs12>
+              <v-flex class="content-section" md6 xs12>
                 <story-items
-                  v-if="getTagStories().length > 0"
-                  :stories="getTagStories()"
+                  v-if="stories.length > 0"
+                  :stories="stories"
                 ></story-items>
                 <div v-else class="nopost">
                   <h3 class="text">
@@ -52,33 +68,71 @@
 <script>
 import { mapGetters } from 'vuex'
 import StoryItems from '@/components/Blocks/StoryItems.vue'
-import KeyLinks from '@/components/Blocks/KeyLinks.vue'
+import TagListNormal from '@/components/Blocks/TagListing/TagListNormal.vue'
+import { endpoints } from '@/api/endpoints.js'
 
 export default {
+  head() {
+    return {
+      title: 'Paperwiff | Tags'
+    }
+  },
   components: {
     StoryItems,
-    KeyLinks
+    TagListNormal
+  },
+  data() {
+    return {
+      followed: false,
+      tagName: ''
+    }
   },
   computed: {
     ...mapGetters({
       availableTagNames: 'stories/availableTags',
-      allStories: 'stories/allStories'
+      isSignedIn: 'user/isSignedIn',
+      allStories: 'stories/allStories',
+      followingTags: 'user/followingTags'
     }),
-    tagName() {
-      return this.$route.params.tagName
-    },
     tagExits() {
       const currentTagName = this.$route.params.tagName
       return this.availableTagNames.map(tag => {
         return tag.name === currentTagName
       })
+    },
+    followedTags() {
+      if (this.isSignedIn) {
+        return this.followingTags.includes(this.$route.params.tagName)
+      } else {
+        return false
+      }
     }
   },
+  async asyncData({ app, store, route }) {
+    const allStories = await app.$axios.$get(
+      `${endpoints.API_GET_TAG_STORIES}?tag=${route.params.tagName}`
+    )
+    return {
+      stories: allStories.result.items,
+      tagName: route.params.tagName
+    }
+  },
+  mounted() {
+    this.followed = this.followedTags
+  },
   methods: {
-    getTagStories() {
-      return this.allStories.filter(story => {
-        return story.tags.includes(this.$route.params.tagName)
-      })
+    followTag() {
+      if (!this.isSignedIn) {
+        this.$store.commit('ui/SET_SHOW_POPUP', {
+          status: true,
+          component: 'SignUp'
+        })
+      } else {
+        this.snackbar = true
+        this.$store.dispatch('stories/addToFollowingFilters', {
+          name: this.tagName
+        })
+      }
     }
   }
 }
@@ -90,18 +144,25 @@ $logosection-color: #043344;
   max-width: 1400px;
   margin: auto;
   .tagname-section {
-    margin: 20px 0;
-    padding: 20px 0;
-    text-align: center;
+    margin: 20px 0 0;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: left;
     // color: #36789a;
-    color: $logosection-color;
-    overflow: hidden;
-
+    .label {
+      margin: 10px 0 0 8px;
+      text-transform: capitalize;
+      opacity: 0.5;
+    }
     .main-title {
-      font-family: 'Adamina', serif;
-      font-size: 55px;
+      margin: 10px 0 0 8px;
+      font-size: 40px;
       font-weight: bold;
-      text-transform: uppercase;
+      text-transform: capitalize;
+      line-height: normal;
+    }
+    .follow-tag-wrapper {
+      margin: 10px 0 0 0;
     }
   }
   .nf-content {
@@ -136,9 +197,15 @@ $logosection-color: #043344;
   .main-content {
     .sidebar-section {
       margin: 10px 10px 0 10px;
+      border-top: 1px solid #e3e3e3;
+
+      .available-tags {
+        padding-left: 12px;
+        margin: 20px 0;
+      }
     }
     .content-section {
-      margin: 0 10px;
+      margin: 10px 10px 0 10px;
       .nopost {
         height: 100%;
         display: flex;

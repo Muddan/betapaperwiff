@@ -67,7 +67,7 @@
 </template>
 <script>
 // Custom components
-import TagListing from '@/components/Blocks/TagListing.vue'
+import TagListing from '@/components/Blocks/TagListing/TagListing.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
 import StoryListing from '@/components/Blocks/StoryListing.vue'
 import KeyLinks from '@/components/Blocks/KeyLinks.vue'

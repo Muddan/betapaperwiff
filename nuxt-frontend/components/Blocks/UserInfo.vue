@@ -1,6 +1,6 @@
 <template>
   <v-scroll-y-transition>
-    <div v-if="isSignedIn" class="user-info">
+    <div v-if="isSignedIn && currentUser" class="user-info">
       <v-list-tile avatar class="info-header">
         <v-list-tile-avatar>
           <nuxt-link
@@ -13,13 +13,15 @@
               <img :src="currentUser.userImage" />
             </v-avatar>
             <v-avatar v-show="!currentUser.userImage" color="grey">
-              <span class="white--text ">{{ currentUser.firstName[0] }}</span>
+              <span v-if="currentUser.firstName" class="white--text ">{{
+                currentUser.firstName[0]
+              }}</span>
             </v-avatar>
           </nuxt-link>
         </v-list-tile-avatar>
 
         <v-list-tile-content>
-          <v-list-tile-title class="name"
+          <v-list-tile-title v-if="currentUser.firstName" class="name"
             >{{ currentUser.firstName }}
             {{ currentUser.lastName }}</v-list-tile-title
           >

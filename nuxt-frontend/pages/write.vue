@@ -198,8 +198,11 @@ export default {
       return this.isSigned
     },
     remove(item) {
-      this.selectedTags.splice(this.selectedTags.indexOf(item), 1)
-      this.selectedTags = [...this.selectedTags]
+      this.storyForm.selectedTags.splice(
+        this.storyForm.selectedTags.indexOf(item),
+        1
+      )
+      this.storyForm.selectedTags = [...this.storyForm.selectedTags]
     },
     onEditorChange({ quill, html, text }) {
       this.storyForm.content = html

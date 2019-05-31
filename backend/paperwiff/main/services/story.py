@@ -68,6 +68,28 @@ class StoryClass():
             "status": 200
         }
 
+    def getTagStories(self, tagName, pageNo=1):
+        if pageNo <= 0:
+            pageNo = 1
+        pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
+        if Stories.objects(__raw__={"tags": {"$in": [tagName]}}).count():
+            totalItems = Stories.objects(__raw__={"tags": {"$in": [tagName]}}).count()
+            stories = json.loads(Stories.objects(__raw__={"tags": {"$in": [tagName]}}).exclude('id', 'comments', 'copyright').order_by(
+                '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
+
+            return {
+                "pageNo": pageNo + 1,
+                "totalItems": totalItems,
+                "items": stories,
+                "status": 200
+            }
+        else:
+            return {
+                "msg": "Sorry, no articles are available",
+                "items": [],
+                "status": 200
+            }
+
     def getAllStories(self, pageNo=1):
         if pageNo <= 0:
             pageNo = 1
@@ -75,7 +97,7 @@ class StoryClass():
         if Stories.objects.count():
             totalItems = Stories.objects.count()
             stories = json.loads(Stories.objects().exclude('id', 'comments', 'copyright').order_by(
-                '-datePublished', ).skip(pageNo * 3).limit(3).to_json())
+                '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
 
             return {
                 "pageNo": pageNo + 1,

@@ -1,4 +1,10 @@
 export const SocialFeatures = {
+  data() {
+    return {
+      liked: false,
+      liking: false
+    }
+  },
   methods: {
     /**
      * @param story
@@ -12,12 +18,16 @@ export const SocialFeatures = {
         })
         return
       }
+
       if (this.likedStories.includes(storyId)) {
+        await this.$store.dispatch('stories/like', storyId)
+        this.liked = false
         this.likeCount--
       } else {
+        await this.$store.dispatch('stories/like', storyId)
+        this.liked = true
         this.likeCount++
       }
-      await this.$store.dispatch('stories/like', storyId)
     },
     /**
      * @param authorID
@@ -31,6 +41,8 @@ export const SocialFeatures = {
         })
         return
       }
+      // eslint-disable-next-line no-console
+      console.log(authorId)
       await this.$store.dispatch('user/followAuthor', authorId)
     },
     /**

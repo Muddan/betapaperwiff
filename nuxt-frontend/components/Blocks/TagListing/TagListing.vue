@@ -5,30 +5,7 @@
       <div class="chip-content">
         <v-list>
           <v-list-tile v-for="(tag, index) in storyTagsAvailable" :key="index">
-            <v-chip color="transparent" label text-color="white">
-              <nuxt-link
-                :to="{
-                  path: '/tags/' + tag.name
-                }"
-              >
-                <span class="tagname"> # {{ tag.name }} </span>
-              </nuxt-link>
-              <!-- <v-icon right color="#f45b69">check_circle</v-icon> -->
-            </v-chip>
-            <v-chip
-              small
-              label
-              color="#ffeaec"
-              text-color="#2e2e2e"
-              @click.stop="chipHandler(tag)"
-            >
-              <v-avatar>
-                <v-icon right color="#f45b69">{{
-                  !followedTags(tag.name) ? 'add' : 'check'
-                }}</v-icon>
-              </v-avatar>
-              {{ !followedTags(tag.name) ? 'Follow' : 'Following' }}
-            </v-chip>
+            <TagTile :key="index" :tag="tag"></TagTile>
           </v-list-tile>
         </v-list>
       </div>
@@ -37,8 +14,12 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import TagTile from '@/components/Blocks/TagListing/TagTile'
 export default {
   name: 'TagListing',
+  components: {
+    TagTile
+  },
   data() {
     return {
       added: false,
@@ -48,30 +29,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      storyTagsAvailable: 'stories/availableTags',
-      isSignedIn: 'user/isSignedIn',
-      followingTags: 'user/followingTags'
+      storyTagsAvailable: 'stories/availableTags'
     })
-  },
-  methods: {
-    followedTags(tag) {
-      if (this.isSignedIn) {
-        return this.followingTags.includes(tag)
-      } else {
-        return false
-      }
-    },
-    chipHandler(tag) {
-      this.added = !this.added
-      if (!this.isSignedIn) {
-        this.$store.commit('ui/SET_SHOW_POPUP', {
-          status: true,
-          component: 'SignUp'
-        })
-      } else {
-        this.$store.dispatch('stories/addToFollowingFilters', tag)
-      }
-    }
   }
 }
 </script>

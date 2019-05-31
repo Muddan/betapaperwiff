@@ -11,11 +11,15 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: 'Paperwiff',
+    title: 'Paperwiff | A platform to read and write with rewards',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Paperwiff. Lift By Words' }
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Paperwiff is a platform to read and write with rewards'
+      }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/static/favicon.ico' },

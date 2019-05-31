@@ -74,8 +74,8 @@ const actions = {
     })
   },
 
-  addToFollowingFilters(context, payload) {
-    this.$axios
+  async addToFollowingFilters(context, payload) {
+    await this.$axios
       .$post(
         endpoints.API_FOLLOW_TAG,
         {
@@ -89,14 +89,14 @@ const actions = {
         }
       )
       .then(res => {
-        context.dispatch('getStoryTags')
+        // context.dispatch('getStoryTags')
       })
-    context.dispatch(
+    await context.dispatch(
       'user/getUserDetails',
       context.rootState.user.current.userId,
       { root: true }
     )
-    context.dispatch(
+    await context.dispatch(
       'stories/userFeed',
       context.rootState.user.current.userId,
       { root: true }

@@ -36,6 +36,19 @@ def allTags():
 #     except Exception as e:
 #         return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
 
+@Story.route('/tag/stories', methods=['GET'])
+def taggedStories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    if not request.args.get('tag'):
+        return 'try again'
+
+    tagName = request.args.get('tag')
+
+    result = storyService.getTagStories(pageNo=pageNo, tagName=tagName)
+    return make_response(response(result), result.get('status'))
 
 @Story.route('/allstories', methods=['GET'])
 def allStories():

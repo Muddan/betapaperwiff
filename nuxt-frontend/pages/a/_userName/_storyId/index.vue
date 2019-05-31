@@ -37,10 +37,10 @@
                         @click="likeStory(story.storyId)"
                       >
                         <v-icon>{{
-                          likedStatus ? 'favorite' : 'favorite_border'
+                          liked ? 'favorite' : 'favorite_border'
                         }}</v-icon>
                       </v-btn>
-                      <span class="like-counter">{{ likeCount }}</span>
+                      <!-- <span class="like-counter">{{ likeCount }}</span> -->
                     </div>
                   </div>
                 </div>
@@ -165,6 +165,7 @@ export default {
       likeCount: 0
     }
   },
+
   computed: {
     ...mapGetters({
       isSignedIn: 'user/isSignedIn',
@@ -213,8 +214,9 @@ export default {
       user: userProfile.result
     }
   },
-  beforeMount() {
+  mounted() {
     this.likeCount = this.story.likes
+    this.liked = this.likedStatus
   },
   methods: {
     getPublishedDate(date) {
@@ -238,20 +240,31 @@ export default {
   .sticky-main {
     overflow: hidden;
     position: sticky;
-    top: 100px;
+    top: 150px;
     text-align: center;
     .action-btns {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       justify-content: center;
+      border-top: 1px solid #d7d7d7;
+      width: 60%;
+      padding-top: 20px;
     }
     .likedStory {
       &:hover {
         background: #deedf8;
       }
       .v-icon {
-        color: #42a5f5;
+        color: #d50122;
+      }
+    }
+    .savedStory {
+      &:hover {
+        background: #deedf8;
+      }
+      .v-icon {
+        color: #141414;
       }
     }
   }
