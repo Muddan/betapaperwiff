@@ -8,7 +8,7 @@
       :temporary="true"
     >
       <v-flex xs12>
-        <user-info :only-image="true"></user-info>
+        <user-info :image-only="false" :only-mobile="true"></user-info>
         <join-us></join-us>
         <v-list class="pt-0">
           <v-subheader>
@@ -20,7 +20,9 @@
             </v-list-tile-title>
           </v-list-tile>
           <v-list-tile>
-            <v-list-tile-title>Settings</v-list-tile-title>
+            <v-list-tile-title
+              ><nuxt-link to="/settings">Settings</nuxt-link></v-list-tile-title
+            >
           </v-list-tile>
           <v-divider></v-divider>
           <v-list-tile>

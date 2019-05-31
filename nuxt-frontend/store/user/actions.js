@@ -15,6 +15,7 @@ const actions = {
 
         const accessKeys = localStorage.getItem('paperwiff/user') || {}
         context.commit(types.SET_ACCESS_TOKENS, JSON.parse(accessKeys))
+        console.log(currentUser.uid)
 
         await context.dispatch('getUserDetails', currentUser.uid)
         await context.dispatch('stories/userFeed', currentUser.uid, {
@@ -44,7 +45,8 @@ const actions = {
       'paperwiff/user',
       JSON.stringify({
         access_token: payload.access_token,
-        refresh_token: payload.refresh_token
+        refresh_token: payload.refresh_token,
+        userId: payload.userDetails.userId
       })
     )
     context.commit(types.SET_ACCESS_TOKENS, tokens)
@@ -87,21 +89,22 @@ const actions = {
     localStorage.clear()
   },
 
-  getUserDetails(context, payload) {
-    this.$axios({
-      method: 'POST',
-      url: endpoints.API_GET_USER_DETAILS,
-      data: {
-        userId: payload
-      },
-      headers: {
-        Authorization: 'Bearer ' + context.rootState.user.access_token
-      }
-    }).then(res => {
-      if (res.status === 200) {
-        context.commit(types.SET_USER_PROFILE, res.data.result)
-      }
-    })
+  async getUserDetails(context, payload) {
+    await this.$axios
+      .$post(
+        endpoints.API_GET_USER_DETAILS,
+        {
+          userId: payload
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + context.rootState.user.access_token
+          }
+        }
+      )
+      .then(res => {
+        context.commit(types.SET_USER_PROFILE, res.result)
+      })
   },
   updateUserDetails(context, payload) {
     return new Promise((resolve, reject) => {
@@ -112,10 +115,8 @@ const actions = {
           }
         })
         .then(res => {
-          if (res.status === 200) {
-            // context.dispatch('getUserDetails', payload.userName)
-            context.commit(types.SET_USER_PROFILE, res.data.result)
-          }
+          context.dispatch('getUserDetails', payload.userId)
+          // context.commit(types.SET_USER_PROFILE, res.data.result)
           resolve(true)
         })
         .catch(e => {
@@ -183,4 +184,3 @@ const actions = {
   }
 }
 export default actions
-

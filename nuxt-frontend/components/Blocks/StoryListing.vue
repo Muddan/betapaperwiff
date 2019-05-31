@@ -72,7 +72,10 @@ export default {
           document.documentElement.offsetHeight
 
         if (bottomOfWindow) {
-          this.$store.dispatch('stories/loadMoreStories', pageNo)
+          this.$store.dispatch('stories/loadMoreStories', {
+            pageNo: pageNo,
+            loadMore: true
+          })
           pageNo++
         }
       }

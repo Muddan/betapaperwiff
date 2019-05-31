@@ -28,7 +28,10 @@ const actions = {
       this.$axios
         .$get(`${endpoints.API_GET_STORIES}?pageNo=${payload}`)
         .then(response => {
-          context.commit(types.SET_ALL_STORIES, response.result.items)
+          context.commit(types.SET_ALL_STORIES, {
+            items: response.result.items,
+            loadMore: true
+          })
         })
     }
   },

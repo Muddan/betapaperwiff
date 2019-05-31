@@ -19,9 +19,11 @@ const mutations = {
    * @param payload
    */
   [types.SET_ALL_STORIES](state, payload) {
-    if (state.allStories.length) {
-      const currentStories = state.allStories
-      state.allStories = currentStories.concat(payload)
+    if (payload.loadMore) {
+      if (state.allStories.length) {
+        const currentStories = state.allStories
+        state.allStories = currentStories.concat(payload.items)
+      }
     } else {
       state.allStories = payload
     }

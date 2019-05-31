@@ -312,6 +312,9 @@ export default {
     }
     .profile-section {
       margin: 0 20px;
+      @media (max-width: 768px) {
+        margin-top: 40px;
+      }
       .form-card {
         padding: 20px;
         border-radius: 8px;

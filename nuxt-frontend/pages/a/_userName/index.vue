@@ -21,6 +21,7 @@
                   @click="editProfile(userProfile)"
                   >Edit Profile</v-btn
                 >
+                <v-btn v-else outline color="#6e6e6e">Follow</v-btn>
                 <p class="profile-bio">{{ userProfile.about }}</p>
               </v-flex>
             </v-layout>
@@ -28,15 +29,26 @@
         </v-layout>
         <v-layout class="joined-details">
           <v-flex xs4>
-            <h3 class="label">Joined</h3>
+            <!-- <h3 class="label">Joined</h3>
             <p class="value">
               {{ getDate(userProfile.joined) }}
             </p>
-          </v-flex>
-          <v-flex row xs4>
-            <h3 class="label">Stories published</h3>
+          </v-flex> -->
+            <v-flex row xs4>
+              <h3 class="label">Stories published</h3>
+              <p class="value">
+                {{ userProfile.userArticles.length }}
+              </p>
+            </v-flex>
+            <v-flex row xs4>
+              <h3 class="label">Following</h3>
+              <p class="value">
+                {{ userProfile.followingAuthors.length }}
+              </p>
+            </v-flex>
+            <h3 class="label">Location</h3>
             <p class="value">
-              {{ userProfile.userArticles.length }}
+              {{ userProfile.location }}
             </p>
           </v-flex>
         </v-layout>
