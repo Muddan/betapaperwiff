@@ -1,142 +1,170 @@
 {
     "tags": [
         {
-            "name": "fiction",
+            "name": "Fiction",
+            "value": "fiction",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "action&adventure",
+            "name": "Action and Adventure",
+            "value": "action-adventure",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "crime",
+            "name": "Crime",
+            "value": "crime",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "drama",
+            "name": "Drama",
+            "value": "drama",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "fairytale",
+            "name": "Fairytale",
+            "value": "fairytale",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "historicalfiction",
+            "name": "Historical fiction",
+            "value": "historicalfiction",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "horror",
+            "name": "Horror",
+            "value": "horror",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "mystery",
+            "name": "Mystery",
+            "value": "mystery",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "paranormalromance",
+            "name": "Paranormal Romance",
+            "value": "paranormalromance",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "poetry",
+            "name": "Poetry",
+            "value": "poetry",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "romance",
+            "name": "Romance",
+            "value": "romance",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "sattire",
+            "name": "Sattire",
+            "value": "sattire",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "sciencefiction",
+            "name": "Science fiction",
+            "value": "sciencefiction",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "suspense",
+            "name": "Suspense",
+            "value": "suspense",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "thriller",
+            "name": "Thriller",
+            "value": "thriller",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "non-fiction",
+            "name": "Non-fiction",
+            "value": "non-fiction",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "art",
+            "name": "Art",
+            "value": "art",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "biography",
+            "name": "Biography",
+            "value": "biography",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "bookreview",
+            "name": "Bookreview",
+            "value": "bookreview",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "guide",
+            "name": "Guide",
+            "value": "guide",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "travel",
+            "name": "Travel",
+            "value": "travel",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "health",
+            "name": "Health",
+            "value": "health",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "history",
+            "name": "History",
+            "value": "history",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "memoir",
+            "name": "Memoir",
+            "value": "memoir",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "spirituality",
+            "name": "Spirituality",
+            "value": "spirituality",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "self-help",
+            "name": "Self-help",
+            "value": "self-help",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "politics",
+            "name": "Politics",
+            "value": "politics",
             "status": "False",
             "type": "tag"
         },
         {
-            "name": "shayari",
+            "name": "Shayari",
+            "value": "shayari",
             "status": "False",
             "type": "tag"
         }

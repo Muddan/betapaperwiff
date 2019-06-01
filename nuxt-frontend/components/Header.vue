@@ -86,11 +86,30 @@
       <v-menu left bottom offset-y transition="slide-y-reverse-transition">
         <template v-slot:activator="{ on }">
           <v-btn class="hidden-md-and-down" flat icon color="#337fb5" v-on="on">
-            <v-icon size="18px">fa fa-ellipsis-v</v-icon>
+            <v-avatar
+              v-if="isSignedIn"
+              v-show="currentUser.userImage"
+              size="35px"
+            >
+              <img :src="currentUser.userImage" />
+            </v-avatar>
+            <v-icon v-else size="18px">fa fa-ellipsis-v</v-icon>
           </v-btn>
         </template>
         <v-list>
-          <v-list-tile v-if="isSignedIn" @click="signOut">Sign Out</v-list-tile>
+          <nuxt-link
+            v-if="isSignedIn"
+            class="user-link"
+            :to="{
+              path: '/a/' + currentUser.userName
+            }"
+          >
+            <v-list-tile class="username-header ">{{
+              currentUser.userName
+            }}</v-list-tile>
+          </nuxt-link>
+
+          <v-divider v-if="isSignedIn"></v-divider>
           <v-list-tile-content v-for="(item, i) in items" :key="i">
             <v-list-tile>
               <router-link :to="item.link">
@@ -98,6 +117,7 @@
               </router-link>
             </v-list-tile>
           </v-list-tile-content>
+          <v-list-tile v-if="isSignedIn" @click="signOut">Sign Out</v-list-tile>
         </v-list>
       </v-menu>
     </v-toolbar>
@@ -126,7 +146,10 @@ export default {
     drawer: false,
     dialog: false,
     logout: false,
-    items: [{ title: 'settings', link: '/settings' }],
+    items: [
+      { title: 'About', link: '/about' },
+      { title: 'Settings', link: '/settings' }
+    ],
     links: ['Home', 'Contacts', 'Settings'],
     socialIcons: [
       {
@@ -154,7 +177,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      isSignedIn: 'user/isSignedIn'
+      isSignedIn: 'user/isSignedIn',
+      currentUser: 'user/currentUser'
     })
   },
   methods: {
@@ -203,6 +227,15 @@ export default {
     width: 100%;
     bottom: 0;
     left: 0;
+  }
+}
+.v-list {
+  .username-header {
+    .v-list__tile {
+      font-weight: bold;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
   }
 }
 </style>

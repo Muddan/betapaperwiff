@@ -102,9 +102,17 @@ export default {
   async asyncData({ app, route, store, env, error }) {
     let userProfile = ''
     if (store.state.user.isSignedIn) {
-      userProfile = await app.$axios.$post(endpoints.API_GET_USER_DETAILS, {
-        userId: store.state.user.current.userId
-      })
+      userProfile = await app.$axios.$post(
+        endpoints.API_GET_USER_DETAILS,
+        {
+          userId: store.state.user.current.userId
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + store.state.user.access_token
+          }
+        }
+      )
     } else {
       userProfile = await app.$axios.$post(endpoints.API_GET_AUTHOR_DETAILS, {
         userName: route.params.userName

@@ -11,6 +11,7 @@ from ..services.user import UserClass
 from ..model.Stories import Stories
 from ..helpers.UserServiceHelper import UserServiceHelper
 from ..helpers.StoryServiceHelper import StoryServiceHelper
+from ..helpers.TagServiceHelper import TagServiceHelper
 
 userService = UserClass()
 
@@ -23,6 +24,14 @@ class StoryClass():
     # Story CRUD METHODS
     def publishStory(self, userId, tags, storyTitle, content, language, datePublished, headerImage, summary):
         userData = UserServiceHelper().getUserDetailsByUserId(userId)
+        for tag in tags:
+            if not TagServiceHelper().isValid(tag):
+                return {
+                    "msg": "Invalid Tag value",
+                    "status": 400
+                }
+            else:
+                continue
         try:
             if userData:
                 storyId = re.sub('[^A-Za-z0-9-"-"]+', '',

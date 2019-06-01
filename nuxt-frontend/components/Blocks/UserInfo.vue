@@ -56,7 +56,7 @@
         dark
         @click="signOut"
       >
-        Logout
+        Sign Out
       </v-btn>
     </div>
   </v-scroll-y-transition>

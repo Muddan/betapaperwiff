@@ -3,11 +3,11 @@
     <v-container>
       <div class="header-section">
         <header>
-          <h3 v-if="isSigned" class="main-title">
-            Welcome, {{ currentUser.firstName }} !
-          </h3>
-          <p class="subheading">compose an epic.</p>
+          <span v-if="isSigned" class="main-title">
+            <strong>Welcome</strong>, {{ currentUser.firstName }} !
+          </span>
         </header>
+        <v-subtitle>compose an epic.</v-subtitle>
       </div>
       <div class="form-section">
         <v-flex xs12 sm12 class="header-img-main">
@@ -239,28 +239,33 @@ export default {
         this.$store.dispatch('notification/progress', {
           title: 'Publishing your story...'
         })
-        this.$store.dispatch('stories/publishStory', {
-          storyTitle: this.storyForm.title,
-          userId: this.currentUser.userId,
-          content: this.storyForm.content,
-          summary: this.storyForm.summary,
-          tags: this.storyForm.selectedTags,
-          headerImage: this.storyForm.headerImage.imageFile,
-          datePublished: new Date(),
-          language: this.storyForm.selectedLanguage
-        })
-        this.storyForm = {
-          headerImage: {
-            imageURL: null,
-            imageFile: null
-          },
-          title: '',
-          content: '',
-          summary: '',
-          translatedContent: '',
-          selectedLanguage: 'english',
-          selectedTags: []
-        }
+        this.$store
+          .dispatch('stories/publishStory', {
+            storyTitle: this.storyForm.title,
+            userId: this.currentUser.userId,
+            content: this.storyForm.content,
+            summary: this.storyForm.summary,
+            tags: this.storyForm.selectedTags,
+            headerImage: this.storyForm.headerImage.imageFile,
+            datePublished: new Date(),
+            language: this.storyForm.selectedLanguage
+          })
+          .then(res => {
+            if (res && res.status === 200) {
+              this.storyForm = {
+                headerImage: {
+                  imageURL: null,
+                  imageFile: null
+                },
+                title: '',
+                content: '',
+                summary: '',
+                translatedContent: '',
+                selectedLanguage: 'english',
+                selectedTags: []
+              }
+            }
+          })
       }
     },
     limiter(e) {
@@ -304,9 +309,7 @@ $logosection-color: #043344;
   }
 
   .main-title {
-    font-family: 'Adamina', serif;
     font-size: 30px;
-    font-weight: bold;
     text-transform: capitalize;
   }
 }

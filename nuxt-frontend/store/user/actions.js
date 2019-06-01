@@ -15,13 +15,11 @@ const actions = {
 
         const accessKeys = localStorage.getItem('paperwiff/user') || {}
         context.commit(types.SET_ACCESS_TOKENS, JSON.parse(accessKeys))
-        console.log(currentUser.uid)
 
         await context.dispatch('getUserDetails', currentUser.uid)
         await context.dispatch('stories/userFeed', currentUser.uid, {
           root: true
         })
-        await context.dispatch('stories/getStoryTags', null, { root: true })
       }
     })
   },
@@ -69,6 +67,13 @@ const actions = {
     }
   },
   setTokens(context, payload) {
+    localStorage.setItem(
+      'paperwiff/user',
+      JSON.stringify({
+        access_token: payload.access_token,
+        refresh_token: payload.refresh_token
+      })
+    )
     context.commit(types.SET_ACCESS_TOKENS, payload)
   },
 
@@ -77,7 +82,7 @@ const actions = {
       .auth()
       .signOut()
       .then(function() {
-        console.log('FIREBASE SIGNOUT')
+        console.log('SIGNOUT')
       })
     const tokens = {
       access_token: '',

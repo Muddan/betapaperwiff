@@ -56,7 +56,7 @@ export default {
     }),
     followedTags() {
       if (this.isSignedIn && this.followingTags) {
-        return this.followingTags.includes(this.tag.name)
+        return this.followingTags.includes(this.tag.value)
       } else {
         return false
       }
@@ -78,5 +78,10 @@ export default {
   }
 }
 </script>
-
-<style></style>
+<style lang="scss" scoped>
+.chip-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+</style>
