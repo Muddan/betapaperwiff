@@ -11,6 +11,9 @@
       </div>
       <div class="form-section">
         <v-flex xs12 sm12 class="header-img-main">
+          <v-subheader>
+            Upload an image
+          </v-subheader>
           <image-input v-model="storyForm.headerImage" class="header-img-main">
             <div slot="activator">
               <v-container
@@ -183,7 +186,7 @@ export default {
     }),
     tagsArray() {
       return this.storyTagsAvailable.map(tag => {
-        return tag.name
+        return tag.value
       })
     }
   },

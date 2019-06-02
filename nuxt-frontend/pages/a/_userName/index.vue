@@ -4,7 +4,7 @@
       <div class="user-profile-header">
         <div class="profile-content-wrapper">
           <div class="img-container">
-            <v-avatar class="avatar-main" size="200px">
+            <v-avatar class="avatar-main">
               <img class="profile-img" :src="userProfile.userImage" />
             </v-avatar>
           </div>
@@ -30,28 +30,22 @@
                 outline
                 color="#337fb5"
                 @click="followAuthor(userProfile.userId)"
-                >{{ 'Follow' }}</v-btn
+                >{{ followedAuthor ? 'Following' : 'Follow' }}</v-btn
               >
             </div>
             <p class="profile-bio">{{ userProfile.about }}</p>
 
             <div class="profile-stats">
               <div class="stats">
-                <p class="value">
-                  {{ userStories.length }}
-                </p>
+                <p class="value">{{ userStories.length }}</p>
                 <h3 class="label">Stories</h3>
               </div>
               <div class="stats">
-                <p class="value">
-                  {{ userProfile.followingAuthors.length }}
-                </p>
+                <p class="value">{{ userProfile.followingAuthors.length }}</p>
                 <h3 class="label">Following</h3>
               </div>
               <div v-if="loggedInUser" class="stats">
-                <p class="value">
-                  {{ savedStories }}
-                </p>
+                <p class="value">{{ savedStories }}</p>
                 <h3 class="label">Saved Stories</h3>
               </div>
             </div>
@@ -60,7 +54,7 @@
       </div>
       <v-layout>
         <v-flex xs3 md3 class="hidden-sm-and-down">
-          <v-flex class="sidebar-section sidebar-left ">
+          <v-flex class="sidebar-section sidebar-left">
             <user-info :image-only="false" :only-mobile="true"></user-info>
             <key-links></key-links>
           </v-flex>
@@ -80,6 +74,7 @@
 import StoryItems from '@/components/Blocks/StoryItems.vue'
 import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
+import { mapGetters } from 'vuex'
 
 import { endpoints } from '@/api/endpoints.js'
 
@@ -89,7 +84,17 @@ export default {
     KeyLinks,
     UserInfo
   },
+  data() {
+    return {
+      userProfile: '',
+      userStories: ''
+    }
+  },
   computed: {
+    ...mapGetters({
+      isSignedIn: 'user/isSignedIn',
+      followingAuthors: 'user/followingAuthors'
+    }),
     loggedInUser() {
       return (
         this.$store.state.user.current.userName === this.$route.params.userName
@@ -97,11 +102,19 @@ export default {
     },
     savedStories() {
       return this.$store.state.user.current.saveForLater.length
+    },
+    followedAuthor() {
+      if (this.isSignedIn && this.followingAuthors) {
+        return this.followingAuthors.includes(this.userProfile.userId)
+      } else {
+        return false
+      }
     }
   },
-  async asyncData({ app, route, store, env, error }) {
+  async asyncData({ app, route, store, env, error, query }) {
     let userProfile = ''
-    if (store.state.user.isSignedIn) {
+    let userStories = ''
+    if (store.state.user.current.userName === route.params.userName) {
       userProfile = await app.$axios.$post(
         endpoints.API_GET_USER_DETAILS,
         {
@@ -113,16 +126,24 @@ export default {
           }
         }
       )
+      userStories = await app.$axios({
+        method: 'GET',
+        url: `${endpoints.API_GET_USER_STOREIS}?userId=${
+          store.state.user.current.userId
+        }`
+      })
     } else {
       userProfile = await app.$axios.$post(endpoints.API_GET_AUTHOR_DETAILS, {
         userName: route.params.userName
       })
+      userStories = await app.$axios({
+        method: 'GET',
+        url: `${endpoints.API_GET_AUTHOR_STOREIS}?userName=${
+          route.params.userName
+        }`
+      })
     }
 
-    const userStories = await app.$axios({
-      method: 'GET',
-      url: `${endpoints.API_GET_STORIES}?userName=${route.params.userName}`
-    })
     return {
       userProfile: userProfile.result,
       userStories: userStories.data.result.items
@@ -157,15 +178,14 @@ export default {
      * Follows current story Author
      */
     followAuthor(authorId) {
-      if (!this.loggedInUser) {
+      if (!this.isSignedIn) {
         this.$store.commit('ui/SET_SHOW_POPUP', {
           status: true,
           component: 'SignUp'
         })
-        return
+      } else {
+        this.$store.dispatch('user/followAuthor', authorId)
       }
-      alert(authorId)
-      this.$store.dispatch('user/followAuthor', authorId)
     }
   }
 }
@@ -182,8 +202,14 @@ export default {
         transform: translateZ(10px);
         border-top: 1px solid #337fb5;
         border-bottom: 1px solid #337fb5;
+        height: 200px !important;
+        width: 200px !important;
         img {
           padding: 10px;
+        }
+        @media (max-width: 768px) {
+          height: 150px !important;
+          width: 150px !important;
         }
       }
       .profile-details {

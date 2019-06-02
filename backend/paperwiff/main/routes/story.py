@@ -59,6 +59,34 @@ def allStories():
 
     result = storyService.getAllStories(pageNo=pageNo)
     return make_response(response(result), result.get('status'))
+
+@Story.route('/authorStories', methods=['GET'])
+def authorstories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    if not request.args.get('userName'):
+        return 'Invalid username', 400
+
+    userName = request.args.get('userName')
+
+    result = storyService.getAuthorStories(pageNo=pageNo, userName=userName)
+    return make_response(response(result), result.get('status'))
+
+@Story.route('/userStories', methods=['GET'])
+def userStories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    if not request.args.get('userId'):
+        return 'Invalid username', 400
+
+    userId = request.args.get('userId')
+
+    result = storyService.getUserStories(pageNo=pageNo, userId=userId)
+    return make_response(response(result), result.get('status'))
     # try:
 
     #     if  request.args.get('userId')==None and request.args.get('userName')==None:

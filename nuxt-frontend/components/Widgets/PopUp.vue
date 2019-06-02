@@ -32,6 +32,9 @@ export default {
     isVisible: state => state.ui.isShowPopup,
     isComponent: state => state.ui.componentName
   }),
+  destroyed() {
+    this.dialog = false
+  },
   methods: {
     closePopup() {
       this.$store.commit('ui/SET_SHOW_POPUP', { status: false, component: '' })

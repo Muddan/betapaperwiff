@@ -176,7 +176,7 @@ export default {
               message:
                 'we have saved your information, you can change it anytime'
             })
-            window.location.replace('/')
+            this.$router.push('/')
           } else {
             this.$store.dispatch('notification/error', {
               title: 'Oh Snap!',

@@ -82,7 +82,8 @@ class StoryClass():
             pageNo = 1
         pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
         if Stories.objects(__raw__={"tags": {"$in": [tagName]}}).count():
-            totalItems = Stories.objects(__raw__={"tags": {"$in": [tagName]}}).count()
+            totalItems = Stories.objects(
+                __raw__={"tags": {"$in": [tagName]}}).count()
             stories = json.loads(Stories.objects(__raw__={"tags": {"$in": [tagName]}}).exclude('id', 'comments', 'copyright').order_by(
                 '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
 
@@ -120,36 +121,50 @@ class StoryClass():
                 "items": [],
                 "status": 200
             }
-
-    def getUserStories(self, userName, pageNo=1):
-        listofStories = []
+   # user sauthorstories by username
+    def getAuthorStories(self, userName, pageNo=1):
         if pageNo <= 0:
             pageNo = 1
         pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
-        totalItems = self.storyCollection.count()
+        if Stories.objects.count():
+            totalItems = Stories.objects.count()
+            stories = json.loads(Stories.objects(userName=userName).exclude('id', 'comments', 'copyright').order_by(
+                '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
 
-        stories = self.storyCollection.find({"userName": userName},
-                                            projection={
-            "_id": False, "comments": False
-        }).sort("datePublished", decending).skip(pageNo * 10).limit(10)
-        for story in stories:
-            image = self.userCollection.find_one({"userName": story["userName"]}, projection={
-                "_id": False, 'userImage': True})
-            story.update(image)
-            listofStories.append(story)
-        if (len(listofStories)) == 0:
             return {
-                "msg": "no story by User found",
+                "pageNo": pageNo + 1,
+                "totalItems": totalItems,
+                "items": stories,
+                "status": 200
+            }
+        else:
+            return {
+                "msg": "Sorry, no articles are available",
                 "items": [],
                 "status": 200
             }
+    # user stories by userId
+    def getUserStories(self, userId, pageNo=1):
+        if pageNo <= 0:
+            pageNo = 1
+        pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
+        if Stories.objects.count():
+            totalItems = Stories.objects.count()
+            stories = json.loads(Stories.objects(userId=userId).exclude('id', 'comments', 'copyright').order_by(
+                '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
 
-        return {
-            "pageNo": pageNo + 1,
-            "totalItems": totalItems,
-            "items": list(listofStories),
-            "status": 200
-        }
+            return {
+                "pageNo": pageNo + 1,
+                "totalItems": totalItems,
+                "items": stories,
+                "status": 200
+            }
+        else:
+            return {
+                "msg": "Sorry, no articles are available",
+                "items": [],
+                "status": 200
+            }
 
     # Send story details when story url is visited
     def getStoryDetailsByStoryId(self, storyId):

@@ -9,7 +9,7 @@
       >
         <nuxt-link
           :to="{
-            path: '/tags/' + tag.name
+            path: '/tags/' + tag.value
           }"
           ># {{ tag.name }}</nuxt-link
         >

@@ -31,6 +31,7 @@
                       :to="{
                         path: '/a/' + story.userName
                       }"
+                      no-prefetch
                     >
                       <span class="username">
                         {{ story.firstName }}

@@ -101,7 +101,7 @@ export default {
       })
     },
     followedTags() {
-      if (this.isSignedIn) {
+      if (this.isSignedIn && this.followingTags) {
         return this.followingTags.includes(this.$route.params.tagName)
       } else {
         return false
@@ -130,7 +130,7 @@ export default {
       } else {
         this.snackbar = true
         this.$store.dispatch('stories/addToFollowingFilters', {
-          name: this.tagName
+          value: this.tagName
         })
       }
     }

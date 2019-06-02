@@ -39,7 +39,7 @@
                   >
                     <v-layout column class="form-content">
                       <v-flex class="form-control">
-                        <image-input v-model="avatar">
+                        <!-- <image-input v-model="avatar">
                           <div slot="activator">
                             <v-avatar
                               v-if="!avatar"
@@ -53,7 +53,10 @@
                               <img :src="avatar.imageURL" alt="avatar" />
                             </v-avatar>
                           </div>
-                        </image-input>
+                        </image-input> -->
+                        <v-avatar v-ripple size="150px" class="mb-3">
+                          <img :src="avatar.imageURL" alt="avatar" />
+                        </v-avatar>
                       </v-flex>
                       <v-flex class="input-control">
                         <v-text-field
@@ -74,6 +77,7 @@
                           :rules="nameRules"
                           readonly
                           name="userName"
+                          disabled
                           hint="This is not editable"
                         ></v-text-field>
                       </v-flex>
@@ -175,13 +179,13 @@
   </div>
 </template>
 <script>
-import ImageInput from '@/components/Blocks/ImageInput'
+// import ImageInput from '@/components/Blocks/ImageInput'
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
 export default {
-  components: {
-    ImageInput
-  },
+  // components: {
+  //   ImageInput
+  // },
   middleware: 'auth',
   data() {
     return {
