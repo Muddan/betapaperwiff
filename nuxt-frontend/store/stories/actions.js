@@ -26,7 +26,7 @@ const actions = {
       context.rootState.stories.totalStories
     ) {
       this.$axios
-        .$get(`${endpoints.API_GET_STORIES}?pageNo=${payload}`)
+        .$get(`${endpoints.API_GET_STORIES}?pageNo=${payload.pageNo}`)
         .then(response => {
           context.commit(types.SET_ALL_STORIES, {
             items: response.result.items,
