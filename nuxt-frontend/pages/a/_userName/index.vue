@@ -3,66 +3,91 @@
     <v-container>
       <div class="user-profile-header">
         <div class="profile-content-wrapper">
-          <div class="img-container">
-            <v-avatar class="avatar-main">
-              <img class="profile-img" :src="userProfile.userImage" />
-            </v-avatar>
-          </div>
-          <div class="profile-details">
-            <h1 class="profile-name">
-              {{ userProfile.firstName }} {{ userProfile.lastName }}
-            </h1>
-            <h3 class="user-name">{{ userProfile.userName }}</h3>
-            <div class="action-btns">
-              <v-btn
-                v-show="loggedInUser"
-                small
-                round
-                outline
-                color="#337fb5"
-                @click="editProfile(userProfile)"
-                >{{ 'Edit Profile' }}</v-btn
-              >
-              <v-btn
-                v-show="!loggedInUser"
-                small
-                round
-                outline
-                color="#337fb5"
-                @click="followAuthor(userProfile.userId)"
-                >{{ followedAuthor ? 'Following' : 'Follow' }}</v-btn
-              >
-            </div>
-            <p class="profile-bio">{{ userProfile.about }}</p>
+          <v-layout class="header-layout">
+            <v-flex xs12 md2>
+              <div class="profile-details">
+                <v-avatar class="avatar-main">
+                  <img class="profile-img" :src="userProfile.userImage" />
+                </v-avatar>
+                <v-subheader>
+                  Member Since
+                  <strong class="joined-date">{{
+                    new Date(userProfile.joined.$date).toLocaleString('en-us', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })
+                  }}</strong>
+                </v-subheader>
+              </div>
+            </v-flex>
+            <v-flex xs12 md6>
+              <div class="img-container">
+                <h1 class="profile-name">
+                  {{ userProfile.firstName }} {{ userProfile.lastName }}
+                </h1>
 
-            <div class="profile-stats">
-              <div class="stats">
-                <p class="value">{{ userStories.length }}</p>
-                <h3 class="label">Stories</h3>
+                <h3 class="user-name">{{ userProfile.userName }}</h3>
+                <div class="action-btns">
+                  <v-btn
+                    v-show="loggedInUser"
+                    small
+                    round
+                    outline
+                    color="#337fb5"
+                    @click="editProfile(userProfile)"
+                    >{{ 'Edit Profile' }}</v-btn
+                  >
+                  <v-btn
+                    v-show="!loggedInUser"
+                    small
+                    round
+                    outline
+                    color="#337fb5"
+                    @click="followAuthor(userProfile.userId)"
+                    >{{ followedAuthor ? 'Following' : 'Follow' }}</v-btn
+                  >
+                </div>
+                <p class="profile-bio">{{ userProfile.about }}</p>
+                <div class="profile-stats">
+                  <div class="stats">
+                    <p class="value">{{ userStories.length }}</p>
+                    <h3 class="label">Stories Published</h3>
+                  </div>
+                  <div class="stats">
+                    <p class="value">
+                      {{ userProfile.followingAuthors.length }}
+                    </p>
+                    <h3 class="label">Following Users</h3>
+                  </div>
+                  <div v-if="loggedInUser" class="stats">
+                    <p class="value">{{ savedStories }}</p>
+                    <h3 class="label">Saved Stories</h3>
+                  </div>
+                </div>
               </div>
-              <div class="stats">
-                <p class="value">{{ userProfile.followingAuthors.length }}</p>
-                <h3 class="label">Following</h3>
-              </div>
-              <div v-if="loggedInUser" class="stats">
-                <p class="value">{{ savedStories }}</p>
-                <h3 class="label">Saved Stories</h3>
-              </div>
-            </div>
-          </div>
+            </v-flex>
+          </v-layout>
         </div>
       </div>
       <v-layout>
         <v-flex xs3 md3 class="hidden-sm-and-down">
           <v-flex class="sidebar-section sidebar-left">
             <user-info :image-only="false" :only-mobile="true"></user-info>
-            <key-links></key-links>
           </v-flex>
         </v-flex>
-        <v-flex xs12 md6>
+        <v-flex xs12 md5>
           <v-flex class="sidebar-section sidebar-main">
             <h3 v-if="userStories.length == 0">No stories posted.</h3>
-            <story-items v-else :stories="userStories"></story-items>
+            <div v-else class="user-stories">
+              <v-subheader>Recent Stories</v-subheader>
+              <story-items :stories="userStories"></story-items>
+            </div>
+          </v-flex>
+        </v-flex>
+        <v-flex xs3 md4 class="hidden-sm-and-down">
+          <v-flex class="sidebar-section sidebar-left">
+            <SidebarStories></SidebarStories>
           </v-flex>
         </v-flex>
       </v-layout>
@@ -72,8 +97,9 @@
 
 <script>
 import StoryItems from '@/components/Blocks/StoryItems.vue'
-import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
+import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
+
 import { mapGetters } from 'vuex'
 
 import { endpoints } from '@/api/endpoints.js'
@@ -81,8 +107,8 @@ import { endpoints } from '@/api/endpoints.js'
 export default {
   components: {
     StoryItems,
-    KeyLinks,
-    UserInfo
+    UserInfo,
+    SidebarStories
   },
   data() {
     return {
@@ -195,15 +221,22 @@ export default {
   max-width: 1400px;
   margin: auto;
   .user-profile-header {
+    border-radius: 8px;
+    padding: 20px;
+    padding-left: 0;
+    background: #fff;
+
     .profile-content-wrapper {
-      text-align: center;
+      .header-layout {
+        box-sizing: border-box;
+        flex-wrap: wrap;
+      }
       .avatar-main {
         z-index: 1;
-        transform: translateZ(10px);
         border-top: 1px solid #337fb5;
         border-bottom: 1px solid #337fb5;
-        height: 200px !important;
-        width: 200px !important;
+        height: 150px !important;
+        width: 150px !important;
         img {
           padding: 10px;
         }
@@ -213,68 +246,102 @@ export default {
         }
       }
       .profile-details {
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        display: flex;
         background: #fff;
-        border-radius: 8px;
-        transform: translateY(-40px);
-        padding-top: 50px;
-        padding-bottom: 30px;
-        border-bottom: 4px solid #337fb5;
-        box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
-        cursor: pointer;
+        border-radius: 8px 0 0 8px;
+        padding-top: 15px;
+        flex-direction: column;
         @media (max-width: 768px) {
-          max-width: 98%;
-          margin: auto;
+          padding-top: 0;
         }
-        .profile-name {
-          font-size: 26px;
+      }
+      .profile-name {
+        font-size: 26px;
+        display: inline-flex;
+        align-items: center;
+        box-sizing: border-box;
+        padding: 10px 0 0;
+      }
+      .user-name {
+        opacity: 0.5;
+        font-weight: normal;
+        padding-bottom: 10px;
+      }
+      .action-btns {
+        padding-bottom: 10px;
+        button {
+          margin-left: 0;
         }
-        .user-name {
-          opacity: 0.5;
+      }
+      .profile-bio {
+        color: #2e2e2e;
+        box-sizing: border-box;
+      }
+      .profile-stats {
+        box-sizing: border-box;
+        padding-top: 10px;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        .value {
+          margin: 0;
+          font-weight: bold;
+          color: #337fb5;
+          font-size: 18px;
+        }
+        .label {
           font-weight: normal;
+          opacity: 0.5;
+          font-size: 14px;
         }
-        .action-btns,
-        .profile-bio {
-          margin-top: 10px;
-        }
-        .profile-bio {
-          color: #2e2e2e;
-          box-sizing: border-box;
-          padding: 0 5px;
-        }
-        .profile-stats {
-          box-sizing: border-box;
-          padding-top: 10px;
-          display: flex;
-          justify-content: space-evenly;
+        .stats {
+          display: inline-flex;
+          align-items: center;
+          padding-right: 10px;
+          padding-bottom: 10px;
+          border-right: 1px solid #f2f2f2;
+          &:not(:first-child) {
+            margin-left: 10px;
+          }
+          &:last-child {
+            border-right: none;
+          }
+          @media (max-width: 768px) {
+            &:last-child {
+              margin-left: 0;
+              border-right: none;
+            }
+          }
           .value {
-            margin: 0;
-            font-weight: bold;
-            color: #337fb5;
-            font-size: 18px;
-          }
-          .label {
-            font-weight: normal;
-            opacity: 0.5;
-            font-size: 14px;
-          }
-          .stats {
-            width: 30%;
-          }
-          .stats:not(:last-child) {
-            border-right: 1px solid #f2f2f2;
+            padding-right: 10px;
           }
         }
+      }
+      .img-container {
+        background: #fff;
+        border-radius: 0 8px 8px 0;
+        padding: 20px;
       }
     }
   }
   .sidebar-left {
     margin: 30px 10px;
+    margin-top: 80px;
     .user-info {
       margin-top: 20px;
     }
   }
   .sidebar-main {
     margin: 20px 10px;
+    @media (max-width: 768px) {
+      margin: 0;
+    }
+  }
+  .joined-date {
+    padding-left: 10px;
   }
   // bottom section
 }

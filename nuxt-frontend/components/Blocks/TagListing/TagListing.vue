@@ -4,6 +4,13 @@
     <no-ssr>
       <div class="chip-content">
         <v-list>
+          <div class="text-xs-center">
+            <v-progress-circular
+              v-if="storyTagsAvailable && !storyTagsAvailable.length"
+              indeterminate
+              color="#f45b69"
+            ></v-progress-circular>
+          </div>
           <v-list-tile v-for="(tag, index) in storyTagsAvailable" :key="index">
             <TagTile :key="index" :tag="tag"></TagTile>
           </v-list-tile>

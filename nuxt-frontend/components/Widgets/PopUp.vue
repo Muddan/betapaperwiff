@@ -1,9 +1,7 @@
 <template>
   <div class="">
-    <v-dialog v-model="isVisible" content-class="general-pop-up">
-      <keep-alive>
-        <component :is="isComponent"></component>
-      </keep-alive>
+    <v-dialog v-model="isShowPopup" content-class="general-pop-up">
+      <component :is="isComponent"></component>
       <div class="close-btn">
         <v-btn icon color="grey darken-4" flat>
           <v-icon color="grey darken-4" @click="closePopup"
@@ -16,7 +14,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import SignUp from './SignUp'
 export default {
   name: 'PopUp',
@@ -28,12 +25,23 @@ export default {
       dialog: false
     }
   },
-  computed: mapState({
-    isVisible: state => state.ui.isShowPopup,
-    isComponent: state => state.ui.componentName
-  }),
-  destroyed() {
-    this.dialog = false
+  computed: {
+    isShowPopup: {
+      get: function() {
+        return this.$store.state.ui.isShowPopup
+      },
+      set: function() {
+        this.$store.commit('ui/SET_SHOW_POPUP', {
+          status: false,
+          component: ''
+        })
+      }
+    },
+    isComponent: {
+      get() {
+        return this.$store.state.ui.componentName
+      }
+    }
   },
   methods: {
     closePopup() {

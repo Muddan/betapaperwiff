@@ -67,7 +67,19 @@
           <span>Write</span>
         </v-btn>
       </router-link>
-      <div class="text-xs-center">
+      <v-btn
+        v-if="!isSignedIn"
+        class="hidden-md-and-down"
+        small
+        round
+        outline
+        color="#4caf50"
+        flat
+        @click="openForm()"
+      >
+        <span>Join Us</span>
+      </v-btn>
+      <div v-show="isSignedIn" class="text-xs-center">
         <v-menu left bottom offset-y>
           <template v-slot:activator="{ on }">
             <v-btn flat icon color="#337fb5" v-on="on">
@@ -147,7 +159,7 @@ export default {
     dialog: false,
     logout: false,
     items: [
-      { title: 'About', link: '/about' },
+      { title: 'About Paperwiff', link: '/about' },
       { title: 'Settings', link: '/settings' }
     ],
     links: ['Home', 'Contacts', 'Settings'],
@@ -189,6 +201,12 @@ export default {
       })
       this.$store.dispatch('user/logoutUser')
       this.$router.push('/')
+    },
+    openForm() {
+      this.$store.commit('ui/SET_SHOW_POPUP', {
+        status: true,
+        component: 'SignUp'
+      })
     }
   }
 }

@@ -17,6 +17,14 @@
           />
         </v-btn>
       </div>
+      <div class="join-us-footer">
+        <v-btn round outline flat @click="openForm()">
+          Sign in with Email
+          <v-icon right>
+            mail_outline
+          </v-icon>
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -31,6 +39,14 @@ export default {
     ...mapGetters({
       isSignedIn: 'user/isSignedIn'
     })
+  },
+  methods: {
+    openForm() {
+      this.$store.commit('ui/SET_SHOW_POPUP', {
+        status: true,
+        component: 'SignUp'
+      })
+    }
   }
 }
 </script>
@@ -67,6 +83,9 @@ export default {
       .icon-img {
         padding: 0 5px;
       }
+    }
+    .v-btn__content {
+      text-transform: capitalize;
     }
   }
 }

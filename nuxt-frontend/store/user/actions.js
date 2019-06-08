@@ -186,6 +186,20 @@ const actions = {
         )
       }
     })
+  },
+  userFeed(context, payload) {
+    return this.$axios({
+      method: 'POST',
+      url: endpoints.API_USER_FEED,
+      data: {
+        userId: context.rootState.user.current.userId
+      },
+      headers: {
+        Authorization: 'Bearer ' + context.rootState.user.access_token
+      }
+    }).then(res => {
+      return res.data.result.items
+    })
   }
 }
 export default actions

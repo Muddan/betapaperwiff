@@ -3,35 +3,66 @@
     <div>
       <div v-if="tagExits.length > 0">
         <div class="tagDetails">
-          <div class="tagname-section">
-            <header>
-              <p class="label">Stories in</p>
-              <h3 class="main-title">{{ tagName }}</h3>
-              <div class="follow-tag-wrapper">
-                <v-btn
-                  small
-                  round
-                  outline
-                  color="#337fb5"
-                  @click.stop="followTag()"
-                  >{{ !followedTags ? 'Follow' : 'Following' }}</v-btn
-                >
-              </div>
-              <!-- <div class="tag-stats">
+          <div class="main-content">
+            <div class="tagname-section hidden-sm-and-up">
+              <header>
+                <p class="label">Stories in</p>
+                <h3 class="main-title">{{ tagName }}</h3>
+                <v-subheader class="tag-info">
+                  Follow to get great stories about {{ tagName }} in your inbox
+                  and on your homepage
+                </v-subheader>
+                <div class="follow-tag-wrapper">
+                  <v-btn
+                    small
+                    round
+                    outline
+                    color="#337fb5"
+                    @click.stop="followTag()"
+                    >{{ !followedTags ? 'Follow' : 'Following' }}</v-btn
+                  >
+                </div>
+
+                <!-- <div class="tag-stats">
                 <span class="stat-value">{{ stories.length }} </span>
                 <span class="stat-label">posts</span>
               </div> -->
-            </header>
-          </div>
-          <div class="main-content">
+              </header>
+            </div>
             <v-layout>
               <v-flex
                 class="sidebar-section sidebar-left hidden-sm-and-down"
                 md3
                 xs12
               >
-                <h3 class="available-tags">Available tags</h3>
-                <TagListNormal></TagListNormal>
+                <div class="tagname-section">
+                  <header>
+                    <p class="label">Stories in</p>
+                    <h3 class="main-title">{{ tagName }}</h3>
+                    <v-subheader class="tag-info">
+                      Follow to get great stories about {{ tagName }} in your
+                      inbox and on your homepage
+                    </v-subheader>
+                    <div class="follow-tag-wrapper">
+                      <v-btn
+                        small
+                        round
+                        outline
+                        color="#337fb5"
+                        @click.stop="followTag()"
+                        >{{ !followedTags ? 'Follow' : 'Following' }}</v-btn
+                      >
+                    </div>
+                    <!-- <div class="tag-stats">
+                <span class="stat-value">{{ stories.length }} </span>
+                <span class="stat-label">posts</span>
+              </div> -->
+                  </header>
+                </div>
+                <div class="taglist">
+                  <h3 class="available-tags">Available tags</h3>
+                  <TagListNormal></TagListNormal>
+                </div>
               </v-flex>
               <v-flex class="content-section" md6 xs12>
                 <story-items
@@ -144,18 +175,28 @@ $logosection-color: #043344;
   max-width: 1400px;
   margin: auto;
   .tagname-section {
-    margin: 20px 0 0;
-    padding: 20px;
+    margin: 10px 0 0;
+    padding: 20px 20px 40px 20px;
     box-sizing: border-box;
     text-align: left;
-    // color: #36789a;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
+    @media (max-width: 768px) {
+      padding: 20px 15px;
+      border-bottom: none;
+    }
+    .tag-info {
+      padding-left: 10px;
+    }
+
     .label {
       margin: 10px 0 0 8px;
       text-transform: capitalize;
       opacity: 0.5;
     }
     .main-title {
-      margin: 10px 0 0 8px;
+      margin: 10px 0 10px 5px;
       font-size: 40px;
       font-weight: bold;
       text-transform: capitalize;
@@ -197,11 +238,18 @@ $logosection-color: #043344;
   .main-content {
     .sidebar-section {
       margin: 10px 10px 0 10px;
-      border-top: 1px solid #e3e3e3;
-
       .available-tags {
         padding-left: 12px;
+        border-bottom: 1px solid #f2f2f2;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
+      .taglist {
+        background: #fff;
         margin: 20px 0;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
       }
     }
     .content-section {

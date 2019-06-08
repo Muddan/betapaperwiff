@@ -6,7 +6,7 @@
           path: '/tags/' + tag.value
         }"
       >
-        <span class="tagname"> # {{ tag.name }} </span>
+        <span class="tagname"> #{{ tag.name }} </span>
       </nuxt-link>
     </v-chip>
     <v-chip

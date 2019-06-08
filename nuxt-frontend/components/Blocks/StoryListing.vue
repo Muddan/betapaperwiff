@@ -1,27 +1,34 @@
 <template>
   <div class="articles-tab">
-    <!-- <v-btn
-      v-for="(label, index) in FeedType"
-      :key="index"
-      depressed
-      :class="{ 'v-btn--active': activeTab === label.title }"
-      @click="changeTab(label)"
-    >
-      {{ label.title }}
-    </v-btn>
-    <v-btn
-      v-if="isSignedIn"
-      depressed
-      :class="{ 'v-btn--active': activeTab === 'Feed' }"
-      @click.stop="changeTab({ title: 'Feed', status: false })"
-    >
-      {{ 'Feed' }}
-    </v-btn> -->
-    <v-subheader>
-      Latest Stories
-    </v-subheader>
+    <div class="tab-list">
+      <v-subheader
+        v-for="(label, index) in FeedType"
+        :key="index"
+        depressed
+        class="feed-title"
+        :class="{ 'feed-title--active': activeTab === label.title }"
+        @click="changeTab(label)"
+      >
+        {{ label.title }}
+      </v-subheader>
+      <!-- <v-subheader
+        v-if="isSignedIn"
+        depressed
+        class="feed-title"
+        :class="{ 'feed-title--active': activeTab === 'Feed' }"
+        @click.stop="changeTab({ title: 'Feed', status: false })"
+      >
+        {{ 'Feed' }}
+      </v-subheader> -->
+    </div>
     <v-scroll-y-transition>
-      <story-items :stories="getCurrentUserFeed()"></story-items>
+      <story-items
+        v-if="getCurrentUserFeed()"
+        :stories="getCurrentUserFeed()"
+      ></story-items>
+      <div v-else>
+        Please follow tags, so that we can improve your feed.
+      </div>
     </v-scroll-y-transition>
   </div>
 </template>
@@ -57,9 +64,7 @@ export default {
     loader() {
       const l = this.loader
       this[l] = !this[l]
-
       setTimeout(() => (this[l] = false), 3000)
-
       this.loader = null
     }
   },
@@ -86,6 +91,11 @@ export default {
       this.activeTab = tab.title
     },
     getCurrentUserFeed() {
+      // if (this.activeTab === 'Feed') {
+      //   return this.$store.dispatch('user/userFeed')
+      // } else {
+      //   return this.allStories
+      // }
       return this.allStories
     }
   }
@@ -124,10 +134,19 @@ export default {
       border-radius: 8px;
     }
   }
-  .v-btn--active {
-    background-color: #337fb5 !important;
-    color: #fff !important;
-    border-radius: 8px;
+
+  .tab-list {
+    display: flex;
+    .feed-title {
+      cursor: pointer;
+      padding: 0 20px;
+      border-bottom: 2px solid #f6f9fb;
+      transition: all 0.2s ease-in-out;
+      &.feed-title--active {
+        color: #337fb5 !important;
+        border-bottom: 2px solid #337fb5;
+      }
+    }
   }
 }
 </style>

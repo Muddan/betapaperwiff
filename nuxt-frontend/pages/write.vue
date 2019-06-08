@@ -11,9 +11,6 @@
       </div>
       <div class="form-section">
         <v-flex xs12 sm12 class="header-img-main">
-          <v-subheader>
-            Upload an image
-          </v-subheader>
           <image-input v-model="storyForm.headerImage" class="header-img-main">
             <div slot="activator">
               <v-container
@@ -144,7 +141,7 @@ export default {
           imageFile: null
         },
         title: '',
-        content: '',
+        content: '<p></p>',
         summary: '',
         translatedContent: '',
         selectedLanguage: 'english',
@@ -267,6 +264,7 @@ export default {
                 selectedLanguage: 'english',
                 selectedTags: []
               }
+              this.$router.push('/')
             }
           })
       }
@@ -327,6 +325,10 @@ $logosection-color: #043344;
       background-origin: padding-box;
       background-repeat: no-repeat;
       background-position: center center;
+      @media (max-width: 768px) {
+        min-height: 200px;
+        max-height: 200px;
+      }
     }
     .bg-holder {
       display: flex;

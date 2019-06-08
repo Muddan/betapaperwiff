@@ -36,9 +36,7 @@
                         :class="{ likedStory: likedStatus }"
                         @click="likeStory(story.storyId)"
                       >
-                        <v-icon>{{
-                          liked ? 'favorite' : 'favorite_border'
-                        }}</v-icon>
+                        <v-icon>favorite</v-icon>
                       </v-btn>
                       <!-- <span class="like-counter">{{ likeCount }}</span> -->
                     </div>
@@ -120,6 +118,7 @@
                   </div>
                   <div class="story-content" v-html="story.content"></div>
                   <div class="footer-share">
+                    <v-subheader>Share </v-subheader>
                     <share-story :url="storyUrl"></share-story>
                   </div>
                   <div class="footer-author">
@@ -128,15 +127,44 @@
                         outline
                         color="indigo"
                         @click="followAuthor(story.userId)"
-                        >{{ followedAuthor ? 'Following' : 'Follow' }}</v-btn
-                      ></author-info
-                    >
+                      >
+                        <v-icon left>
+                          {{ followedAuthor ? 'group' : 'group_add' }}</v-icon
+                        >
+                        {{ followedAuthor ? 'Following' : 'Follow' }}
+                      </v-btn>
+                    </author-info>
                   </div>
                 </div>
               </v-flex>
             </v-layout>
+            <v-flex md12>
+              <!-- <SidebarStories></SidebarStories> -->
+            </v-flex>
             <!-- <comments-listing></comments-listing> -->
           </div>
+        </div>
+        <div class="bottom-nav-mobile hidden-md-and-up">
+          <v-btn
+            flat
+            icon
+            color="grey darken-4"
+            @click="saveStory(story.storyId)"
+          >
+            <v-icon>{{ savedStory ? 'bookmarks' : 'bookmark_border' }}</v-icon>
+          </v-btn>
+          <v-btn icon flat value="nearby">
+            <v-icon>comment</v-icon>
+          </v-btn>
+          <v-btn
+            flat
+            icon
+            color="grey darken-4"
+            :class="{ likedStory: likedStatus }"
+            @click="likeStory(story.storyId)"
+          >
+            <v-icon>favorite</v-icon>
+          </v-btn>
         </div>
       </v-container>
     </no-ssr>
@@ -146,23 +174,33 @@
 <script>
 import AuthorInfo from '@/components/Blocks/AuthorInfo.vue'
 import ShareStory from '@/components/Blocks/ShareStory.vue'
+// import SidebarStories from '@/components/Blocks/SidebarStories.vue'
+
 // import commentsListing from '@/components/Blocks/comments/commentsListing.vue'
 import { SocialFeatures } from '@/mixins/SocialFeatures.js'
+
 import { endpoints } from '@/api/endpoints.js'
 import { getDate } from '@/helpers/dateHelper.js'
 import { mapGetters } from 'vuex'
 export default {
   transition: 'slidedown',
+  head() {
+    return {
+      title: this.story.storyTitle
+    }
+  },
   components: {
     ShareStory,
     AuthorInfo
+    // SidebarStories,
     // commentsListing
   },
   mixins: [SocialFeatures],
   data() {
     return {
       fab: false,
-      likeCount: 0
+      likeCount: 0,
+      bottomNav: ''
     }
   },
 
@@ -195,19 +233,21 @@ export default {
       }
     }
   },
-  async asyncData({ app, store, route }) {
-    const storyDetails = await app.$axios.$post(
-      endpoints.API_GET_STORY_DETAILS,
-      {
+  async asyncData({ app, store, route, redirect }) {
+    const storyDetails = await app.$axios
+      .$post(endpoints.API_GET_STORY_DETAILS, {
         storyId: route.params.storyId
-      }
-    )
-    const userProfile = await app.$axios.$post(
-      endpoints.API_GET_AUTHOR_DETAILS,
-      {
+      })
+      .catch(() => {
+        redirect('/')
+      })
+    const userProfile = await app.$axios
+      .$post(endpoints.API_GET_AUTHOR_DETAILS, {
         userName: route.params.userName
-      }
-    )
+      })
+      .catch(() => {
+        redirect('/')
+      })
     return {
       story: storyDetails.result.item,
       storyUrl: `${process.env.baseUrl}${route.path}`,
@@ -250,22 +290,6 @@ export default {
       border-top: 1px solid #d7d7d7;
       width: 60%;
       padding-top: 20px;
-    }
-    .likedStory {
-      &:hover {
-        background: #deedf8;
-      }
-      .v-icon {
-        color: #d50122;
-      }
-    }
-    .savedStory {
-      &:hover {
-        background: #deedf8;
-      }
-      .v-icon {
-        color: #141414;
-      }
     }
   }
   .content-layout {
@@ -445,6 +469,34 @@ export default {
     .footer-author {
       border-top: 1px solid #f2f2f2;
     }
+  }
+  .likedStory {
+    &:hover {
+      background: #deedf8;
+    }
+    .v-icon {
+      color: #d50122;
+    }
+  }
+  .savedStory {
+    &:hover {
+      background: #deedf8;
+    }
+    .v-icon {
+      color: #141414;
+    }
+  }
+  .bottom-nav-mobile {
+    width: 100%;
+    background: #fff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    padding: 0 30px;
   }
 }
 </style>

@@ -8,7 +8,7 @@
         disable-resize-watcher
       >
         <v-flex class="container">
-          <tag-listing></tag-listing>
+          <SidebarStories></SidebarStories>
         </v-flex>
       </v-navigation-drawer>
       <v-navigation-drawer
@@ -43,8 +43,12 @@
           >
             <user-info :image-only="false" :only-mobile="true"></user-info>
             <tag-listing></tag-listing>
+            <v-scroll-y-transition>
+              <key-links></key-links>
+            </v-scroll-y-transition>
           </v-flex>
           <v-flex class="content-section" md6 xs12>
+            <!-- <StoryCarousel></StoryCarousel> -->
             <story-listing></story-listing>
           </v-flex>
           <v-flex
@@ -56,9 +60,7 @@
             <v-scroll-y-transition>
               <join-us></join-us>
             </v-scroll-y-transition>
-            <v-scroll-y-transition>
-              <key-links></key-links>
-            </v-scroll-y-transition>
+            <SidebarStories></SidebarStories>
           </v-flex>
         </v-layout>
       </div>
@@ -72,6 +74,8 @@ import UserInfo from '@/components/Blocks/UserInfo.vue'
 import StoryListing from '@/components/Blocks/StoryListing.vue'
 import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 import JoinUs from '@/components/Blocks/JoinUs.vue'
+import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
+// import StoryCarousel from '@/components/Blocks/StoryCarousel.vue'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -83,7 +87,9 @@ export default {
     UserInfo,
     StoryListing,
     KeyLinks,
-    JoinUs
+    JoinUs,
+    SidebarStories
+    // StoryCarousel
   },
   data() {
     return {
@@ -158,6 +164,9 @@ $logosection-color: #043344;
     .v-tabs__bar {
       border-radius: 8px;
     }
+  }
+  .sidebar-stories-main {
+    margin: 20px 0;
   }
 }
 </style>

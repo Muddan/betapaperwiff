@@ -110,14 +110,6 @@
                       </v-flex>
                       <v-flex xs12 md6 class="input-control">
                         <v-text-field
-                          v-model="user.skills"
-                          label="Skills"
-                          class="input"
-                          name="location"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6 class="input-control">
-                        <v-text-field
                           v-model="user.languages"
                           label="Languages"
                           class="input"
@@ -222,11 +214,11 @@ export default {
         {
           title: 'Profile',
           icon: 'fa fa-users-cog'
+        },
+        {
+          title: 'Account',
+          icon: 'account_balance_wallet'
         }
-        // {
-        //   title: 'Account',
-        //   icon: 'account_balance_wallet'
-        // },
         // {
         //   title: 'Misc',
         //   icon: 'settings_ethernet'
@@ -317,7 +309,7 @@ export default {
     .profile-section {
       margin: 0 20px;
       @media (max-width: 768px) {
-        margin-top: 40px;
+        margin: 40px 0 0;
       }
       .form-card {
         padding: 20px;
@@ -331,10 +323,17 @@ export default {
             color: #fff;
             transform: translateY(-40px);
             box-shadow: 0 12px 20px -10px rgba(81, 153, 195, 0.562);
+
             .header-title {
               font-weight: normal;
               display: inherit;
               font-size: 22px;
+            }
+            @media (max-width: 768px) {
+              padding: 10px;
+              .header-title {
+                font-size: 18px;
+              }
             }
           }
         }
