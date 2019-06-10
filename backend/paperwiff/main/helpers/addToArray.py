@@ -1,4 +1,4 @@
-from paperwiff.main import get_db
+from ..GetDb import get_db
 
 def addToArrayUser(MongoDbFieldName,Value,userId):
     db = get_db()

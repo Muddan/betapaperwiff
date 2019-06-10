@@ -4,6 +4,7 @@ from datetime import datetime
 import re
 from uuid import uuid1
 from pymongo import DESCENDING as decending
+from ..GetDb import get_db
 
 from ..services.user import UserClass
 
@@ -18,7 +19,11 @@ userService = UserClass()
 class StoryClass():
 
     def __init__(self):
-        pass
+        db = get_db()
+        self.storyCollection = db['stories']
+        self.tagsCollection = db['tags']
+        self.userCollection = db['users']
+
 
     # Story CRUD METHODS
     def publishStory(self, userId, tags, storyTitle, content, language, datePublished, headerImage, summary):
@@ -68,6 +73,43 @@ class StoryClass():
             "status": 200
         }
 
+    def getAllPopularStories(self, pageNo=1):
+
+        try:
+            if pageNo <= 0:
+                pageNo = 1
+            pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
+            totalItems = self.storyCollection.count()
+
+            stories = self.storyCollection.find(projection={
+                "_id": False, "comments": False
+            }).skip(pageNo * 10).limit(10).sort("likes",decending).sort("views",decending)
+            listofStories = []
+
+            for story in stories:
+                print(story)
+                image = self.userCollection.find_one({"userId": story["userId"]}, projection={
+                    "_id": False, 'userImage': True, })
+                story.update(image)
+                listofStories.append(story)
+            if (len(listofStories)) == 0:
+                return {
+                    "msg": "no more stories",
+                    "status": 200
+                }
+            return {
+                "pageNo": pageNo + 1,
+                "totalItems": totalItems,
+                "items": list(listofStories),
+                "status": 200
+            }
+        except Exception as e:
+            return {
+                "excetion":str(e),
+                "status": 400
+            }
+
+
     def getAllStories(self, pageNo=1):
         if pageNo <= 0:
             pageNo = 1
@@ -75,7 +117,7 @@ class StoryClass():
         if Stories.objects.count():
             totalItems = Stories.objects.count()
             stories = json.loads(Stories.objects().exclude('id', 'comments', 'copyright').order_by(
-                '-datePublished', ).skip(pageNo * 3).limit(3).to_json())
+                '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
 
             return {
                 "pageNo": pageNo + 1,

@@ -46,6 +46,29 @@ def allStories():
 
     result = storyService.getAllStories(pageNo=pageNo)
     return make_response(response(result), result.get('status'))
+
+@Story.route('/userFeed', methods=['GET'])
+def userFeed():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    if not request.args.get('userId'):
+        return make_response(response("userId is missing"), 400)
+    userId = request.args.get('userId')
+    result = storyService.getCustomizedStories(pageNo=pageNo, userId=userId)
+    return make_response(response(result), result['status'])
+
+@Story.route('/popularStories', methods=['GET'])
+def popularStories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    result = storyService.getAllPopularStories(pageNo=pageNo)
+    return make_response(response(result), result['status'])
+
+
     # try:
 
     #     if  request.args.get('userId')==None and request.args.get('userName')==None:
