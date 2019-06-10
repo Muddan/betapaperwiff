@@ -74,9 +74,10 @@
         <v-flex xs3 md3 class="hidden-sm-and-down">
           <v-flex class="sidebar-section sidebar-left">
             <user-info :image-only="false" :only-mobile="true"></user-info>
+            <KeyLinks></KeyLinks>
           </v-flex>
         </v-flex>
-        <v-flex xs12 md5>
+        <v-flex xs12 md6>
           <v-flex class="sidebar-section sidebar-main">
             <h3 v-if="userStories.length == 0">No stories posted.</h3>
             <div v-else class="user-stories">
@@ -85,7 +86,7 @@
             </div>
           </v-flex>
         </v-flex>
-        <v-flex xs3 md4 class="hidden-sm-and-down">
+        <v-flex xs3 md3 class="hidden-sm-and-down">
           <v-flex class="sidebar-section sidebar-left">
             <SidebarStories></SidebarStories>
           </v-flex>
@@ -99,6 +100,7 @@
 import StoryItems from '@/components/Blocks/StoryItems.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
 import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
+import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 
 import { mapGetters } from 'vuex'
 
@@ -108,7 +110,8 @@ export default {
   components: {
     StoryItems,
     UserInfo,
-    SidebarStories
+    SidebarStories,
+    KeyLinks
   },
   data() {
     return {
