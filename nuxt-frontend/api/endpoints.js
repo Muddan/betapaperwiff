@@ -1,4 +1,4 @@
-const BASE_URL = `http://127.0.0.1:5000`
+const BASE_URL = `https://paperwiff.com`
 const CLOUDINARY = {
   cloud_name: 'wokong'
 }
@@ -29,6 +29,9 @@ export const endpoints = {
   API_GET_TAGS: `${BASE_URL}/api/story/alltags`,
   API_GET_STORY_DETAILS: `${BASE_URL}/api/story/details`,
   API_TRANSTLATE: `${BASE_URL}/api/story/translate`,
+  API_GET_TAG_STORIES: `${BASE_URL}/api/story/tag/stories`,
+  API_GET_USER_STOREIS: `${BASE_URL}/api/story/userStories`,
+  API_GET_AUTHOR_STOREIS: `${BASE_URL}/api/story/authorStories`,
 
   // Misc Apis
   IMAGE_UPLOAD: `https://api.cloudinary.com/v1_1/${

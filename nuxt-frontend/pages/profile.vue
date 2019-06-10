@@ -96,10 +96,12 @@
 
       <v-card-actions class="justify-space-between">
         <v-btn flat @click="prev">
-          <v-icon>fa fa-chevron-left</v-icon>
+          <v-icon left>fa fa-chevron-left</v-icon>
+          prev
         </v-btn>
         <v-btn flat @click="next">
-          <v-icon>fa fa-chevron-right</v-icon>
+          next
+          <v-icon right>fa fa-chevron-right</v-icon>
         </v-btn>
       </v-card-actions>
     </v-container>
@@ -174,7 +176,7 @@ export default {
               message:
                 'we have saved your information, you can change it anytime'
             })
-            window.location.replace('/')
+            this.$router.push('/')
           } else {
             this.$store.dispatch('notification/error', {
               title: 'Oh Snap!',

@@ -4,3 +4,4 @@ class Tags(DynamicDocument):
     name = StringField()
     tagType = StringField()
     status = BooleanField()
+    value = StringField()

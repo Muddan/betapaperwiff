@@ -31,6 +31,7 @@
                       :to="{
                         path: '/a/' + story.userName
                       }"
+                      no-prefetch
                     >
                       <span class="username">
                         {{ story.firstName }}
@@ -196,7 +197,7 @@ export default {
       return getDate(new Date(date))
     },
     savedStory(storyId) {
-      if (this.isSignedIn) {
+      if (this.isSignedIn && this.savedStories) {
         return this.savedStories.includes(storyId)
       } else {
         return false

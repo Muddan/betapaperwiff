@@ -4,23 +4,109 @@
       <div class="header">
         <h3 class="pop-up-title">Join Paperwiff</h3>
         <div class="desc">
-          Sign in to get personalized story recommendations, follow authors and
-          topics you love, and interact with stories.
+          {{ formText }} in to get personalized story recommendations, follow
+          authors and topics you love, and interact with stories.
         </div>
       </div>
       <div class="social-btn">
         <v-btn outline round @click="twitter()">
-          Sign in with Twitter
+          {{ formText }} with Twitter
           <img src="https://img.icons8.com/color/25/000000/twitter.png" />
         </v-btn>
         <v-btn outline round @click="google()">
-          Sign in with Google
+          {{ formText }} with Google
           <img
             class="icon-img"
             src="https://img.icons8.com/color/25/000000/google-logo.png"
           />
         </v-btn>
       </div>
+
+      <v-scroll-y-transition>
+        <div class="form-wrapper">
+          <div class="signup-form-wrapper">
+            <v-form
+              ref="sign-up-form"
+              v-model="valid"
+              class="sign-up-form"
+              lazy-validation
+            >
+              <v-scroll-y-transition>
+                <v-text-field
+                  v-if="showSignUp"
+                  prepend-icon="account_circle"
+                  label="Full Name"
+                ></v-text-field>
+              </v-scroll-y-transition>
+
+              <v-text-field
+                v-model="email"
+                :rules="emailRules"
+                label="E-mail"
+                prepend-icon="email"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="password"
+                :append-icon="show1 ? 'visibility' : 'visibility_off'"
+                :rules="[rules.required, rules.min]"
+                :type="show1 ? 'text' : 'password'"
+                name="input-10-1"
+                label="Password"
+                prepend-icon="lock"
+                hint="At least 8 characters"
+                counter
+                @click:append="show1 = !show1"
+              ></v-text-field>
+
+              <!--
+              <v-checkbox
+                v-model="checkbox"
+                :rules="[v => !!v || 'You must agree to continue!']"
+                label="Do you agree?"
+                required
+              ></v-checkbox> -->
+
+              <v-btn color="#2e2e2e" dark @click="validate">
+                {{ formText }}
+              </v-btn>
+              <span v-if="!showSignUp" class="forgot-password">
+                Forgot
+                <strong class="link-text" @click="forgotPassword()"
+                  >password ?</strong
+                >
+              </span>
+              <div v-show="!showSignUp" class="form-switcher">
+                <span>
+                  No account?
+                  <strong class="link-text" @click="createAccount()"
+                    >Create one.</strong
+                  >
+                </span>
+              </div>
+              <div v-show="showSignUp" class="form-switcher">
+                <span>
+                  Aready have an account?
+                  <strong class="link-text" @click="loginAccount()"
+                    >Take me to login</strong
+                  >
+                </span>
+              </div>
+              <v-subheader class="notice-text">
+                <span> Click “{{ formText }}” above to accept Paperwiff's</span>
+                <span class="accepting-links">
+                  <strong class="link-text">
+                    <nuxt-link to="/privacy-policy"
+                      >Privacy Policy</nuxt-link
+                    ></strong
+                  >
+                </span>
+              </v-subheader>
+            </v-form>
+          </div>
+        </div>
+      </v-scroll-y-transition>
     </div>
   </div>
 </template>
@@ -31,10 +117,47 @@ import { Login } from '@/mixins/Login'
 export default {
   name: 'JoinUs',
   mixins: [Login],
+  data: () => ({
+    showSignUp: false,
+    formText: 'Sign In',
+    show1: false,
+    valid: true,
+    password: '',
+    nameRules: [v => !!v || 'Name is required'],
+    email: '',
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+/.test(v) || 'E-mail must be valid'
+    ],
+    rules: {
+      required: value => !!value || 'Required.',
+      min: v => v.length >= 8 || 'Min 8 characters',
+      emailMatch: () => "The email and password you entered don't match"
+    },
+    checkbox: false
+  }),
   computed: {
     ...mapGetters({
       isSignedIn: 'user/isSignedIn'
     })
+  },
+  methods: {
+    validate() {
+      this.$store.dispatch('notification/info', {
+        title: 'Hey there!',
+        message:
+          'We are experiencing some issue, please try our social login :)'
+      })
+    },
+    createAccount() {
+      this.formText = 'Sign Up'
+      this.showSignUp = true
+    },
+    forgotPassword() {},
+    loginAccount() {
+      this.showSignUp = false
+      this.formText = 'Sign In'
+    }
   }
 }
 </script>
@@ -45,8 +168,8 @@ export default {
   background: #fff;
   border-radius: 8px;
   .join-us-content {
-    // background: url('~assets/signup/popup.jpeg');
-    // background-size: 50%;
+    // background: url('~assets/signup/popupbg.jpg');
+    // background-size: cover;
     // background-origin: padding-box;
     // background-repeat: no-repeat;
     // background-position: left center;
@@ -54,6 +177,9 @@ export default {
     padding: 50px;
     text-align: center;
     position: relative;
+    @media (max-width: 768px) {
+      padding: 30px 20px;
+    }
     .header {
       width: 100%;
       text-align: center;
@@ -71,23 +197,51 @@ export default {
         font-size: 18px;
         @media (max-width: 768px) {
           max-width: 100%;
-          font-size: 16px;
+          font-size: 14px;
         }
       }
     }
     .v-btn {
-      text-transform: lowercase;
+      text-transform: capitalize;
     }
     .social-btn {
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
       @media (max-width: 768px) {
         flex-direction: column;
       }
       .icon-img {
         padding: 0 5px;
       }
+    }
+  }
+  .footer-header {
+    .v-subheader {
+      justify-content: center;
+    }
+  }
+  .form-wrapper {
+    .sign-up-form {
+      width: 50%;
+      margin: auto;
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+    }
+    .notice-text {
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      padding: 10px 0;
+    }
+    .form-switcher {
+      box-sizing: border-box;
+      padding: 10px 0;
+    }
+    .link-text {
+      cursor: pointer;
     }
   }
 }

@@ -59,7 +59,6 @@ class UserClass(UserServiceHelper, StoryServiceHelper):
             userName = '@' + decoded["name"].split(' ')[0].lower()
             if self.userNameExists(userName):
                 userName = userName + ((str(uuid1())[0:6]))
-
             user = Users(
                 firstName=decoded['name'],
                 joined=str(datetime.datetime.now()),

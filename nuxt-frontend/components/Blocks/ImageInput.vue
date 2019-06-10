@@ -38,7 +38,7 @@ export default {
     errorDialog: null,
     errorText: '',
     uploadFieldName: 'file',
-    maxSize: 1024
+    maxSize: 3024
   }),
   methods: {
     launchFilePicker() {

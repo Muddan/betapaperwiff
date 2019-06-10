@@ -4,21 +4,25 @@ import pkg from './package'
 export default {
   mode: 'universal',
   server: {
-    host: '127.0.0.1',
+    host: '172.31.24.211',
     port: 3000
   },
   /*
    ** Headers of the page
    */
   head: {
-    title: 'Paperwiff',
+    title: 'Paperwiff | A platform to read and write with rewards',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Paperwiff is a platform to read and write with rewards'
+      }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: '/static/favicon.ico' },
       {
         rel: 'stylesheet',
         href:
@@ -52,7 +56,6 @@ export default {
    */
   plugins: [
     '@/plugins/vuetify',
-    { src: '~/plugins/authenticate', ssr: false },
     '~/plugins/axios',
     { src: '~plugins/nuxtQuill.js', ssr: false },
     { src: '~plugins/cloudinary', ssr: false },
@@ -65,7 +68,6 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa',
     '@nuxtjs/toast',
     'nuxt-izitoast'
   ],

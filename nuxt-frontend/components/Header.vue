@@ -8,7 +8,7 @@
       :temporary="true"
     >
       <v-flex xs12>
-        <user-info :only-image="true"></user-info>
+        <user-info :image-only="false" :only-mobile="true"></user-info>
         <join-us></join-us>
         <v-list class="pt-0">
           <v-subheader>
@@ -20,7 +20,9 @@
             </v-list-tile-title>
           </v-list-tile>
           <v-list-tile>
-            <v-list-tile-title>Settings</v-list-tile-title>
+            <v-list-tile-title
+              ><nuxt-link to="/settings">Settings</nuxt-link></v-list-tile-title
+            >
           </v-list-tile>
           <v-divider></v-divider>
           <v-list-tile>
@@ -65,7 +67,19 @@
           <span>Write</span>
         </v-btn>
       </router-link>
-      <div class="text-xs-center">
+      <v-btn
+        v-if="!isSignedIn"
+        class="hidden-md-and-down"
+        small
+        round
+        outline
+        color="#4caf50"
+        flat
+        @click="openForm()"
+      >
+        <span>Join Us</span>
+      </v-btn>
+      <div v-show="isSignedIn" class="text-xs-center">
         <v-menu left bottom offset-y>
           <template v-slot:activator="{ on }">
             <v-btn flat icon color="#337fb5" v-on="on">
@@ -84,11 +98,30 @@
       <v-menu left bottom offset-y transition="slide-y-reverse-transition">
         <template v-slot:activator="{ on }">
           <v-btn class="hidden-md-and-down" flat icon color="#337fb5" v-on="on">
-            <v-icon size="18px">fa fa-ellipsis-v</v-icon>
+            <v-avatar
+              v-if="isSignedIn"
+              v-show="currentUser.userImage"
+              size="35px"
+            >
+              <img :src="currentUser.userImage" />
+            </v-avatar>
+            <v-icon v-else size="18px">fa fa-ellipsis-v</v-icon>
           </v-btn>
         </template>
         <v-list>
-          <v-list-tile v-if="isSignedIn" @click="signOut">Sign Out</v-list-tile>
+          <nuxt-link
+            v-if="isSignedIn"
+            class="user-link"
+            :to="{
+              path: '/a/' + currentUser.userName
+            }"
+          >
+            <v-list-tile class="username-header ">{{
+              currentUser.userName
+            }}</v-list-tile>
+          </nuxt-link>
+
+          <v-divider v-if="isSignedIn"></v-divider>
           <v-list-tile-content v-for="(item, i) in items" :key="i">
             <v-list-tile>
               <router-link :to="item.link">
@@ -96,6 +129,7 @@
               </router-link>
             </v-list-tile>
           </v-list-tile-content>
+          <v-list-tile v-if="isSignedIn" @click="signOut">Sign Out</v-list-tile>
         </v-list>
       </v-menu>
     </v-toolbar>
@@ -124,7 +158,10 @@ export default {
     drawer: false,
     dialog: false,
     logout: false,
-    items: [{ title: 'settings', link: '/settings' }],
+    items: [
+      { title: 'About Paperwiff', link: '/about' },
+      { title: 'Settings', link: '/settings' }
+    ],
     links: ['Home', 'Contacts', 'Settings'],
     socialIcons: [
       {
@@ -152,7 +189,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      isSignedIn: 'user/isSignedIn'
+      isSignedIn: 'user/isSignedIn',
+      currentUser: 'user/currentUser'
     })
   },
   methods: {
@@ -163,6 +201,12 @@ export default {
       })
       this.$store.dispatch('user/logoutUser')
       this.$router.push('/')
+    },
+    openForm() {
+      this.$store.commit('ui/SET_SHOW_POPUP', {
+        status: true,
+        component: 'SignUp'
+      })
     }
   }
 }
@@ -201,6 +245,15 @@ export default {
     width: 100%;
     bottom: 0;
     left: 0;
+  }
+}
+.v-list {
+  .username-header {
+    .v-list__tile {
+      font-weight: bold;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
   }
 }
 </style>

@@ -36,6 +36,19 @@ def allTags():
 #     except Exception as e:
 #         return make_response(response('Something went wrong while getting stories ' + str(e)), 400)
 
+@Story.route('/tag/stories', methods=['GET'])
+def taggedStories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    if not request.args.get('tag'):
+        return 'try again'
+
+    tagName = request.args.get('tag')
+
+    result = storyService.getTagStories(pageNo=pageNo, tagName=tagName)
+    return make_response(response(result), result.get('status'))
 
 @Story.route('/allstories', methods=['GET'])
 def allStories():
@@ -45,6 +58,34 @@ def allStories():
         pageNo = int(request.args.get('pageNo'))
 
     result = storyService.getAllStories(pageNo=pageNo)
+    return make_response(response(result), result.get('status'))
+
+@Story.route('/authorStories', methods=['GET'])
+def authorstories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    if not request.args.get('userName'):
+        return 'Invalid username', 400
+
+    userName = request.args.get('userName')
+
+    result = storyService.getAuthorStories(pageNo=pageNo, userName=userName)
+    return make_response(response(result), result.get('status'))
+
+@Story.route('/userStories', methods=['GET'])
+def userStories():
+    if not request.args.get('pageNo'):
+        pageNo = 1
+    else:
+        pageNo = int(request.args.get('pageNo'))
+    if not request.args.get('userId'):
+        return 'Invalid username', 400
+
+    userId = request.args.get('userId')
+
+    result = storyService.getUserStories(pageNo=pageNo, userId=userId)
     return make_response(response(result), result.get('status'))
 
 @Story.route('/userFeed', methods=['GET'])

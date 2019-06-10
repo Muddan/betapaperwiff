@@ -39,7 +39,7 @@
                   >
                     <v-layout column class="form-content">
                       <v-flex class="form-control">
-                        <image-input v-model="avatar">
+                        <!-- <image-input v-model="avatar">
                           <div slot="activator">
                             <v-avatar
                               v-if="!avatar"
@@ -53,7 +53,10 @@
                               <img :src="avatar.imageURL" alt="avatar" />
                             </v-avatar>
                           </div>
-                        </image-input>
+                        </image-input> -->
+                        <v-avatar v-ripple size="150px" class="mb-3">
+                          <img :src="avatar.imageURL" alt="avatar" />
+                        </v-avatar>
                       </v-flex>
                       <v-flex class="input-control">
                         <v-text-field
@@ -74,6 +77,7 @@
                           :rules="nameRules"
                           readonly
                           name="userName"
+                          disabled
                           hint="This is not editable"
                         ></v-text-field>
                       </v-flex>
@@ -102,14 +106,6 @@
                           class="input"
                           name="location"
                           hint="Ex: 'Bangalore'"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6 class="input-control">
-                        <v-text-field
-                          v-model="user.skills"
-                          label="Skills"
-                          class="input"
-                          name="location"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 md6 class="input-control">
@@ -175,13 +171,13 @@
   </div>
 </template>
 <script>
-import ImageInput from '@/components/Blocks/ImageInput'
+// import ImageInput from '@/components/Blocks/ImageInput'
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
 export default {
-  components: {
-    ImageInput
-  },
+  // components: {
+  //   ImageInput
+  // },
   middleware: 'auth',
   data() {
     return {
@@ -218,11 +214,11 @@ export default {
         {
           title: 'Profile',
           icon: 'fa fa-users-cog'
+        },
+        {
+          title: 'Account',
+          icon: 'account_balance_wallet'
         }
-        // {
-        //   title: 'Account',
-        //   icon: 'account_balance_wallet'
-        // },
         // {
         //   title: 'Misc',
         //   icon: 'settings_ethernet'
@@ -312,6 +308,9 @@ export default {
     }
     .profile-section {
       margin: 0 20px;
+      @media (max-width: 768px) {
+        margin: 40px 0 0;
+      }
       .form-card {
         padding: 20px;
         border-radius: 8px;
@@ -324,10 +323,17 @@ export default {
             color: #fff;
             transform: translateY(-40px);
             box-shadow: 0 12px 20px -10px rgba(81, 153, 195, 0.562);
+
             .header-title {
               font-weight: normal;
               display: inherit;
               font-size: 22px;
+            }
+            @media (max-width: 768px) {
+              padding: 10px;
+              .header-title {
+                font-size: 18px;
+              }
             }
           }
         }

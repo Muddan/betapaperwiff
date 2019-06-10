@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import firebase from 'firebase'
 import 'firebase/auth'
 export const Login = {
@@ -25,14 +26,16 @@ export const Login = {
       firebase
         .auth()
         .signInWithPopup(provider)
-        .then(res => {
-          firebase
+        .then(async res => {
+          await firebase
             .auth()
             .currentUser.getIdToken(/* forceRefresh */ true)
-            .then(function(idToken) {
-              // eslint-disable-next-line no-console
-              console.log(idToken)
+            .then(idToken => {
+              this.$store.dispatch('user/authenticate', idToken)
             })
+          if (res.additionalUserInfo.isNewUser) {
+            this.$router.push('/profile')
+          }
         })
         .catch(error => {
           if (error.code === 'auth/invalid-credential') {
@@ -47,6 +50,28 @@ export const Login = {
             message: error.message
           })
         })
+    },
+    emailSignUp(email, password) {
+      firebase
+        .auth()
+        .sendPasswordResetEmail('sainavaneeth@gmail.com')
+        .then(res => {
+          console.log(res)
+        })
+      // firebase
+      //   .auth()
+      //   .createUserWithEmailAndPassword(
+      //     'sainavaneeth@gmail.com',
+      //     'paperwiff@123'
+      //   )
+      //   .then(res => {
+      //     firebase
+      //       .auth()
+      //       .currentUser.getIdToken(/* forceRefresh */ true)
+      //       .then(function(idToken) {
+      //         console.log(idToken)
+      //       })
+      //   })
     }
   }
 }

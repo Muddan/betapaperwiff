@@ -20,7 +20,6 @@ const actions = {
         await context.dispatch('stories/userFeed', currentUser.uid, {
           root: true
         })
-        await context.dispatch('stories/getStoryTags', null, { root: true })
       }
     })
   },
@@ -44,7 +43,8 @@ const actions = {
       'paperwiff/user',
       JSON.stringify({
         access_token: payload.access_token,
-        refresh_token: payload.refresh_token
+        refresh_token: payload.refresh_token,
+        userId: payload.userDetails.userId
       })
     )
     context.commit(types.SET_ACCESS_TOKENS, tokens)
@@ -67,6 +67,13 @@ const actions = {
     }
   },
   setTokens(context, payload) {
+    localStorage.setItem(
+      'paperwiff/user',
+      JSON.stringify({
+        access_token: payload.access_token,
+        refresh_token: payload.refresh_token
+      })
+    )
     context.commit(types.SET_ACCESS_TOKENS, payload)
   },
 
@@ -75,7 +82,7 @@ const actions = {
       .auth()
       .signOut()
       .then(function() {
-        console.log('FIREBASE SIGNOUT')
+        console.log('SIGNOUT')
       })
     const tokens = {
       access_token: '',
@@ -87,21 +94,22 @@ const actions = {
     localStorage.clear()
   },
 
-  getUserDetails(context, payload) {
-    this.$axios({
-      method: 'POST',
-      url: endpoints.API_GET_USER_DETAILS,
-      data: {
-        userId: payload
-      },
-      headers: {
-        Authorization: 'Bearer ' + context.rootState.user.access_token
-      }
-    }).then(res => {
-      if (res.status === 200) {
-        context.commit(types.SET_USER_PROFILE, res.data.result)
-      }
-    })
+  async getUserDetails(context, payload) {
+    await this.$axios
+      .$post(
+        endpoints.API_GET_USER_DETAILS,
+        {
+          userId: payload
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + context.rootState.user.access_token
+          }
+        }
+      )
+      .then(res => {
+        context.commit(types.SET_USER_PROFILE, res.result)
+      })
   },
   updateUserDetails(context, payload) {
     return new Promise((resolve, reject) => {
@@ -112,10 +120,8 @@ const actions = {
           }
         })
         .then(res => {
-          if (res.status === 200) {
-            // context.dispatch('getUserDetails', payload.userName)
-            context.commit(types.SET_USER_PROFILE, res.data.result)
-          }
+          context.dispatch('getUserDetails', payload.userId)
+          // context.commit(types.SET_USER_PROFILE, res.data.result)
           resolve(true)
         })
         .catch(e => {
@@ -124,21 +130,17 @@ const actions = {
     })
   },
   followAuthor(context, payload) {
-    this.$axios(
-      {
-        method: 'POST',
-        url: endpoints.API_FOLLOW_AUTHOR,
-        data: {
-          userId: context.rootState.user.current.userId,
-          authorId: payload
-        }
+    this.$axios({
+      method: 'POST',
+      url: endpoints.API_FOLLOW_AUTHOR,
+      data: {
+        userId: context.rootState.user.current.userId,
+        authorId: payload
       },
-      {
-        headers: {
-          Authorization: 'Bearer ' + context.rootState.user.access_token
-        }
+      headers: {
+        Authorization: 'Bearer ' + context.rootState.user.access_token
       }
-    ).then(async res => {
+    }).then(async res => {
       if (res.status === 200) {
         await context.dispatch(
           'getUserDetails',
@@ -157,21 +159,17 @@ const actions = {
     })
   },
   saveLater(context, payload) {
-    this.$axios(
-      {
-        method: 'POST',
-        url: endpoints.API_STORY_SAVE,
-        data: {
-          userId: context.rootState.user.current.userId,
-          storyId: payload
-        }
+    this.$axios({
+      method: 'POST',
+      url: endpoints.API_STORY_SAVE,
+      data: {
+        userId: context.rootState.user.current.userId,
+        storyId: payload
       },
-      {
-        headers: {
-          Authorization: 'Bearer ' + context.rootState.user.access_token
-        }
+      headers: {
+        Authorization: 'Bearer ' + context.rootState.user.access_token
       }
-    ).then(async res => {
+    }).then(async res => {
       if (res.status === 200) {
         await context.dispatch(
           'getUserDetails',
@@ -187,6 +185,20 @@ const actions = {
           { root: true }
         )
       }
+    })
+  },
+  userFeed(context, payload) {
+    return this.$axios({
+      method: 'POST',
+      url: endpoints.API_USER_FEED,
+      data: {
+        userId: context.rootState.user.current.userId
+      },
+      headers: {
+        Authorization: 'Bearer ' + context.rootState.user.access_token
+      }
+    }).then(res => {
+      return res.data.result.items
     })
   }
 }

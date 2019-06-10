@@ -19,13 +19,15 @@ class Datebase:
         json_url = os.path.join(SITE_ROOT, "var/", "availableTags.json")
         data = json.load(open(json_url))
         tags = data['tags']
-        if Tags.objects():
+        if Tags.objects().count() > 0:
+            print('Dropping collection..')
             Tags.drop_collection()
+        print(Tags.objects().count())
         for tag in tags:
             tagStatus = self.str_to_bool(tag['status'])
-            Tags(name=tag['name'], tagType=tag['type'],
+            Tags(name=tag['name'], tagType=tag['type'], value=tag['value'],
                  status=tagStatus).save()
-
+        print(Tags.objects().count())
     def str_to_bool(self,s):
         if s == 'True':
             return True

@@ -26,19 +26,22 @@ const actions = {
       context.rootState.stories.totalStories
     ) {
       this.$axios
-        .$get(`${endpoints.API_GET_STORIES}?pageNo=${payload}`)
+        .$get(`${endpoints.API_GET_STORIES}?pageNo=${payload.pageNo}`)
         .then(response => {
-          context.commit(types.SET_ALL_STORIES, response.result.items)
+          context.commit(types.SET_ALL_STORIES, {
+            items: response.result.items,
+            loadMore: true
+          })
         })
     }
   },
-  async publishStory(context, payload) {
+  publishStory(context, payload) {
     const formData = new FormData()
     formData.append('file', payload.headerImage)
     formData.append('upload_preset', endpoints.upload_preset)
-    await this.$axios.$post(endpoints.IMAGE_UPLOAD, formData).then(res => {
+    return this.$axios.$post(endpoints.IMAGE_UPLOAD, formData).then(res => {
       payload.headerImage = res.secure_url
-      this.$axios
+      return this.$axios
         .$post(endpoints.API_PUBLISH_STORY, payload, {
           headers: {
             Authorization: 'Bearer ' + context.rootState.user.access_token
@@ -68,16 +71,27 @@ const actions = {
           context.dispatch('getAllStories')
           return res.result
         })
+        .catch(() => {
+          context.dispatch(
+            'notification/error',
+            {
+              title: '',
+              message: 'Please enter valid data'
+            },
+            { root: true }
+          )
+          return false
+        })
     })
   },
 
-  addToFollowingFilters(context, payload) {
-    this.$axios
+  async addToFollowingFilters(context, payload) {
+    await this.$axios
       .$post(
         endpoints.API_FOLLOW_TAG,
         {
           userId: context.rootState.user.current.userId,
-          tags: [payload.name]
+          tags: [payload.value]
         },
         {
           headers: {
@@ -86,14 +100,14 @@ const actions = {
         }
       )
       .then(res => {
-        context.dispatch('getStoryTags')
+        // context.dispatch('getStoryTags')
       })
-    context.dispatch(
+    await context.dispatch(
       'user/getUserDetails',
       context.rootState.user.current.userId,
       { root: true }
     )
-    context.dispatch(
+    await context.dispatch(
       'stories/userFeed',
       context.rootState.user.current.userId,
       { root: true }
