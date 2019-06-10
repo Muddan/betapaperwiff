@@ -117,7 +117,6 @@ export default {
 }
 $logosection-color: #043344;
 #home {
-  min-height: calc(93vh - 80px);
   margin-top: 20px;
   .logo-section {
     .main-title {

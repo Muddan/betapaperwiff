@@ -22,7 +22,7 @@ export default {
       }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/static/favicon.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
         href:
@@ -38,7 +38,7 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: { color: '#337fb5' },
 
   /*
    ** Global CSS
@@ -59,7 +59,8 @@ export default {
     '~/plugins/axios',
     { src: '~plugins/nuxtQuill.js', ssr: false },
     { src: '~plugins/cloudinary', ssr: false },
-    { src: '~plugins/firebase', ssr: true }
+    { src: '~plugins/firebase', ssr: true },
+    { src: '~plugins/infiniteLoading', ssr: false }
   ],
 
   /*

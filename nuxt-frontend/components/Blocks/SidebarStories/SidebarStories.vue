@@ -14,9 +14,12 @@
         ></v-progress-circular>
       </div>
 
-      <template v-for="story in getStories">
+      <template v-for="(story, index) in getStories">
         <StoryTile :key="story.storyTitle" :story="story"></StoryTile>
-        <v-divider :key="story.storyId"></v-divider>
+        <v-divider
+          v-show="index != getStories.length - 1"
+          :key="story.storyId"
+        ></v-divider>
       </template>
     </v-list>
   </div>
@@ -31,11 +34,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      allStories: 'stories/allStories'
+      popularStories: 'stories/popularStories'
     }),
     getStories() {
-      return this.allStories.slice(0, 6)
+      return this.popularStories.slice(0, 4)
     }
+  },
+  beforeMount() {
+    this.$store.dispatch('stories/getPopularStories')
   }
 }
 </script>
@@ -44,9 +50,12 @@ export default {
   box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
   background: #fff;
   border-radius: 8px;
-  padding-bottom: 20px;
+  border-bottom: 4px solid #ffb3b9;
   .v-list {
     border-radius: 8px;
+  }
+  .v-list__tile.v-list__tile--avatar {
+    height: max-content;
   }
 }
 </style>

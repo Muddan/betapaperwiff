@@ -25,7 +25,7 @@ const actions = {
       context.rootState.stories.allStories.length <
       context.rootState.stories.totalStories
     ) {
-      this.$axios
+      return this.$axios
         .$get(`${endpoints.API_GET_STORIES}?pageNo=${payload.pageNo}`)
         .then(response => {
           context.commit(types.SET_ALL_STORIES, {
@@ -151,6 +151,11 @@ const actions = {
       }
     ).then(res => {
       context.commit(types.SET_USER_FEED, res.data.result.items)
+    })
+  },
+  async getPopularStories(context, payload) {
+    await this.$axios.$get(endpoints.API_GET_STORIES).then(response => {
+      context.commit(types.SET_POPULAR_STORIES, response.result.items)
     })
   }
 }

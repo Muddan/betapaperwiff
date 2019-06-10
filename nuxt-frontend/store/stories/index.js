@@ -6,7 +6,8 @@ export const state = () => ({
   allStories: [],
   totalStories: 0,
   filteredStories: [],
-  currentStory: null
+  currentStory: null,
+  popularStories: []
 })
 export const getters = () => ({
   getter

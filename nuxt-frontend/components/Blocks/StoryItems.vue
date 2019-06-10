@@ -150,6 +150,7 @@
             </div>
           </div>
         </v-card>
+        <!-- Infinite loading component -->
       </v-layout>
     </no-ssr>
   </v-container>

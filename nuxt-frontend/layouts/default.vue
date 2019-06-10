@@ -20,7 +20,6 @@ export default {
   },
   async beforeMount() {
     await this.$store.dispatch('user/sessionStart')
-    await this.$store.dispatch('stories/getAllStories')
     await this.$store.dispatch('stories/getStoryTags')
   }
 }

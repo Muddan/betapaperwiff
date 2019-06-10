@@ -21,30 +21,37 @@
         {{ 'Feed' }}
       </v-subheader> -->
     </div>
-    <v-scroll-y-transition>
-      <story-items
-        v-if="getCurrentUserFeed()"
-        :stories="getCurrentUserFeed()"
-      ></story-items>
-      <div v-else>
-        Please follow tags, so that we can improve your feed.
-      </div>
-    </v-scroll-y-transition>
+    <story-items
+      v-if="getCurrentUserFeed()"
+      :stories="getCurrentUserFeed()"
+    ></story-items>
+    <no-ssr>
+      <InfiniteLoading spinner="bubbles" @infinite="infiniteHandler">
+        <div slot="no-more" class="no-more-text">
+          The End.
+        </div>
+      </InfiniteLoading>
+    </no-ssr>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import StoryItems from '@/components/Blocks/StoryItems.vue'
+import InfiniteLoading from 'vue-infinite-loading'
+import { endpoints } from '../../api/endpoints'
+
 export default {
   name: 'StoryListing',
   components: {
-    StoryItems
+    StoryItems,
+    InfiniteLoading
   },
   data() {
     return {
       loader: null,
       loading: false,
+      pageNo: 1,
       FeedType: [
         { title: 'Latest', status: true }
         // { title: 'Popular', status: false }
@@ -60,33 +67,25 @@ export default {
       isSignedIn: 'user/isSignedIn'
     })
   },
-  watch: {
-    loader() {
-      const l = this.loader
-      this[l] = !this[l]
-      setTimeout(() => (this[l] = false), 3000)
-      this.loader = null
-    }
-  },
-  mounted() {
-    if (typeof window !== 'undefined' && window) {
-      let pageNo = 2
-      window.onscroll = () => {
-        const bottomOfWindow =
-          document.documentElement.scrollTop + window.innerHeight ===
-          document.documentElement.offsetHeight
-
-        if (bottomOfWindow) {
-          this.$store.dispatch('stories/loadMoreStories', {
-            pageNo: pageNo,
+  methods: {
+    infiniteHandler($state) {
+      this.$axios
+        .$get(`${endpoints.API_GET_STORIES}?pageNo=${this.pageNo}`)
+        .then(async res => {
+          await this.$store.commit('stories/SET_ALL_STORIES', {
+            items: res.result.items,
             loadMore: true
           })
-          pageNo++
-        }
-      }
-    }
-  },
-  methods: {
+          this.pageNo++
+          if (
+            this.$store.state.stories.allStories.length < res.result.totalItems
+          ) {
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
+        })
+    },
     changeTab(tab) {
       this.activeTab = tab.title
     },
@@ -147,6 +146,11 @@ export default {
         border-bottom: 2px solid #337fb5;
       }
     }
+  }
+  .no-more-text {
+    box-sizing: border-box;
+    padding: 20px;
+    font-size: 20px;
   }
 }
 </style>

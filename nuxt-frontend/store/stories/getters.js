@@ -3,7 +3,8 @@ const getter = {
   allStories: state => state.allStories,
   filteredStories: state => state.filteredStories,
   currentStory: state => state.currentStory,
-  totalStories: state => state.totalStories
+  totalStories: state => state.totalStories,
+  popularStories: state => state.popularStories
 }
 
 export default getter
