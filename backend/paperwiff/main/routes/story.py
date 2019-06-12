@@ -197,3 +197,23 @@ def storyDetails():
         return response(storyDetails), storyDetails['status']
     except Exception as e:
         return response('Exception '+ str(e)), 400
+
+
+@Story.route('/delete', methods=['GET'])
+def deleteStory():
+    try:
+        data_json = request.get_json(request.data)
+
+        if not request.get_json('delete'):
+            return response("No items to delete please verify Story Id")
+
+        else:
+            arrayOfStuffToDelete=data_json.get('delete')
+            if len(arrayOfStuffToDelete) <= 0:
+                return response("No items to delete")
+
+            deleted=storyService.deleteByStoryId(arrayOfStuffToDelete)
+            return response(deleted), deleted['status']
+
+    except Exception as e:
+        return response("Error:"+str(e)),400

@@ -28,6 +28,7 @@ class Datebase:
             Tags(name=tag['name'], tagType=tag['type'], value=tag['value'],
                  status=tagStatus).save()
         print(Tags.objects().count())
+
     def str_to_bool(self,s):
         if s == 'True':
             return True

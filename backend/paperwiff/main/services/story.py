@@ -105,6 +105,22 @@ class StoryClass():
                 "status": 200
             }
 
+    def deleteByStoryId(self, ArrayOfStoryToDelete):  #make it more secure this api allows any one to delete
+        try:
+
+            for storyid in ArrayOfStoryToDelete:
+                x=Stories.objects( storyId = storyid).delete()
+            return {
+                "msg":x,
+                "status":200
+            }
+        except Exception as e:
+            return {
+                "msg": "excepton: "+str(e),
+                "status": 200
+            }
+
+
     def getAllPopularStories(self, pageNo=1):
 
         try:
