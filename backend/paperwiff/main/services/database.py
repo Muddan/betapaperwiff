@@ -22,11 +22,14 @@ class Datebase:
         if Tags.objects().count() > 0:
             print('Dropping collection..')
             Tags.drop_collection()
+
+        print('Before inserting tag documents')
         print(Tags.objects().count())
         for tag in tags:
             tagStatus = self.str_to_bool(tag['status'])
             Tags(name=tag['name'], tagType=tag['type'], value=tag['value'],
                  status=tagStatus).save()
+        print('After inserting tag documents')
         print(Tags.objects().count())
     def str_to_bool(self,s):
         if s == 'True':

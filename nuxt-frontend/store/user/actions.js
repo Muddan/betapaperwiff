@@ -36,10 +36,29 @@ const actions = {
    *  @param {*} context
    *  @param {*} payload
    */
-  authenticate(context, payload) {
+  authenticate(context, { idToken, fullName }) {
     this.$axios
       .$post(endpoints.API_USER_AUTH, {
-        id_token: payload
+        id_token: idToken,
+        fullName: fullName
+      })
+      .then(res => {
+        context.dispatch('loginUser', res)
+      })
+  },
+
+  /**
+   *  Authenticate the firebase USER Token in the server and return the user details as reponse
+   *
+   *  @param {*} context
+   *  @param {*} payload
+   */
+  authenticateEmailUser(context, payload) {
+    console.log('SEDNING ID TOKEN TO  EMAIL USER SERVER')
+
+    this.$axios
+      .$post(endpoints.API_USER_EMAIL_AUTH, {
+        userId: payload
       })
       .then(res => {
         context.dispatch('loginUser', res)

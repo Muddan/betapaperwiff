@@ -96,6 +96,10 @@
                                 Math.floor(
                                   story.content.split(' ').length / 160
                                 )
+                                  ? Math.floor(
+                                      story.content.split(' ').length / 160
+                                    )
+                                  : 'less than a'
                               }}
                               min read
                             </span>
@@ -125,7 +129,7 @@
                     <author-info :author="user"
                       ><v-btn
                         outline
-                        color="indigo"
+                        color="#5199c3"
                         @click="followAuthor(story.userId)"
                       >
                         <v-icon left>
@@ -200,7 +204,8 @@ export default {
     return {
       fab: false,
       likeCount: 0,
-      bottomNav: ''
+      bottomNav: '',
+      storyUrl: ''
     }
   },
 
@@ -233,25 +238,38 @@ export default {
       }
     }
   },
-  async asyncData({ app, store, route, redirect }) {
-    const storyDetails = await app.$axios
+  async asyncData({ app, store, route, redirect, error, context }) {
+    let storyDetails
+    let userDetails
+    await app.$axios
       .$post(endpoints.API_GET_STORY_DETAILS, {
         storyId: route.params.storyId
       })
-      .catch(() => {
-        redirect('/')
+      .then(res => {
+        if (res.result.status === 200) {
+          storyDetails = res.result.item
+        }
       })
-    const userProfile = await app.$axios
+      .catch(() => {
+        error({ statusCode: 404 })
+      })
+
+    await app.$axios
       .$post(endpoints.API_GET_AUTHOR_DETAILS, {
         userName: route.params.userName
       })
-      .catch(() => {
-        redirect('/')
+      .then(res => {
+        if (res.result.status === 200) {
+          userDetails = res.result.details
+        }
       })
+      .catch(() => {
+        error({ statusCode: 404 })
+      })
+
     return {
-      story: storyDetails.result.item,
-      storyUrl: `${process.env.baseUrl}${route.path}`,
-      user: userProfile.result
+      story: storyDetails,
+      user: userDetails
     }
   },
   mounted() {
@@ -421,16 +439,17 @@ export default {
       .chip {
         border-radius: 4px;
         padding: 5px;
-        background: #f2f2f2;
-        color: #2e2e2e;
+        background: #f7fafc;
+        color: #337fb5;
         margin-right: 5px;
         font-size: 14px;
+        text-transform: capitalize;
+        cursor: pointer;
         @media (max-width: 768px) {
           font-size: 12px;
         }
         &:hover {
-          text-decoration: underline;
-          cursor: pointer;
+          background: #fafafa;
         }
       }
       .read-time {

@@ -19,6 +19,9 @@ from firebase_admin import credentials, auth
 from .main.firebase.firebaseCredentials import firebaseCredentials
 
 # Firebase Admin SDK Initialization
+# DEV CREDS
+# cred = firebaseCredentials().serviceAccountKeyDev()
+#PROD
 cred = firebaseCredentials().serviceAccountKey()
 credObj = credentials.Certificate(cred)
 firebase_admin.initialize_app(credObj)

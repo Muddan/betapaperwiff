@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     getComponent() {
-      if (this.error.statusCode === 404) {
+      if (this.error.statusCode === 404 || this.error.statusCode === 400) {
         return 'PageNotFound'
       } else {
         return ''

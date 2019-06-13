@@ -174,3 +174,8 @@ def storyDetails():
         return response(storyDetails), storyDetails['status']
     except Exception as e:
         return response('Exception '+ str(e)), 400
+
+@Story.route('/popular', methods=['GET'])
+def popularStories():
+    result =  storyService.getPopularStories()
+    return make_response(response(result), result.get('status'))

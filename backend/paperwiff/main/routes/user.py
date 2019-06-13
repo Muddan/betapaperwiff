@@ -23,6 +23,7 @@ def userDetails():
     except Exception as e:
         return make_response(response(str(e)), 400)
 
+
 @User.route('/updateUser', methods=['POST'])
 @jwt_required
 def updateUserDetails():
@@ -43,9 +44,12 @@ def authorDetails():
     try:
         data_json = json.loads(request.data)
         userName = data_json['userName']
-        result = json.loads(
-            UserServiceHelper().getAuthorDetailsByName(userName).first().to_json())
-        return make_response(response(result), 200)
+        if UserServiceHelper().userNameExists(userName):
+            result = userServices.getAuthorDetails(userName)
+            return make_response(response(result), result['status'])
+        else:
+            return make_response(response('Invalid userId'), 400)
+
     except Exception as e:
         return make_response(response(str(e)), 400)
 
@@ -122,6 +126,19 @@ def storySave():
         storyId = data_json.get('storyId')
         userId = data_json.get('userId')
         result = userServices.storySave(storyId=storyId, userId=userId)
+        return make_response(response(result), result['status'])
+    except Exception as e:
+        return response(str(e)), 400
+
+
+@User.route('/savedstories', methods=['POST'])
+def savedStories():
+    try:
+        data_json = request.get_json(request.data)
+        if not data_json.get('userId'):
+            return make_response(response('userId missing, please try again'), 400)
+        userId = data_json.get('userId')
+        result = userServices.getUserSavedStories(userId=userId)
         return make_response(response(result), result['status'])
     except Exception as e:
         return response(str(e)), 400

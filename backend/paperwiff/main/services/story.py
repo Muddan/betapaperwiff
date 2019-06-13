@@ -179,5 +179,18 @@ class StoryClass():
         else:
             return {
                 "msg": "Story not found with " + storyId,
+                "status": 400
+            }
+    def getPopularStories(self, pageNo=1):
+        if pageNo <= 0:
+            pageNo = 1
+        pageNo = pageNo - 1
+        totalItems = Stories.objects.count()
+        stories = json.loads(Stories.objects().exclude('id', 'comments', 'copyright').order_by(
+                '-views', '-likes' ).skip(pageNo * 5).limit(5).to_json())
+        return {
+                "pageNo": pageNo + 1,
+                "totalItems": totalItems,
+                "items": stories,
                 "status": 200
             }

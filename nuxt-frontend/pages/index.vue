@@ -60,7 +60,9 @@
             <v-scroll-y-transition>
               <join-us></join-us>
             </v-scroll-y-transition>
-            <SidebarStories></SidebarStories>
+            <SidebarStories>
+              <span slot="title">Popular Stories on Paperwiff</span>
+            </SidebarStories>
           </v-flex>
         </v-layout>
       </div>

@@ -2,7 +2,7 @@
   <div class="author-info">
     <v-container>
       <v-layout justify-center main-layout>
-        <v-flex sm6 xs12 info-main>
+        <v-flex sm8 xs12 info-main>
           <div class="user-img">
             <v-avatar size="80px">
               <img :src="author.userImage" :alt="author.userName" />
@@ -23,7 +23,7 @@
             </div>
           </div>
         </v-flex>
-        <v-flex class="follow-flex"> <slot /> </v-flex>
+        <v-flex sm4 xs12 class="follow-flex"> <slot /> </v-flex>
       </v-layout>
     </v-container>
   </div>
@@ -44,9 +44,8 @@ export default {
   background: #fff;
 
   box-sizing: border-box;
-  padding: 10px;
   margin: 0 0 30px 0;
-  width: 80%;
+  width: 100%;
   margin: auto;
   @media (max-width: 768px) {
     width: 100%;

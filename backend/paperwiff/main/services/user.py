@@ -13,6 +13,7 @@ from ..model.Stories import Stories
 # Helpers
 from ..helpers.UserServiceHelper import UserServiceHelper
 from ..helpers.StoryServiceHelper import StoryServiceHelper
+
 # Firebase initialization
 import firebase_admin
 from firebase_admin import auth
@@ -23,13 +24,14 @@ class UserClass(UserServiceHelper, StoryServiceHelper):
     def __init__(self):
         pass
     # update UserDetails
+
     def updateUserDetails(self, Input):
         userId = Input.get("userId")
         if self.userIdExists(userId):
             if(Input['userImage']):
                 Users.objects(userId=userId).update_one(
-                set__userImage=Input.get("userImage"),
-            )
+                    set__userImage=Input.get("userImage"),
+                )
             Users.objects(userId=userId).update_one(
                 set__about=Input.get("about"),
                 set__email=Input.get("email"),
@@ -50,26 +52,77 @@ class UserClass(UserServiceHelper, StoryServiceHelper):
             }
 
     # Retrevies user data from IdToken sent from firebase, create new user.
-    def firebaseUser(self, id_token):
+    def firebaseUser(self, id_token, fullName):
         decoded = auth.verify_id_token(id_token)
 
-        if not self.userIdExists(decoded['user_id']):
+        if decoded['firebase']['sign_in_provider'] == 'password':
 
-            # Check if username already exixts, email will be unique from firebase authentication
-            userName = '@' + decoded["name"].split(' ')[0].lower()
-            if self.userNameExists(userName):
-                userName = userName + ((str(uuid1())[0:6]))
-            user = Users(
-                firstName=decoded['name'],
-                joined=str(datetime.datetime.now()),
-                userId=decoded['user_id'],
-                userImage=decoded['picture'],
-                email=decoded['email'],
-                userName=userName,
-                singInProvider=decoded['firebase']['sign_in_provider']
-            )
-            user.save()
-        currentUser =  self.getUserDetailsByUserId(decoded['user_id']).first()
+            if fullName:
+                # Check if username already exixts, email will be unique from firebase authentication
+                userName = '@' + fullName.split(' ')[0].lower()
+                if self.userNameExists(userName):
+                    userName = userName + ((str(uuid1())[0:6]))
+                user = Users(
+                    firstName=fullName,
+                    joined=str(datetime.datetime.now()),
+                    userId=decoded['user_id'],
+                    email=decoded['email'],
+                    userName=userName,
+                    singInProvider=decoded['firebase']['sign_in_provider']
+                )
+                user.save()
+                currentUser = self.getUserDetailsByUserId(
+                    decoded['user_id']).first()
+                identity = {
+                    "userId": currentUser.userId,
+                    "email": currentUser.email
+                }
+                return {
+                    "access_token": create_access_token(identity=identity),
+                    'refresh_token': create_refresh_token(identity=identity),
+                    "social_login": False,
+                    "userDetails": json.loads(currentUser.to_json()),
+                    "status": 200
+                }
+            else:
+                return {
+                    "msg": 'FullName is missing, please enter and try again',
+                    "status": 400
+                }
+
+        else:
+            if not self.userIdExists(decoded['user_id']):
+
+                # Check if username already exixts, email will be unique from firebase authentication
+                userName = '@' + decoded["name"].split(' ')[0].lower()
+                if self.userNameExists(userName):
+                    userName = userName + ((str(uuid1())[0:6]))
+                user = Users(
+                    firstName=decoded['name'],
+                    joined=str(datetime.datetime.now()),
+                    userId=decoded['user_id'],
+                    userImage=decoded['picture'],
+                    email=decoded['email'],
+                    userName=userName,
+                    singInProvider=decoded['firebase']['sign_in_provider']
+                )
+                user.save()
+            currentUser = self.getUserDetailsByUserId(
+                decoded['user_id']).first()
+            identity = {
+                "userId": currentUser.userId,
+                "email": currentUser.email
+            }
+            return {
+                "access_token": create_access_token(identity=identity),
+                'refresh_token': create_refresh_token(identity=identity),
+                "social_login": False,
+                "userDetails": json.loads(currentUser.to_json()),
+                "status": 200
+            }
+
+    def firebaseEmailUser(self, userId):
+        currentUser = self.getUserDetailsByUserId(userId).first()
         identity = {
             "userId": currentUser.userId,
             "email": currentUser.email
@@ -77,6 +130,7 @@ class UserClass(UserServiceHelper, StoryServiceHelper):
         return {
             "access_token": create_access_token(identity=identity),
             'refresh_token': create_refresh_token(identity=identity),
+            "social_login": False,
             "userDetails": json.loads(currentUser.to_json()),
             "status": 200
         }
@@ -200,3 +254,24 @@ class UserClass(UserServiceHelper, StoryServiceHelper):
                 "msg": "problem found in " + str(e),
                 "status": 400
             }
+
+    def getUserSavedStories(self, userId):
+        savedList = list(self.getUserDetailsByUserId(
+            userId).first().saveForLater)
+        savedStories = []
+        for savedStory in savedList:
+            savedStories.append(json.loads(
+                self.getStoryDetailsByStoryId(savedStory).to_json()))
+        return {
+            "items": savedStories,
+            "total_items": len(savedStories),
+            "status": 200
+        }
+
+    def getAuthorDetails(self, authorId):
+        details = json.loads(
+            self.getAuthorDetailsByName(authorId).first().to_json())
+        return {
+            "details": details,
+            "status": 200
+        }

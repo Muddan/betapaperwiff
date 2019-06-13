@@ -2,7 +2,7 @@
   <div class="sidebar-stories-main">
     <v-list three-line>
       <v-subheader>
-        Popular Stories
+        <slot name="title"></slot>
       </v-subheader>
       <v-divider></v-divider>
 
@@ -37,7 +37,7 @@ export default {
       popularStories: 'stories/popularStories'
     }),
     getStories() {
-      return this.popularStories.slice(0, 4)
+      return this.popularStories
     }
   },
   beforeMount() {

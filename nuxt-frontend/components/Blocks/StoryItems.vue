@@ -2,14 +2,6 @@
   <v-container class="padding-0" fluid>
     <no-ssr>
       <v-layout column wrap>
-        <div class="story-loader">
-          <v-progress-circular
-            v-if="stories && !stories.length"
-            indeterminate
-            color="#f45b69"
-          ></v-progress-circular>
-        </div>
-
         <!-- Story items listing -->
         <v-card
           v-for="(story, index) in stories"
