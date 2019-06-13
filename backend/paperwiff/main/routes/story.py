@@ -88,15 +88,16 @@ def userStories():
     result = storyService.getUserStories(pageNo=pageNo, userId=userId)
     return make_response(response(result), result.get('status'))
 
-@Story.route('/userFeed', methods=['GET'])
+@Story.route('/userfeed', methods=['GET'])
 def userFeed():
     if not request.args.get('pageNo'):
         pageNo = 1
     else:
         pageNo = int(request.args.get('pageNo'))
-    if not request.args.get('userId'):
+    if not request.get_json('userId'):
         return make_response(response("userId is missing"), 400)
-    userId = request.args.get('userId')
+    JsonData = request.get_json('userId')
+    userId=JsonData.get('userId')
     result = storyService.getCustomizedStories(pageNo=pageNo, userId=userId)
     return make_response(response(result), result['status'])
 

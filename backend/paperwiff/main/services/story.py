@@ -108,15 +108,12 @@ class StoryClass():
 
     def deleteByStoryId(self, ArrayOfStoryToDelete):  #make it more secure this api allows any one to delete
         try:
-
             for storyid in ArrayOfStoryToDelete:
-
                 stry=Stories.objects( storyId = storyid)
                 x=json.loads(stry.to_json())
                 userId=x[0].get("userId")
                 stry.delete()
                 print(Users.objects(userId=userId).update_one(pull__userArticles=storyid))
-
             return {
                 "msg":"story has been removed",
                 "status":200
@@ -126,6 +123,9 @@ class StoryClass():
                 "msg": "excepton: "+str(e),
                 "status": 200
             }
+
+
+
 
     def getAllPopularStories(self, pageNo=1):
 
@@ -229,6 +229,48 @@ class StoryClass():
                 "items": [],
                 "status": 200
             }
+
+    def getCustomizedStories(self, userId, pageNo=1):
+        if pageNo <= 0:
+            pageNo = 1
+        pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
+        print(userId)
+        userData=json.loads(Users.objects(userId=userId).to_json())
+        UserTags=userData[0].get("followingTags")
+        noOfTags=len(UserTags)
+        numberOfStoryToDisplay=int(10/noOfTags)
+        print("no.:"+str(numberOfStoryToDisplay))
+        listOfstory=[]
+        for tags in UserTags:
+            listOfstory+=json.loads(Stories.objects(tags=tags).skip(pageNo * 5).limit(5).to_json())
+        storyList=[]
+        for story in listOfstory:
+            if story not in storyList:
+                storyList.append(story)
+        return {
+                "pageNo": pageNo + 1,
+                "status": 200,
+                "data":storyList
+            }
+
+
+        # if Stories.objects.count():
+        #     totalItems = Stories.objects.count()
+        #     stories = json.loads(Stories.objects(userId=userId).exclude('id', 'comments', 'copyright').order_by(
+        #         '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
+        #
+        #     return {
+        #         "pageNo": pageNo + 1,
+        #         "totalItems": totalItems,
+        #         "items": stories,
+        #         "status": 200
+        #     }
+        # else:
+        #     return {
+        #         "msg": "Sorry, no articles are available",
+        #         "items": [],
+        #         "status": 200
+        #     }
 
     # Send story details when story url is visited
     def getStoryDetailsByStoryId(self, storyId):
