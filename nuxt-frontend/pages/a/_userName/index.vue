@@ -71,26 +71,28 @@
         </div>
       </div>
       <v-layout>
-        <v-flex xs3 md3 class="hidden-sm-and-down">
-          <v-flex class="sidebar-section sidebar-left">
-            <user-info :image-only="false" :only-mobile="true"></user-info>
-            <KeyLinks></KeyLinks>
+        <template v-if="!isSavedStoryPage">
+          <v-flex xs3 md3 class="hidden-sm-and-down">
+            <v-flex class="sidebar-section sidebar-left">
+              <user-info :image-only="false" :only-mobile="true"></user-info>
+              <KeyLinks></KeyLinks>
+            </v-flex>
           </v-flex>
-        </v-flex>
-        <v-flex xs12 md6>
-          <v-flex class="sidebar-section sidebar-main">
-            <h3 v-if="userStories.length == 0">No stories posted.</h3>
-            <div v-else class="user-stories">
-              <v-subheader>Recent Stories</v-subheader>
-              <story-items :stories="userStories"></story-items>
-            </div>
+          <v-flex xs12 md6>
+            <v-flex class="sidebar-section sidebar-main">
+              <h3 v-if="userStories.length == 0">No stories posted.</h3>
+              <div v-else class="user-stories">
+                <v-subheader>Recent Stories</v-subheader>
+                <story-items :stories="userStories"></story-items>
+              </div>
+            </v-flex>
           </v-flex>
-        </v-flex>
-        <v-flex xs3 md3 class="hidden-sm-and-down">
-          <v-flex class="sidebar-section sidebar-left">
-            <SidebarStories></SidebarStories>
+          <v-flex xs3 md3 class="hidden-sm-and-down">
+            <v-flex class="sidebar-section sidebar-left">
+              <SidebarStories></SidebarStories>
+            </v-flex>
           </v-flex>
-        </v-flex>
+        </template>
       </v-layout>
     </v-container>
   </div>
@@ -101,11 +103,8 @@ import StoryItems from '@/components/Blocks/StoryItems.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
 import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
 import KeyLinks from '@/components/Blocks/KeyLinks.vue'
-
 import { mapGetters } from 'vuex'
-
 import { endpoints } from '@/api/endpoints.js'
-
 export default {
   components: {
     StoryItems,
@@ -116,7 +115,8 @@ export default {
   data() {
     return {
       userProfile: '',
-      userStories: ''
+      userStories: '',
+      isSavedStoryPage: false
     }
   },
   computed: {
@@ -161,6 +161,10 @@ export default {
           store.state.user.current.userId
         }`
       })
+      return {
+        userProfile: userProfile.result,
+        userStories: userStories.data.result.items
+      }
     } else {
       userProfile = await app.$axios.$post(endpoints.API_GET_AUTHOR_DETAILS, {
         userName: route.params.userName
@@ -171,11 +175,10 @@ export default {
           route.params.userName
         }`
       })
-    }
-
-    return {
-      userProfile: userProfile.result,
-      userStories: userStories.data.result.items
+      return {
+        userProfile: userProfile.result.details,
+        userStories: userStories.data.result.items
+      }
     }
   },
   methods: {
@@ -228,7 +231,6 @@ export default {
     padding: 20px;
     padding-left: 0;
     background: #fff;
-
     .profile-content-wrapper {
       .header-layout {
         box-sizing: border-box;

@@ -24,9 +24,9 @@
                       color="grey darken-4"
                       @click="saveStory(story.storyId)"
                     >
-                      <v-icon>{{
-                        savedStory ? 'bookmarks' : 'bookmark_border'
-                      }}</v-icon>
+                      <v-icon>
+                        {{ savedStory ? 'bookmarks' : 'bookmark_border' }}
+                      </v-icon>
                     </v-btn>
                     <div class="like-btn">
                       <v-btn
@@ -74,9 +74,9 @@
                                   }
                                 )
                               }}
-                              <v-icon class="dot-icon" size="8px">
-                                fas fa-star
-                              </v-icon>
+                              <v-icon class="dot-icon" size="8px"
+                                >fas fa-star</v-icon
+                              >
                               <span class="ago-time">
                                 {{
                                   getPublishedDate(
@@ -122,19 +122,19 @@
                   </div>
                   <div class="story-content" v-html="story.content"></div>
                   <div class="footer-share">
-                    <v-subheader>Share </v-subheader>
+                    <v-subheader>Share</v-subheader>
                     <share-story :url="storyUrl"></share-story>
                   </div>
                   <div class="footer-author">
-                    <author-info :author="user"
-                      ><v-btn
+                    <author-info :author="user">
+                      <v-btn
                         outline
                         color="#5199c3"
                         @click="followAuthor(story.userId)"
                       >
-                        <v-icon left>
-                          {{ followedAuthor ? 'group' : 'group_add' }}</v-icon
-                        >
+                        <v-icon left>{{
+                          followedAuthor ? 'group' : 'group_add'
+                        }}</v-icon>
                         {{ followedAuthor ? 'Following' : 'Follow' }}
                       </v-btn>
                     </author-info>
@@ -238,9 +238,29 @@ export default {
       }
     }
   },
+
   async asyncData({ app, store, route, redirect, error, context }) {
     let storyDetails
     let userDetails
+    if (process.browser && !store.state.user.isSignedIn) {
+      if (window.localStorage.getItem('stories-viewed')) {
+        let count =
+          JSON.parse(window.localStorage.getItem('stories-viewed')) || {}
+        if (count > 5) {
+          store.commit('ui/SET_SHOW_POPUP', {
+            status: true,
+            component: 'SignUp'
+          })
+        }
+        count++
+        // eslint-disable-next-line no-console
+        console.log(count)
+        window.localStorage.setItem('stories-viewed', count)
+      } else {
+        window.localStorage.setItem('stories-viewed', 1)
+      }
+    }
+
     await app.$axios
       .$post(endpoints.API_GET_STORY_DETAILS, {
         storyId: route.params.storyId

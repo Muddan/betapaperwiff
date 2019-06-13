@@ -103,7 +103,11 @@
                 <v-layout>
                   <v-flex xs6>
                     <span class="read-time">
-                      {{ Math.floor(story.content.split(' ').length / 160) }}
+                      {{
+                        Math.floor(story.content.split(' ').length / 160)
+                          ? Math.floor(story.content.split(' ').length / 160)
+                          : 'less than a'
+                      }}
                       min read
                     </span>
                   </v-flex>

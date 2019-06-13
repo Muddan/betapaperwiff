@@ -99,7 +99,7 @@
         <template v-slot:activator="{ on }">
           <v-btn class="hidden-md-and-down" flat icon color="#337fb5" v-on="on">
             <v-avatar
-              v-if="isSignedIn"
+              v-if="isSignedIn && currentUser.userImage"
               v-show="currentUser.userImage"
               size="35px"
             >

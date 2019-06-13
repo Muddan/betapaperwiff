@@ -1,6 +1,20 @@
 <template>
-  <div class="main-container">
+  <div id="home-top" class="main-container">
     <div id="home">
+      <v-fab-transition>
+        <v-btn
+          v-show="ScrollToTopHidden"
+          v-scroll="onScroll"
+          fab
+          dark
+          fixed
+          bottom
+          right
+          @click="$vuetify.goTo('#home-top')"
+        >
+          <v-icon>keyboard_arrow_up</v-icon>
+        </v-btn>
+      </v-fab-transition>
       <v-navigation-drawer
         v-model="leftDrawer"
         class="mobile-left-sidebar"
@@ -97,7 +111,8 @@ export default {
     return {
       snackbar: true,
       leftDrawer: false,
-      rightDrawer: false
+      rightDrawer: false,
+      ScrollToTopHidden: false
     }
   },
   computed: {
@@ -105,6 +120,13 @@ export default {
       filteredStories: 'stories/filteredStories',
       allStories: 'stories/allStories'
     })
+  },
+  methods: {
+    onScroll(e) {
+      if (window && typeof window === 'undefined') return
+      const top = window.pageYOffset || e.target.scrollTop || 0
+      this.ScrollToTopHidden = top > 100
+    }
   }
 }
 </script>
