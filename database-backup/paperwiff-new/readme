@@ -5,3 +5,9 @@ now open cmd in that directory
 open another terminal in same directory and run.
 
 mongorestore --db paperwiff-new ~\betapaperwiff\database-backup\paperwiff-new\
+
+
+
+to run flask on debug
+set FLASK_ENV=development
+python -m flask run

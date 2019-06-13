@@ -10,6 +10,7 @@ from ..services.user import UserClass
 
 # Model import
 from ..model.Stories import Stories
+from ..model.Users import Users
 from ..helpers.UserServiceHelper import UserServiceHelper
 from ..helpers.StoryServiceHelper import StoryServiceHelper
 from ..helpers.TagServiceHelper import TagServiceHelper
@@ -109,9 +110,15 @@ class StoryClass():
         try:
 
             for storyid in ArrayOfStoryToDelete:
-                x=Stories.objects( storyId = storyid).delete()
+
+                stry=Stories.objects( storyId = storyid)
+                x=json.loads(stry.to_json())
+                userId=x[0].get("userId")
+                stry.delete()
+                print(Users.objects(userId=userId).update_one(pull__userArticles=storyid))
+
             return {
-                "msg":x,
+                "msg":"story has been removed",
                 "status":200
             }
         except Exception as e:
@@ -119,7 +126,6 @@ class StoryClass():
                 "msg": "excepton: "+str(e),
                 "status": 200
             }
-
 
     def getAllPopularStories(self, pageNo=1):
 
