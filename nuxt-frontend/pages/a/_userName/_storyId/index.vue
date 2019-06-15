@@ -51,7 +51,7 @@
                   <div class="title-section">
                     <header>
                       <v-layout class="mini-profile" align-center>
-                        <v-flex xs12 class="details-flex">
+                        <v-flex xs8 class="details-flex">
                           <v-avatar class="profile-img" size="55px">
                             <img :src="user.userImage" />
                           </v-avatar>
@@ -87,6 +87,8 @@
                               <span>ago</span>
                             </span>
                           </div>
+                        </v-flex>
+                        <v-flex xs4>
                           <div class="reading">
                             <v-btn small flat icon color="#9b9b9b">
                               <v-icon small>fas fa-book-reader</v-icon>
@@ -253,8 +255,6 @@ export default {
           })
         }
         count++
-        // eslint-disable-next-line no-console
-        console.log(count)
         window.localStorage.setItem('stories-viewed', count)
       } else {
         window.localStorage.setItem('stories-viewed', 1)
@@ -426,6 +426,10 @@ export default {
           flex-direction: column;
           box-sizing: border-box;
           padding: 0 10px;
+        }
+        .reading {
+          display: flex;
+          align-items: center;
         }
       }
       .date {

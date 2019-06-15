@@ -51,8 +51,14 @@
                 <p class="profile-bio">{{ userProfile.about }}</p>
                 <div class="profile-stats">
                   <div class="stats">
-                    <p class="value">{{ userStories.length }}</p>
-                    <h3 class="label">Stories Published</h3>
+                    <nuxt-link
+                      class="stats-link"
+                      :to="{
+                        path: '/a/' + userProfile.userName + '/published'
+                      }"
+                      ><p class="value">{{ userStories.length }}</p>
+                      <h3 class="label">Stories Published</h3>
+                    </nuxt-link>
                   </div>
                   <div class="stats">
                     <p class="value">
@@ -61,8 +67,15 @@
                     <h3 class="label">Following Users</h3>
                   </div>
                   <div v-if="loggedInUser" class="stats">
-                    <p class="value">{{ savedStories }}</p>
-                    <h3 class="label">Saved Stories</h3>
+                    <nuxt-link
+                      class="stats-link"
+                      :to="{
+                        path: '/a/' + userProfile.userName + '/saved-stories'
+                      }"
+                    >
+                      <p class="value">{{ savedStories }}</p>
+                      <h3 class="label">Saved Stories</h3>
+                    </nuxt-link>
                   </div>
                 </div>
               </div>
@@ -71,7 +84,7 @@
         </div>
       </div>
       <v-layout>
-        <template v-if="!isSavedStoryPage">
+        <template>
           <v-flex xs3 md3 class="hidden-sm-and-down">
             <v-flex class="sidebar-section sidebar-left">
               <user-info :image-only="false" :only-mobile="true"></user-info>
@@ -89,7 +102,9 @@
           </v-flex>
           <v-flex xs3 md3 class="hidden-sm-and-down">
             <v-flex class="sidebar-section sidebar-left">
-              <SidebarStories></SidebarStories>
+              <SidebarStories>
+                <span slot="title">Popular Stories on Paperwiff</span>
+              </SidebarStories>
             </v-flex>
           </v-flex>
         </template>
@@ -106,6 +121,7 @@ import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 import { mapGetters } from 'vuex'
 import { endpoints } from '@/api/endpoints.js'
 export default {
+  transition: 'slidedown',
   components: {
     StoryItems,
     UserInfo,
@@ -115,8 +131,7 @@ export default {
   data() {
     return {
       userProfile: '',
-      userStories: '',
-      isSavedStoryPage: false
+      userStories: ''
     }
   },
   computed: {
@@ -144,40 +159,70 @@ export default {
     let userProfile = ''
     let userStories = ''
     if (store.state.user.current.userName === route.params.userName) {
-      userProfile = await app.$axios.$post(
-        endpoints.API_GET_USER_DETAILS,
-        {
-          userId: store.state.user.current.userId
-        },
-        {
-          headers: {
-            Authorization: 'Bearer ' + store.state.user.access_token
+      await app.$axios
+        .$post(
+          endpoints.API_GET_USER_DETAILS,
+          {
+            userId: store.state.user.current.userId
+          },
+          {
+            headers: {
+              Authorization: 'Bearer ' + store.state.user.access_token
+            }
           }
-        }
-      )
-      userStories = await app.$axios({
-        method: 'GET',
-        url: `${endpoints.API_GET_USER_STOREIS}?userId=${
-          store.state.user.current.userId
-        }`
-      })
+        )
+        .then(res => {
+          userProfile = res.result
+        })
+        .catch(() => {
+          error({ statusCode: 404 })
+        })
+      await app
+        .$axios({
+          method: 'GET',
+          url: `${endpoints.API_GET_USER_STOREIS}?userId=${
+            store.state.user.current.userId
+          }`
+        })
+        .then(res => {
+          userStories = res.data.result.items
+        })
+        .catch(() => {
+          error({ statusCode: 404 })
+        })
       return {
-        userProfile: userProfile.result,
-        userStories: userStories.data.result.items
+        userProfile: userProfile,
+        userStories: userStories
       }
-    } else {
-      userProfile = await app.$axios.$post(endpoints.API_GET_AUTHOR_DETAILS, {
-        userName: route.params.userName
-      })
-      userStories = await app.$axios({
-        method: 'GET',
-        url: `${endpoints.API_GET_AUTHOR_STOREIS}?userName=${
-          route.params.userName
-        }`
-      })
+    }
+    // NORMAL USER
+    else {
+      await app.$axios
+        .$post(endpoints.API_GET_AUTHOR_DETAILS, {
+          userName: route.params.userName
+        })
+        .then(res => {
+          userProfile = res.result.details
+        })
+        .catch(() => {
+          error({ statusCode: 404 })
+        })
+      await app
+        .$axios({
+          method: 'GET',
+          url: `${endpoints.API_GET_AUTHOR_STOREIS}?userName=${
+            route.params.userName
+          }`
+        })
+        .then(res => {
+          userStories = res.data.result.items
+        })
+        .catch(() => {
+          error({ statusCode: 404 })
+        })
       return {
-        userProfile: userProfile.result.details,
-        userStories: userStories.data.result.items
+        userProfile: userProfile,
+        userStories: userStories
       }
     }
   },
@@ -315,13 +360,17 @@ export default {
             border-right: none;
           }
           @media (max-width: 768px) {
-            &:last-child {
+            &:nth-child(3) {
               margin-left: 0;
               border-right: none;
             }
           }
           .value {
             padding-right: 10px;
+          }
+          .stats-link {
+            display: inline-flex;
+            align-items: center;
           }
         }
       }

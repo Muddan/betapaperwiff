@@ -39,7 +39,11 @@
               </span>
               <span>&#9733;</span>
               <span class="read-time">
-                {{ Math.floor(story.content.split(' ').length / 160) }}
+                {{
+                  Math.floor(story.content.split(' ').length / 160)
+                    ? Math.floor(story.content.split(' ').length / 160)
+                    : 'less than a'
+                }}
                 min read
               </span>
             </span>

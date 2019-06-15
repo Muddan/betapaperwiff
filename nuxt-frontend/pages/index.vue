@@ -5,6 +5,7 @@
         <v-btn
           v-show="ScrollToTopHidden"
           v-scroll="onScroll"
+          color="#77b6e2"
           fab
           dark
           fixed
@@ -22,7 +23,9 @@
         disable-resize-watcher
       >
         <v-flex class="container">
-          <SidebarStories></SidebarStories>
+          <SidebarStories>
+            <span slot="title">Popular Stories on Paperwiff</span>
+          </SidebarStories>
         </v-flex>
       </v-navigation-drawer>
       <v-navigation-drawer
@@ -62,8 +65,39 @@
             </v-scroll-y-transition>
           </v-flex>
           <v-flex class="content-section" md6 xs12>
-            <!-- <StoryCarousel></StoryCarousel> -->
-            <story-listing></story-listing>
+            <div class="articles-tab">
+              <div class="tab-list">
+                <v-subheader
+                  v-for="(label, index) in FeedType"
+                  :key="index"
+                  depressed
+                  class="feed-title"
+                  :class="{ 'feed-title--active': activeTab === label.title }"
+                >
+                  {{ label.title }}
+                </v-subheader>
+                <!-- <v-subheader
+                  v-if="isSignedIn"
+                  depressed
+                  class="feed-title"
+                  :class="{ 'feed-title--active': activeTab === 'Feed' }"
+                  @click.stop="changeTab({ title: 'Feed', status: false })"
+                >
+                  {{ 'Feed' }}
+                </v-subheader> -->
+              </div>
+              <story-items
+                v-if="getCurrentUserFeed()"
+                :stories="getCurrentUserFeed()"
+              ></story-items>
+              <no-ssr>
+                <InfiniteLoading spinner="bubbles" @infinite="infiniteHandler">
+                  <div slot="no-more" class="no-more-text">
+                    The End.
+                  </div>
+                </InfiniteLoading>
+              </no-ssr>
+            </div>
           </v-flex>
           <v-flex
             class="sidebar-section sidebar-right hidden-sm-and-down"
@@ -87,12 +121,15 @@
 // Custom components
 import TagListing from '@/components/Blocks/TagListing/TagListing.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
-import StoryListing from '@/components/Blocks/StoryListing.vue'
 import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 import JoinUs from '@/components/Blocks/JoinUs.vue'
 import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
-// import StoryCarousel from '@/components/Blocks/StoryCarousel.vue'
+import StoryItems from '@/components/Blocks/StoryItems.vue'
+
 import { mapGetters } from 'vuex'
+
+import InfiniteLoading from 'vue-infinite-loading'
+import { endpoints } from '../api/endpoints'
 
 export default {
   transition: 'fade',
@@ -101,18 +138,24 @@ export default {
   components: {
     TagListing,
     UserInfo,
-    StoryListing,
     KeyLinks,
     JoinUs,
-    SidebarStories
-    // StoryCarousel
+    SidebarStories,
+    StoryItems,
+    InfiniteLoading
   },
   data() {
     return {
       snackbar: true,
       leftDrawer: false,
       rightDrawer: false,
-      ScrollToTopHidden: false
+      ScrollToTopHidden: false,
+      pageNo: 2,
+      FeedType: [
+        { title: 'Latest', status: true }
+        // { title: 'Popular', status: false }
+      ],
+      activeTab: 'Latest'
     }
   },
   computed: {
@@ -121,11 +164,40 @@ export default {
       allStories: 'stories/allStories'
     })
   },
+  mounted() {
+    this.$store.dispatch('stories/getAllStories')
+  },
   methods: {
+    infiniteHandler($state) {
+      this.$axios
+        .$get(`${endpoints.API_GET_STORIES}?pageNo=${this.pageNo}`)
+        .then(async res => {
+          await this.$store.commit('stories/SET_ALL_STORIES', {
+            items: res.result.items,
+            loadMore: true
+          })
+          this.pageNo++
+          if (
+            this.$store.state.stories.allStories.length < res.result.totalItems
+          ) {
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
+        })
+    },
     onScroll(e) {
       if (window && typeof window === 'undefined') return
       const top = window.pageYOffset || e.target.scrollTop || 0
       this.ScrollToTopHidden = top > 100
+    },
+    getCurrentUserFeed() {
+      // if (this.activeTab === 'Feed') {
+      //   return this.$store.dispatch('user/userFeed')
+      // } else {
+      //   return this.allStories
+      // }
+      return this.allStories
     }
   }
 }
@@ -190,6 +262,11 @@ $logosection-color: #043344;
   }
   .sidebar-stories-main {
     margin: 20px 0;
+  }
+  .mobile-left-sidebar {
+    .container {
+      padding: 0;
+    }
   }
 }
 </style>

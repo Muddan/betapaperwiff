@@ -14,6 +14,7 @@ export const endpoints = {
   API_USER_EMAIL_AUTH: `${BASE_URL}/api/auth/login`,
   API_GET_USER_DETAILS: `${BASE_URL}/api/user/details`,
   API_GET_USER_PROFILE: `${BASE_URL}/api/user/profile`,
+  API_GET_USER_SAVED_STORIES: `${BASE_URL}/api/user/savedstories`,
 
   // Social Features
   API_FOLLOW_TAG: `${BASE_URL}/api/user/follow/tag`,
@@ -34,6 +35,7 @@ export const endpoints = {
   API_GET_USER_STOREIS: `${BASE_URL}/api/story/userStories`,
   API_GET_AUTHOR_STOREIS: `${BASE_URL}/api/story/authorStories`,
   API_GET_POPULAR_STORIES: `${BASE_URL}/api/story/popular`,
+  API_DELETE_USERSTORY: `${BASE_URL}/api/story/delete`,
 
   // Misc Apis
   IMAGE_UPLOAD: `https://api.cloudinary.com/v1_1/${

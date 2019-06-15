@@ -1,5 +1,29 @@
 <template>
   <v-container class="padding-0" fluid>
+    <v-dialog v-model="dialog" max-width="290">
+      <v-card>
+        <v-card-title>Are you sure you want to delete the story?</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red lighten-1"
+            flat
+            small
+            outline
+            @click="
+              () => {
+                canDelete = true
+                dialog = false
+              }
+            "
+            >Delete</v-btn
+          >
+          <v-btn color="green darken-1" flat @click="dialog = false"
+            >Cancel</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <no-ssr>
       <v-layout column wrap>
         <!-- Story items listing -->
@@ -49,7 +73,17 @@
                       </span>
                     </span>
                   </v-subheader>
-                  <div class="save-later">
+                  <div v-if="loggedUser" class="save-later">
+                    <v-btn
+                      flat
+                      icon
+                      color="red accent-1"
+                      @click="deleteStory(story.storyId)"
+                    >
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </div>
+                  <div v-else class="save-later">
                     <v-btn
                       flat
                       icon
@@ -146,7 +180,6 @@
             </div>
           </div>
         </v-card>
-        <!-- Infinite loading component -->
       </v-layout>
     </no-ssr>
   </v-container>
@@ -157,7 +190,7 @@ import { mapGetters } from 'vuex'
 import { getDate } from '@/helpers/dateHelper.js'
 import { SocialFeatures } from '@/mixins/SocialFeatures.js'
 export default {
-  name: 'StoryItems',
+  name: 'PublishedStories',
   mixins: [SocialFeatures],
   props: {
     stories: {
@@ -168,7 +201,10 @@ export default {
   data() {
     return {
       loader: null,
-      loading: false
+      loading: false,
+      dialog: false,
+      canDelete: false,
+      deleteStoryId: ''
     }
   },
   computed: {
@@ -186,6 +222,22 @@ export default {
       } else {
         return this.allStories
       }
+    },
+    loggedUser() {
+      return (
+        this.$route.params.userName === this.$store.state.user.current.userName
+      )
+    }
+  },
+  watch: {
+    canDelete: function(data) {
+      if (data) {
+        this.$store.dispatch('stories/deleteStory', {
+          storyId: this.deleteStoryId,
+          userName: this.$route.params.userName
+        })
+        this.canDelete = false
+      }
     }
   },
 
@@ -199,6 +251,10 @@ export default {
       } else {
         return false
       }
+    },
+    deleteStory(storyId) {
+      this.deleteStoryId = storyId
+      this.dialog = true
     }
   }
 }

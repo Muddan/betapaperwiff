@@ -8,16 +8,16 @@
 
       <div class="text-xs-center">
         <v-progress-circular
-          v-if="getStories && !getStories.length"
+          v-if="showStories && !showStories.length"
           indeterminate
           color="#f45b69"
         ></v-progress-circular>
       </div>
 
-      <template v-for="(story, index) in getStories">
+      <template v-for="(story, index) in showStories">
         <StoryTile :key="story.storyTitle" :story="story"></StoryTile>
         <v-divider
-          v-show="index != getStories.length - 1"
+          v-show="index != showStories.length - 1"
           :key="story.storyId"
         ></v-divider>
       </template>
@@ -32,16 +32,33 @@ export default {
   components: {
     StoryTile
   },
+  props: {
+    storiesArray: {
+      type: Array,
+      default: null
+    },
+    isPopularStories: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      showStories: []
+    }
+  },
   computed: {
     ...mapGetters({
       popularStories: 'stories/popularStories'
-    }),
-    getStories() {
-      return this.popularStories
-    }
+    })
   },
-  beforeMount() {
-    this.$store.dispatch('stories/getPopularStories')
+  async beforeMount() {
+    await this.$store.dispatch('stories/getPopularStories')
+    if (this.isPopularStories) {
+      this.showStories = this.popularStories
+    } else {
+      this.showStories = this.storiesArray
+    }
   }
 }
 </script>

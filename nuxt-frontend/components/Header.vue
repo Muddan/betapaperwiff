@@ -7,10 +7,48 @@
       disable-resize-watcher
       :temporary="true"
     >
-      <v-flex xs12>
+      <v-flex xs12 class="mini-profile-mob">
         <user-info :image-only="false" :only-mobile="true"></user-info>
         <join-us></join-us>
-        <v-list class="pt-0">
+        <v-list class="pt-0 pb-0">
+          <div v-if="isSignedIn" class="user-profile-links">
+            <v-subheader>
+              My Account
+            </v-subheader>
+            <v-list-tile>
+              <v-list-tile-title>
+                <nuxt-link
+                  :to="{
+                    path: '/a/' + currentUser.userName
+                  }"
+                >
+                  Profile
+                </nuxt-link>
+              </v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-title>
+                <nuxt-link
+                  :to="{
+                    path: '/a/' + currentUser.userName + '/saved-stories'
+                  }"
+                >
+                  Saved Stories
+                </nuxt-link>
+              </v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-title>
+                <nuxt-link
+                  :to="{
+                    path: '/settings'
+                  }"
+                >
+                  Settings
+                </nuxt-link>
+              </v-list-tile-title>
+            </v-list-tile>
+          </div>
           <v-subheader>
             Important Links
           </v-subheader>
@@ -18,11 +56,6 @@
             <v-list-tile-title>
               <nuxt-link :to="item.link">{{ item.title }}</nuxt-link>
             </v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title
-              ><nuxt-link to="/settings">Settings</nuxt-link></v-list-tile-title
-            >
           </v-list-tile>
           <v-divider></v-divider>
           <v-list-tile>
@@ -41,11 +74,11 @@
           >
             <v-icon class="socialIcon">{{ icon.name }}</v-icon>
           </v-btn>
-          <v-list-tile class="list-footer">
+          <!-- <v-list-tile class="list-footer">
             <v-list-tile-title>
               &copy;2019 — <strong>Paperwiff</strong></v-list-tile-title
             >
-          </v-list-tile>
+          </v-list-tile> -->
         </v-list>
       </v-flex>
     </v-navigation-drawer>
@@ -120,6 +153,15 @@
               currentUser.userName
             }}</v-list-tile>
           </nuxt-link>
+          <nuxt-link
+            v-if="isSignedIn"
+            class="auth-links"
+            :to="{
+              path: '/a/' + currentUser.userName + '/saved-stories'
+            }"
+          >
+            <v-list-tile>Saved Stories</v-list-tile>
+          </nuxt-link>
 
           <v-divider v-if="isSignedIn"></v-divider>
           <v-list-tile-content v-for="(item, i) in items" :key="i">
@@ -178,7 +220,7 @@ export default {
       }
     ],
     keyLinks: [
-      { title: 'About', link: '/about' },
+      { title: 'About Paperwiff', link: '/about' },
       // { title: 'Pricing', link: '/pricing' },
       { title: ' Privacy Policy', link: '/privacy-policy' },
       { title: 'Contact', link: '/contact' }
@@ -239,12 +281,14 @@ export default {
     }
   }
   .list-footer {
-    position: absolute;
     background: #fff;
     z-index: 1;
     width: 100%;
-    bottom: 0;
-    left: 0;
+  }
+  .mini-profile-mob {
+    .user-info {
+      margin-bottom: 10px;
+    }
   }
 }
 .v-list {

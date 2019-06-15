@@ -232,14 +232,14 @@ export default {
     publishStory() {
       if (!this.storyForm.title.length) {
         this.$store.dispatch('notification/warning', {
-          title: 'ah Oh!',
+          title: '',
           message: 'We need a title for your story'
         })
         this.validForm = false
       }
       if (!this.storyForm.selectedTags.length > 0) {
         this.$store.dispatch('notification/warning', {
-          title: 'ah Oh!',
+          title: '',
           message: 'Please select atleast one tag'
         })
         this.validForm = false
@@ -249,7 +249,7 @@ export default {
         this.storyForm.content.split(' ').length > 1000
       ) {
         this.$store.dispatch('notification/warning', {
-          title: 'ah Oh!',
+          title: '',
           message: 'Please use maximum of 1000 words to finish your story.'
         })
         this.validForm = false
@@ -440,7 +440,7 @@ $logosection-color: #043344;
     > .v-input__control
     > .v-input__slot {
     box-shadow: none;
-    background: #fdfdfd;
+    background: #f8f8f8;
     border-radius: 8px;
   }
 }
