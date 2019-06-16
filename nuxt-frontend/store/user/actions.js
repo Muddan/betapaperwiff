@@ -176,20 +176,43 @@ const actions = {
    */
   updateUserDetails(context, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios
-        .$post(endpoints.API_USER_UPDATE, payload, {
-          headers: {
-            Authorization: 'Bearer ' + context.rootState.user.access_token
-          }
+      if (payload.file) {
+        const formData = new FormData()
+        formData.append('file', payload.file)
+        formData.append('upload_preset', endpoints.upload_preset)
+        this.$axios.$post(endpoints.IMAGE_UPLOAD, formData).then(res => {
+          payload.details.userImage = res.secure_url
+          this.$axios
+            .$post(endpoints.API_USER_UPDATE, payload.details, {
+              headers: {
+                Authorization: 'Bearer ' + context.rootState.user.access_token
+              }
+            })
+            .then(res => {
+              context.dispatch('getUserDetails', payload.details.userId)
+              // context.commit(types.SET_USER_PROFILE, res.data.result)
+              resolve(true)
+            })
+            .catch(e => {
+              resolve(false)
+            })
         })
-        .then(res => {
-          context.dispatch('getUserDetails', payload.userId)
-          // context.commit(types.SET_USER_PROFILE, res.data.result)
-          resolve(true)
-        })
-        .catch(e => {
-          resolve(false)
-        })
+      } else {
+        this.$axios
+          .$post(endpoints.API_USER_UPDATE, payload.details, {
+            headers: {
+              Authorization: 'Bearer ' + context.rootState.user.access_token
+            }
+          })
+          .then(res => {
+            context.dispatch('getUserDetails', payload.details.userId)
+            // context.commit(types.SET_USER_PROFILE, res.data.result)
+            resolve(true)
+          })
+          .catch(e => {
+            resolve(false)
+          })
+      }
     })
   },
 

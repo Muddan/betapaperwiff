@@ -9,6 +9,8 @@ const actions = {
       position: 'topRight',
       transitionIn: 'flipInX',
       transitionOut: 'flipOutX',
+      transitionInMobile: 'flipInX',
+      transitionOutMobile: 'flipOutX',
       progressBar: true
     })
   },
@@ -22,6 +24,8 @@ const actions = {
       position: 'topRight',
       transitionIn: 'flipInX',
       transitionOut: 'flipOutX',
+      transitionInMobile: 'flipInX',
+      transitionOutMobile: 'flipOutX',
       progressBar: true
     })
   },
@@ -35,6 +39,8 @@ const actions = {
       position: 'topRight',
       transitionIn: 'flipInX',
       transitionOut: 'flipOutX',
+      transitionInMobile: 'flipInX',
+      transitionOutMobile: 'flipOutX',
       progressBar: true
     })
   },
@@ -48,6 +54,8 @@ const actions = {
       position: 'topRight',
       transitionIn: 'flipInX',
       transitionOut: 'flipOutX',
+      transitionInMobile: 'flipInX',
+      transitionOutMobile: 'flipOutX',
       progressBar: true
     })
   },

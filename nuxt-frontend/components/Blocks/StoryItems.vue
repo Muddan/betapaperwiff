@@ -212,7 +212,8 @@ a {
 
 <style lang="scss" scoped>
 .padding-0 {
-  padding: initial 0;
+  padding: inherit 0;
+  padding-top: 0;
 }
 .story-items-main {
   border-radius: 8px;

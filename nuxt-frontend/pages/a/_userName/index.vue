@@ -7,7 +7,11 @@
             <v-flex xs12 md2>
               <div class="profile-details">
                 <v-avatar class="avatar-main">
-                  <img class="profile-img" :src="userProfile.userImage" />
+                  <img
+                    class="profile-img"
+                    :src="userProfile.userImage"
+                    @click="viewImage(userProfile.userImage)"
+                  />
                 </v-avatar>
                 <v-subheader>
                   Member Since
@@ -263,6 +267,12 @@ export default {
       } else {
         this.$store.dispatch('user/followAuthor', authorId)
       }
+    },
+    viewImage(imageUrl) {
+      this.$store.commit('ui/SET_IMAGE_VIEWER', {
+        status: true,
+        imageViewUrl: imageUrl
+      })
     }
   }
 }
@@ -392,6 +402,14 @@ export default {
     margin: 20px 10px;
     @media (max-width: 768px) {
       margin: 0;
+    }
+    .user-stories {
+      .v-subheader {
+        margin-top: 10px;
+      }
+      .padding-0 {
+        padding: 0;
+      }
     }
   }
   .joined-date {

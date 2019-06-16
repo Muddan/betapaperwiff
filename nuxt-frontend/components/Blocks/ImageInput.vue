@@ -61,7 +61,8 @@ export default {
         } else {
           const imageURL = URL.createObjectURL(imageFile)
           // Emit the FormData and image URL to the parent component
-          this.$parent.$emit('input', { imageURL, imageFile })
+          // eslint-disable-next-line no-console
+          this.$root.$emit('input', { imageURL, imageFile })
         }
       }
     }

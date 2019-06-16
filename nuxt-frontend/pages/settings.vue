@@ -31,116 +31,106 @@
                   <header class="form-header">
                     <h3 class="header-title">Edit your profile</h3>
                   </header>
-                  <v-form
-                    ref="profileUpdate"
-                    v-model="valid"
-                    class="profile-form"
-                    lazy-validation
-                  >
-                    <v-layout column class="form-content">
-                      <v-flex class="form-control">
-                        <!-- <image-input v-model="avatar">
-                          <div slot="activator">
-                            <v-avatar
-                              v-if="!avatar"
-                              v-ripple
-                              size="150px"
-                              class="grey lighten-3 mb-3"
-                            >
-                              <span>Click to add avatar</span>
-                            </v-avatar>
-                            <v-avatar v-else v-ripple size="150px" class="mb-3">
-                              <img :src="avatar.imageURL" alt="avatar" />
-                            </v-avatar>
-                          </div>
-                        </image-input> -->
-                        <v-avatar v-ripple size="150px" class="mb-3">
-                          <img :src="avatar.imageURL" alt="avatar" />
-                        </v-avatar>
-                      </v-flex>
-                      <v-flex class="input-control">
-                        <v-text-field
-                          v-model="user.email"
-                          class="input"
-                          label="Email"
-                          :rules="emailRules"
-                          type="email"
-                          name="email"
-                          required
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex class="input-control">
-                        <v-text-field
-                          v-model="user.userName"
-                          label="Username"
-                          class="input"
-                          :rules="nameRules"
-                          readonly
-                          name="userName"
-                          disabled
-                          hint="This is not editable"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex md3 class="input-control">
-                        <v-text-field
-                          v-model="user.firstName"
-                          label="Firstname"
-                          class="input"
-                          :rules="nameRules"
-                          name="firstName"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex md3 class="input-control">
-                        <v-text-field
-                          v-model="user.lastName"
-                          class="input"
-                          :rules="nameRules"
-                          label="Lastname"
-                          name="lastName"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6 class="input-control">
-                        <v-text-field
-                          v-model="user.location"
-                          label="Location"
-                          class="input"
-                          name="location"
-                          hint="Ex: 'Bangalore'"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6 class="input-control">
-                        <v-text-field
-                          v-model="user.languages"
-                          label="Languages"
-                          class="input"
-                          name="location"
-                          hint="Ex: 'kannada', 'hindi'"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6 class="input-control">
-                        <v-text-field
-                          v-model="user.availableFor"
-                          label="Available For"
-                          class="input"
-                          name="location"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex class="input-control">
-                        <v-textarea
-                          v-model="user.about"
-                          label="About"
-                          name="bio"
-                          hint="Enter about yourself."
-                        ></v-textarea>
-                      </v-flex>
+                  <v-layout column class="form-content">
+                    <v-flex class="form-control">
+                      <image-input v-model="user">
+                        <div slot="activator">
+                          <v-avatar
+                            v-if="!user.userImage"
+                            v-ripple
+                            size="150px"
+                            class="grey lighten-3 mb-3"
+                          >
+                            <span>Click to add avatar</span>
+                          </v-avatar>
+                          <v-avatar v-else v-ripple size="150px" class="mb-3">
+                            <img :src="user.userImage" alt="avatar" />
+                          </v-avatar>
+                        </div>
+                      </image-input>
+                    </v-flex>
+                    <v-flex class="input-control">
+                      <v-text-field
+                        v-model="user.email"
+                        class="input"
+                        label="Email"
+                        :rules="emailRules"
+                        type="email"
+                        name="email"
+                        required
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex class="input-control">
+                      <v-text-field
+                        v-model="user.userName"
+                        label="Username"
+                        class="input"
+                        :rules="nameRules"
+                        readonly
+                        name="userName"
+                        disabled
+                        hint="This is not editable"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex md3 class="input-control">
+                      <v-text-field
+                        v-model="user.firstName"
+                        label="Firstname"
+                        class="input"
+                        :rules="nameRules"
+                        name="firstName"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex md3 class="input-control">
+                      <v-text-field
+                        v-model="user.lastName"
+                        class="input"
+                        :rules="nameRules"
+                        label="Lastname"
+                        name="lastName"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 md6 class="input-control">
+                      <v-text-field
+                        v-model="user.location"
+                        label="Location"
+                        class="input"
+                        name="location"
+                        hint="Ex: 'Bangalore'"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 md6 class="input-control">
+                      <v-text-field
+                        v-model="user.languages"
+                        label="Languages"
+                        class="input"
+                        name="location"
+                        hint="Ex: 'kannada', 'hindi'"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs12 md6 class="input-control">
+                      <v-text-field
+                        v-model="user.availableFor"
+                        label="Available For"
+                        class="input"
+                        name="location"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex class="input-control">
+                      <v-textarea
+                        v-model="user.about"
+                        label="About"
+                        name="bio"
+                        hint="Enter about yourself."
+                      ></v-textarea>
+                    </v-flex>
 
-                      <v-flex class="input-control">
-                        <v-btn dark color="#337fb5" @click="validate"
-                          >Submit</v-btn
-                        >
-                      </v-flex>
-                    </v-layout>
-                  </v-form>
+                    <v-flex class="input-control">
+                      <v-btn dark color="#337fb5" @click="validate"
+                        >Submit</v-btn
+                      >
+                    </v-flex>
+                  </v-layout>
                 </div>
               </v-card>
             </div>
@@ -171,13 +161,13 @@
   </div>
 </template>
 <script>
-// import ImageInput from '@/components/Blocks/ImageInput'
+import ImageInput from '@/components/Blocks/ImageInput'
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
 export default {
-  // components: {
-  //   ImageInput
-  // },
+  components: {
+    ImageInput
+  },
   middleware: 'auth',
   data() {
     return {
@@ -190,10 +180,13 @@ export default {
         location: '',
         skills: '',
         languages: '',
-        availableFor: ''
+        availableFor: '',
+        userImage: '',
+        imageFile: null
       },
       avatar: {
-        imageURL: ''
+        imageURL: '',
+        imageFile: null
       },
       saving: false,
       saved: false,
@@ -242,14 +235,23 @@ export default {
   },
   mounted() {
     this.user = { ...this.currentUser }
-    this.avatar.imageURL = this.currentUser.userImage
+    // this.user.userImage = this.currentUser.userImage
+  },
+  created() {
+    this.$root.$on('input', data => {
+      this.user.userImage = data.imageURL
+      this.user.imageFile = data.imageFile
+    })
   },
   methods: {
     validate() {
       const currentUserData = _.cloneDeep(this.currentUser)
       const updatedUserData = _.merge(currentUserData, this.user)
       this.$store
-        .dispatch('user/updateUserDetails', updatedUserData)
+        .dispatch('user/updateUserDetails', {
+          details: updatedUserData,
+          file: this.user.imageFile
+        })
         .then(res => {
           if (res) {
             this.$store.dispatch('notification/success', {

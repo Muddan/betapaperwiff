@@ -150,8 +150,17 @@
             }"
           >
             <v-list-tile class="username-header ">{{
-              currentUser.userName
+              currentUser.firstName
             }}</v-list-tile>
+          </nuxt-link>
+          <nuxt-link
+            v-if="isSignedIn"
+            class="auth-links"
+            :to="{
+              path: '/a/' + currentUser.userName + '/published'
+            }"
+          >
+            <v-list-tile>Published</v-list-tile>
           </nuxt-link>
           <nuxt-link
             v-if="isSignedIn"

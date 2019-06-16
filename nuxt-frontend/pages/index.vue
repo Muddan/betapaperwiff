@@ -40,11 +40,34 @@
         </v-flex>
       </v-navigation-drawer>
       <div class="logo-section">
-        <v-layout class="hidden-md-and-up">
+        <v-layout class="hidden-md-and-up feed-selection">
           <v-btn flat icon color="#337fb5" @click="leftDrawer = !leftDrawer">
             <v-icon small>fas fa-clipboard-list </v-icon>
           </v-btn>
-          <v-spacer></v-spacer>
+          <v-tabs
+            color="none"
+            slider-color="#337fb5"
+            fixed-tabs
+            class="selection-tabs"
+          >
+            <v-tab
+              v-for="(item, index) in FeedType"
+              :key="index"
+              :ripple="false"
+            >
+              <span> {{ item.title }}</span>
+            </v-tab>
+          </v-tabs>
+          <!-- <v-subheader
+            v-for="(label, index) in FeedType"
+            :key="index"
+            depressed
+            class="feed-title"
+            :class="{ 'feed-title--active': activeTab === label.title }"
+          >
+            {{ label.title }}
+          </v-subheader> -->
+
           <v-btn flat icon color="#337fb5" @click="rightDrawer = !rightDrawer">
             <v-icon small>fa fa-coins</v-icon>
           </v-btn>
@@ -67,15 +90,15 @@
           <v-flex class="content-section" md6 xs12>
             <div class="articles-tab">
               <div class="tab-list">
-                <v-subheader
-                  v-for="(label, index) in FeedType"
-                  :key="index"
-                  depressed
-                  class="feed-title"
-                  :class="{ 'feed-title--active': activeTab === label.title }"
-                >
-                  {{ label.title }}
-                </v-subheader>
+                <v-tabs fixed-tabs class="hidden-md-and-down selection-tabs">
+                  <v-tab
+                    v-for="(item, index) in FeedType"
+                    :key="index"
+                    :ripple="false"
+                  >
+                    {{ item.title }}
+                  </v-tab>
+                </v-tabs>
                 <!-- <v-subheader
                   v-if="isSignedIn"
                   depressed
@@ -152,6 +175,7 @@ export default {
       ScrollToTopHidden: false,
       pageNo: 2,
       FeedType: [
+        // { title: 'My Feed', status: true },
         { title: 'Latest', status: true }
         // { title: 'Popular', status: false }
       ],
@@ -215,6 +239,10 @@ $logosection-color: #043344;
 #home {
   margin-top: 20px;
   .logo-section {
+    .feed-selection {
+      align-items: center;
+      justify-content: space-around;
+    }
     .main-title {
       font-family: 'Marck Script', cursive;
       font-size: 55px;
@@ -247,7 +275,7 @@ $logosection-color: #043344;
     box-sizing: border-box;
     padding: 0 15px;
     @media (max-width: 1024px) {
-      padding: 0 8px;
+      padding: 0px;
     }
   }
   .sidebar-left,
@@ -266,6 +294,14 @@ $logosection-color: #043344;
   .mobile-left-sidebar {
     .container {
       padding: 0;
+    }
+  }
+  .selection-tabs {
+    .v-tabs__bar {
+      background: none;
+      .v-tabs__item {
+        text-transform: capitalize;
+      }
     }
   }
 }

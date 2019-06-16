@@ -45,7 +45,12 @@
               </v-flex>
               <v-flex content-layout md8 xs12>
                 <div class="story-poster">
-                  <img class="poster" :src="story.headerImage" alt />
+                  <img
+                    class="poster"
+                    :src="story.headerImage"
+                    alt
+                    @click="viewImage(story.headerImage)"
+                  />
                 </div>
                 <div class="content-section">
                   <div class="title-section">
@@ -302,6 +307,12 @@ export default {
     },
     randomColor() {
       return '#' + Math.floor(Math.random() * 16777215).toString(16)
+    },
+    viewImage(imageUrl) {
+      this.$store.commit('ui/SET_IMAGE_VIEWER', {
+        status: true,
+        imageViewUrl: imageUrl
+      })
     }
   }
 }
@@ -397,7 +408,7 @@ export default {
         line-height: 1.5;
         font-weight: normal;
         @media (max-width: 768px) {
-          font-size: 24px;
+          font-size: 28px;
         }
       }
       .mini-profile {
@@ -430,6 +441,12 @@ export default {
         .reading {
           display: flex;
           align-items: center;
+          .value {
+            font-size: 14px;
+            @media (max-width: 768px) {
+              font-size: 12px;
+            }
+          }
         }
       }
       .date {
@@ -451,9 +468,12 @@ export default {
         margin: 10px 0;
         line-height: 1.5;
         padding: 0;
-        font-size: 18px;
+        font-size: 16px;
         opacity: 0.6;
         letter-spacing: 0.5px;
+        @media (max-width: 768px) {
+          font-size: 14px;
+        }
       }
     }
     .chip-container {
