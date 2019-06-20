@@ -210,7 +210,7 @@ export default {
     }
   },
   created() {
-    this.$on('input', function(data) {
+    this.$root.$on('input', data => {
       this.storyForm.headerImage.imageURL = data.imageURL
       this.storyForm.headerImage.imageFile = data.imageFile
     })
