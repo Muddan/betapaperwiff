@@ -32,6 +32,7 @@
                 </h1>
 
                 <h3 class="user-name">{{ userProfile.userName }}</h3>
+
                 <div class="action-btns">
                   <v-btn
                     v-show="loggedInUser"
@@ -52,6 +53,10 @@
                     >{{ followedAuthor ? 'Following' : 'Follow' }}</v-btn
                   >
                 </div>
+                <v-subheader class="padding-0 ">Contact</v-subheader>
+                <a :href="'mailto:' + userProfile.email" target="_top"
+                  ><v-icon color="#337fb5" left>mail</v-icon></a
+                >
                 <p class="profile-bio">{{ userProfile.about }}</p>
                 <div class="profile-stats">
                   <div class="stats">
@@ -286,6 +291,8 @@ export default {
     padding: 20px;
     padding-left: 0;
     background: #fff;
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
+
     .profile-content-wrapper {
       .header-layout {
         box-sizing: border-box;
@@ -407,14 +414,14 @@ export default {
       .v-subheader {
         margin-top: 10px;
       }
-      .padding-0 {
-        padding: 0;
-      }
     }
   }
   .joined-date {
     padding-left: 10px;
   }
   // bottom section
+  .padding-0 {
+    padding: 0;
+  }
 }
 </style>

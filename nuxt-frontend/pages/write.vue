@@ -318,7 +318,7 @@ $logosection-color: #043344;
 }
 .editor-content {
   box-shadow: none;
-  background: #fdfdfd;
+  background: #f8f8f8;
   border-radius: 8px;
 
   .ql-toolbar.ql-snow {

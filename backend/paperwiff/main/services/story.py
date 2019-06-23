@@ -132,7 +132,7 @@ class StoryClass():
         if Stories.objects.count():
             totalItems = Stories.objects.count()
             stories = json.loads(Stories.objects(userName=userName).exclude('id', 'comments', 'copyright').order_by(
-                '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
+                '-datePublished', ).to_json())
 
             return {
                 "pageNo": pageNo + 1,
@@ -155,7 +155,7 @@ class StoryClass():
         if Stories.objects.count():
             totalItems = Stories.objects.count()
             stories = json.loads(Stories.objects(userId=userId).exclude('id', 'comments', 'copyright').order_by(
-                '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
+                '-datePublished', ).to_json())
 
             return {
                 "pageNo": pageNo + 1,

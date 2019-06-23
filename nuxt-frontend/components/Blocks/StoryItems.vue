@@ -15,7 +15,12 @@
               <div class="item-subheader">
                 <div class="flex items-left">
                   <v-avatar class="avatar-main" size="50px">
-                    <img :src="story.userImage" />
+                    <img v-if="story.userImage" :src="story.userImage" />
+                    <v-avatar v-else color="blue">
+                      <span v-if="story.firstName" class="white--text ">{{
+                        story.firstName[0]
+                      }}</span>
+                    </v-avatar>
                   </v-avatar>
                   <v-subheader class="username-header">
                     <nuxt-link
@@ -81,7 +86,10 @@
                   path: '/a/' + story.userName + '/' + story.storyId
                 }"
               >
-                <div v-if="story.headerImage" class="post-header">
+                <div
+                  v-if="story.headerImage && index % 5 == 0"
+                  class="post-header"
+                >
                   <img class="header-img" :src="story.headerImage" />
                 </div>
               </nuxt-link>
@@ -272,7 +280,6 @@ a {
     .story-desc {
       color: #161616;
       opacity: 0.5;
-      max-height: 50px;
       overflow: hidden;
       font-size: 16px;
       @media (max-width: 1024px) {
@@ -286,8 +293,9 @@ a {
       }
       .chip {
         border-radius: 4px;
-        padding: 0 2px;
-        color: #9b9b9b;
+        padding: 5px;
+        background: #f7fafc;
+        color: #337fb5;
         margin-right: 5px;
         font-size: 14px;
         &:hover {
