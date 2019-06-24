@@ -7,9 +7,10 @@
             <strong>Welcome</strong>, {{ currentUser.firstName }} !
           </span>
         </header>
-        <v-subtitle>compose an epic.</v-subtitle>
+        <v-subheader>compose an epic.</v-subheader>
       </div>
       <div class="form-section">
+        <v-subheader>Upload an image for your post</v-subheader>
         <v-flex xs12 sm12 class="header-img-main">
           <image-input v-model="storyForm.headerImage" class="header-img-main">
             <div slot="activator">
@@ -80,11 +81,14 @@
           <v-combobox
             v-model="storyForm.selectedTags"
             :items="tagsArray"
-            label="Select Tags"
+            label="Add Tags"
             chips
             clearable
             solo
             multiple
+            :counter="3"
+            hint="Select upto 3 tags"
+            :persistent-hint="true"
             @input="limiter"
           >
             <template v-slot:selection="data">
@@ -98,6 +102,24 @@
               </v-chip>
             </template>
           </v-combobox>
+
+          <div class="chip-container">
+            <span
+              v-for="(item, index) in tagsArray"
+              :key="index"
+              class="chip"
+              @click="
+                () => {
+                  if (!storyForm.selectedTags.includes(item)) {
+                    storyForm.selectedTags.push(item)
+                    limiter(storyForm.selectedTags)
+                  }
+                }
+              "
+            >
+              {{ item }}
+            </span>
+          </div>
         </v-flex>
 
         <v-btn
@@ -158,9 +180,9 @@ export default {
             ['bold', 'italic', 'underline', 'strike'],
             ['blockquote', 'code-block'],
             ['link'],
-            [{ size: ['small', false, 'large', 'huge'] }],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            [{ align: [] }]
+            [{ size: ['small', false, 'large', 'huge'] }]
+            // [{ list: 'ordered' }, { list: 'bullet' }],
+            // [{ align: [] }]
           ]
         }
       },
@@ -210,14 +232,14 @@ export default {
     publishStory() {
       if (!this.storyForm.title.length) {
         this.$store.dispatch('notification/warning', {
-          title: 'ah Oh!',
+          title: '',
           message: 'We need a title for your story'
         })
         this.validForm = false
       }
       if (!this.storyForm.selectedTags.length > 0) {
         this.$store.dispatch('notification/warning', {
-          title: 'ah Oh!',
+          title: '',
           message: 'Please select atleast one tag'
         })
         this.validForm = false
@@ -227,7 +249,7 @@ export default {
         this.storyForm.content.split(' ').length > 1000
       ) {
         this.$store.dispatch('notification/warning', {
-          title: 'ah Oh!',
+          title: '',
           message: 'Please use maximum of 1000 words to finish your story.'
         })
         this.validForm = false
@@ -272,7 +294,7 @@ export default {
     limiter(e) {
       if (e.length > 3) {
         this.$store.dispatch('notification/warning', {
-          title: 'Not allowed !',
+          title: '',
           message: 'Please choose upto 3 tags only'
         })
         e.pop()
@@ -281,27 +303,38 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 $logosection-color: #043344;
 .write-content {
-  max-width: 1400px;
-  margin: auto;
+  max-width: 1000px;
+  margin: 20px auto;
+  background: #fff;
+  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
+
+  border-radius: 8px;
+  .v-subheader {
+    padding: 0;
+  }
 }
 .editor-content {
-  background: #fff;
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+  background: #fdfdfd;
+  border-radius: 8px;
+
+  .ql-toolbar.ql-snow {
+    border: none;
+    border-bottom: 1px solid #2e2e2e;
+  }
   .quill-editor {
     min-height: 200px;
-    max-height: 400px;
     overflow-y: auto;
+    border: none;
   }
 }
 .header-section {
   margin: 20px 0;
   padding: 20px 0;
   text-align: left;
-  // color: #36789a;
   color: $logosection-color;
   overflow: hidden;
   @media (max-width: 768px) {
@@ -357,6 +390,58 @@ $logosection-color: #043344;
   }
   .tags-input {
     margin-top: 30px;
+    margin-bottom: 15px;
+    .v-chip {
+      background: #f7fafc;
+      .v-chip__content {
+        text-transform: capitalize;
+        font-size: 12px;
+      }
+      .v-chip__close {
+        .v-icon {
+          &::before {
+            color: #337fb5;
+          }
+        }
+      }
+    }
+
+    .chip-container {
+      padding: 5px 0;
+      border-bottom: 1px solid #f2f2f2;
+      display: flex;
+      flex-wrap: wrap;
+      .chip {
+        border-radius: 8px;
+        padding: 5px 10px;
+        background: #f7fafc;
+        color: #337fb5;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        font-size: 12px;
+        text-decoration: none;
+        text-transform: capitalize;
+        cursor: pointer;
+        @media (max-width: 768px) {
+          font-size: 10px;
+        }
+        &:hover {
+          background: #fbfeff;
+        }
+      }
+      .read-time {
+        float: right;
+        font-size: 12px;
+        color: #b1b1b1;
+      }
+    }
+  }
+  .v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
+    > .v-input__control
+    > .v-input__slot {
+    box-shadow: none;
+    background: #f8f8f8;
+    border-radius: 8px;
   }
 }
 </style>

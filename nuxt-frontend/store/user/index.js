@@ -5,6 +5,8 @@ export const state = () => ({
   isSignedIn: false,
   access_token: '',
   refresh_token: '',
+  readingListStories: [],
+  userArticlesStories: [],
   current: {
     userId: null,
     firstName: '',

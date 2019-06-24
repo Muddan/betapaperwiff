@@ -6,10 +6,12 @@ const actions = {
       message: payload.message,
       pauseOnHover: false,
       timeout: 3000,
-      position: 'topCenter',
+      position: 'topRight',
       transitionIn: 'flipInX',
       transitionOut: 'flipOutX',
-      progressBar: false
+      transitionInMobile: 'flipInX',
+      transitionOutMobile: 'flipOutX',
+      progressBar: true
     })
   },
   success(context, payload) {
@@ -19,8 +21,12 @@ const actions = {
       message: payload.message,
       pauseOnHover: false,
       timeout: 3000,
-      position: 'topCenter',
-      progressBar: false
+      position: 'topRight',
+      transitionIn: 'flipInX',
+      transitionOut: 'flipOutX',
+      transitionInMobile: 'flipInX',
+      transitionOutMobile: 'flipOutX',
+      progressBar: true
     })
   },
   warning(context, payload) {
@@ -30,8 +36,12 @@ const actions = {
       message: payload.message,
       pauseOnHover: false,
       timeout: 3000,
-      position: 'topCenter',
-      progressBar: false
+      position: 'topRight',
+      transitionIn: 'flipInX',
+      transitionOut: 'flipOutX',
+      transitionInMobile: 'flipInX',
+      transitionOutMobile: 'flipOutX',
+      progressBar: true
     })
   },
   error(context, payload) {
@@ -41,8 +51,12 @@ const actions = {
       message: payload.message,
       pauseOnHover: false,
       timeout: 3000,
-      position: 'topCenter',
-      progressBar: false
+      position: 'topRight',
+      transitionIn: 'flipInX',
+      transitionOut: 'flipOutX',
+      transitionInMobile: 'flipInX',
+      transitionOutMobile: 'flipOutX',
+      progressBar: true
     })
   },
   progress(content, payload) {
@@ -53,6 +67,8 @@ const actions = {
       timeout: 2000,
       position: 'center',
       overlay: 'true',
+      transitionIn: 'flipInX',
+      transitionOut: 'flipOutX',
       progressBarColor: '#337fb5'
     })
   }

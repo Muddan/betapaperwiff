@@ -12,6 +12,17 @@ const firebaseConfig = {
   messagingSenderId: '430441876577',
   appId: '1:430441876577:web:b977ab9b0fe0607b'
 }
+
+// DEV ACCOUNT
+// const firebaseConfig = {
+//   apiKey: 'AIzaSyAzehTY4NzaBI_Y5VvbqclGA-5OPxoOEUU',
+//   authDomain: 'paperwiff-dev.firebaseapp.com',
+//   databaseURL: 'https://paperwiff-dev.firebaseio.com',
+//   projectId: 'paperwiff-dev',
+//   storageBucket: 'paperwiff-dev.appspot.com',
+//   messagingSenderId: '645001837531',
+//   appId: '1:645001837531:web:96544d74fdf976c3'
+// }
 // Initialize Firebase
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig)

@@ -7,7 +7,11 @@
             <v-flex xs12 md2>
               <div class="profile-details">
                 <v-avatar class="avatar-main">
-                  <img class="profile-img" :src="userProfile.userImage" />
+                  <img
+                    class="profile-img"
+                    :src="userProfile.userImage"
+                    @click="viewImage(userProfile.userImage)"
+                  />
                 </v-avatar>
                 <v-subheader>
                   Member Since
@@ -51,8 +55,14 @@
                 <p class="profile-bio">{{ userProfile.about }}</p>
                 <div class="profile-stats">
                   <div class="stats">
-                    <p class="value">{{ userStories.length }}</p>
-                    <h3 class="label">Stories Published</h3>
+                    <nuxt-link
+                      class="stats-link"
+                      :to="{
+                        path: '/a/' + userProfile.userName + '/published'
+                      }"
+                      ><p class="value">{{ userStories.length }}</p>
+                      <h3 class="label">Stories Published</h3>
+                    </nuxt-link>
                   </div>
                   <div class="stats">
                     <p class="value">
@@ -61,8 +71,15 @@
                     <h3 class="label">Following Users</h3>
                   </div>
                   <div v-if="loggedInUser" class="stats">
-                    <p class="value">{{ savedStories }}</p>
-                    <h3 class="label">Saved Stories</h3>
+                    <nuxt-link
+                      class="stats-link"
+                      :to="{
+                        path: '/a/' + userProfile.userName + '/saved-stories'
+                      }"
+                    >
+                      <p class="value">{{ savedStories }}</p>
+                      <h3 class="label">Saved Stories</h3>
+                    </nuxt-link>
                   </div>
                 </div>
               </div>
@@ -71,25 +88,30 @@
         </div>
       </div>
       <v-layout>
-        <v-flex xs3 md3 class="hidden-sm-and-down">
-          <v-flex class="sidebar-section sidebar-left">
-            <user-info :image-only="false" :only-mobile="true"></user-info>
+        <template>
+          <v-flex xs3 md3 class="hidden-sm-and-down">
+            <v-flex class="sidebar-section sidebar-left">
+              <user-info :image-only="false" :only-mobile="true"></user-info>
+              <KeyLinks></KeyLinks>
+            </v-flex>
           </v-flex>
-        </v-flex>
-        <v-flex xs12 md5>
-          <v-flex class="sidebar-section sidebar-main">
-            <h3 v-if="userStories.length == 0">No stories posted.</h3>
-            <div v-else class="user-stories">
-              <v-subheader>Recent Stories</v-subheader>
-              <story-items :stories="userStories"></story-items>
-            </div>
+          <v-flex xs12 md6>
+            <v-flex class="sidebar-section sidebar-main">
+              <h3 v-if="userStories.length == 0">No stories posted.</h3>
+              <div v-else class="user-stories">
+                <v-subheader>Recent Stories</v-subheader>
+                <story-items :stories="userStories"></story-items>
+              </div>
+            </v-flex>
           </v-flex>
-        </v-flex>
-        <v-flex xs3 md4 class="hidden-sm-and-down">
-          <v-flex class="sidebar-section sidebar-left">
-            <SidebarStories></SidebarStories>
+          <v-flex xs3 md3 class="hidden-sm-and-down">
+            <v-flex class="sidebar-section sidebar-left">
+              <SidebarStories>
+                <span slot="title">Popular Stories on Paperwiff</span>
+              </SidebarStories>
+            </v-flex>
           </v-flex>
-        </v-flex>
+        </template>
       </v-layout>
     </v-container>
   </div>
@@ -99,16 +121,16 @@
 import StoryItems from '@/components/Blocks/StoryItems.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
 import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
-
+import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 import { mapGetters } from 'vuex'
-
 import { endpoints } from '@/api/endpoints.js'
-
 export default {
+  transition: 'slidedown',
   components: {
     StoryItems,
     UserInfo,
-    SidebarStories
+    SidebarStories,
+    KeyLinks
   },
   data() {
     return {
@@ -141,38 +163,71 @@ export default {
     let userProfile = ''
     let userStories = ''
     if (store.state.user.current.userName === route.params.userName) {
-      userProfile = await app.$axios.$post(
-        endpoints.API_GET_USER_DETAILS,
-        {
-          userId: store.state.user.current.userId
-        },
-        {
-          headers: {
-            Authorization: 'Bearer ' + store.state.user.access_token
+      await app.$axios
+        .$post(
+          endpoints.API_GET_USER_DETAILS,
+          {
+            userId: store.state.user.current.userId
+          },
+          {
+            headers: {
+              Authorization: 'Bearer ' + store.state.user.access_token
+            }
           }
-        }
-      )
-      userStories = await app.$axios({
-        method: 'GET',
-        url: `${endpoints.API_GET_USER_STOREIS}?userId=${
-          store.state.user.current.userId
-        }`
-      })
-    } else {
-      userProfile = await app.$axios.$post(endpoints.API_GET_AUTHOR_DETAILS, {
-        userName: route.params.userName
-      })
-      userStories = await app.$axios({
-        method: 'GET',
-        url: `${endpoints.API_GET_AUTHOR_STOREIS}?userName=${
-          route.params.userName
-        }`
-      })
+        )
+        .then(res => {
+          userProfile = res.result
+        })
+        .catch(() => {
+          error({ statusCode: 404 })
+        })
+      await app
+        .$axios({
+          method: 'GET',
+          url: `${endpoints.API_GET_USER_STOREIS}?userId=${
+            store.state.user.current.userId
+          }`
+        })
+        .then(res => {
+          userStories = res.data.result.items
+        })
+        .catch(() => {
+          error({ statusCode: 404 })
+        })
+      return {
+        userProfile: userProfile,
+        userStories: userStories
+      }
     }
-
-    return {
-      userProfile: userProfile.result,
-      userStories: userStories.data.result.items
+    // NORMAL USER
+    else {
+      await app.$axios
+        .$post(endpoints.API_GET_AUTHOR_DETAILS, {
+          userName: route.params.userName
+        })
+        .then(res => {
+          userProfile = res.result.details
+        })
+        .catch(() => {
+          error({ statusCode: 404 })
+        })
+      await app
+        .$axios({
+          method: 'GET',
+          url: `${endpoints.API_GET_AUTHOR_STOREIS}?userName=${
+            route.params.userName
+          }`
+        })
+        .then(res => {
+          userStories = res.data.result.items
+        })
+        .catch(() => {
+          error({ statusCode: 404 })
+        })
+      return {
+        userProfile: userProfile,
+        userStories: userStories
+      }
     }
   },
   methods: {
@@ -212,6 +267,12 @@ export default {
       } else {
         this.$store.dispatch('user/followAuthor', authorId)
       }
+    },
+    viewImage(imageUrl) {
+      this.$store.commit('ui/SET_IMAGE_VIEWER', {
+        status: true,
+        imageViewUrl: imageUrl
+      })
     }
   }
 }
@@ -225,7 +286,6 @@ export default {
     padding: 20px;
     padding-left: 0;
     background: #fff;
-
     .profile-content-wrapper {
       .header-layout {
         box-sizing: border-box;
@@ -310,13 +370,17 @@ export default {
             border-right: none;
           }
           @media (max-width: 768px) {
-            &:last-child {
+            &:nth-child(3) {
               margin-left: 0;
               border-right: none;
             }
           }
           .value {
             padding-right: 10px;
+          }
+          .stats-link {
+            display: inline-flex;
+            align-items: center;
           }
         }
       }
@@ -338,6 +402,14 @@ export default {
     margin: 20px 10px;
     @media (max-width: 768px) {
       margin: 0;
+    }
+    .user-stories {
+      .v-subheader {
+        margin-top: 10px;
+      }
+      .padding-0 {
+        padding: 0;
+      }
     }
   }
   .joined-date {

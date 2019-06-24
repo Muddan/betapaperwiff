@@ -24,9 +24,9 @@
                       color="grey darken-4"
                       @click="saveStory(story.storyId)"
                     >
-                      <v-icon>{{
-                        savedStory ? 'bookmarks' : 'bookmark_border'
-                      }}</v-icon>
+                      <v-icon>
+                        {{ savedStory ? 'bookmarks' : 'bookmark_border' }}
+                      </v-icon>
                     </v-btn>
                     <div class="like-btn">
                       <v-btn
@@ -45,13 +45,18 @@
               </v-flex>
               <v-flex content-layout md8 xs12>
                 <div class="story-poster">
-                  <img class="poster" :src="story.headerImage" alt />
+                  <img
+                    class="poster"
+                    :src="story.headerImage"
+                    alt
+                    @click="viewImage(story.headerImage)"
+                  />
                 </div>
                 <div class="content-section">
                   <div class="title-section">
                     <header>
                       <v-layout class="mini-profile" align-center>
-                        <v-flex xs12 class="details-flex">
+                        <v-flex xs8 class="details-flex">
                           <v-avatar class="profile-img" size="55px">
                             <img :src="user.userImage" />
                           </v-avatar>
@@ -74,9 +79,9 @@
                                   }
                                 )
                               }}
-                              <v-icon class="dot-icon" size="8px">
-                                fas fa-star
-                              </v-icon>
+                              <v-icon class="dot-icon" size="8px"
+                                >fas fa-star</v-icon
+                              >
                               <span class="ago-time">
                                 {{
                                   getPublishedDate(
@@ -87,6 +92,8 @@
                               <span>ago</span>
                             </span>
                           </div>
+                        </v-flex>
+                        <v-flex xs4>
                           <div class="reading">
                             <v-btn small flat icon color="#9b9b9b">
                               <v-icon small>fas fa-book-reader</v-icon>
@@ -96,6 +103,10 @@
                                 Math.floor(
                                   story.content.split(' ').length / 160
                                 )
+                                  ? Math.floor(
+                                      story.content.split(' ').length / 160
+                                    )
+                                  : 'less than a'
                               }}
                               min read
                             </span>
@@ -118,19 +129,19 @@
                   </div>
                   <div class="story-content" v-html="story.content"></div>
                   <div class="footer-share">
-                    <v-subheader>Share </v-subheader>
+                    <v-subheader>Share</v-subheader>
                     <share-story :url="storyUrl"></share-story>
                   </div>
                   <div class="footer-author">
-                    <author-info :author="user"
-                      ><v-btn
+                    <author-info :author="user">
+                      <v-btn
                         outline
-                        color="indigo"
+                        color="#5199c3"
                         @click="followAuthor(story.userId)"
                       >
-                        <v-icon left>
-                          {{ followedAuthor ? 'group' : 'group_add' }}</v-icon
-                        >
+                        <v-icon left>{{
+                          followedAuthor ? 'group' : 'group_add'
+                        }}</v-icon>
                         {{ followedAuthor ? 'Following' : 'Follow' }}
                       </v-btn>
                     </author-info>
@@ -200,7 +211,8 @@ export default {
     return {
       fab: false,
       likeCount: 0,
-      bottomNav: ''
+      bottomNav: '',
+      storyUrl: ''
     }
   },
 
@@ -233,25 +245,56 @@ export default {
       }
     }
   },
-  async asyncData({ app, store, route, redirect }) {
-    const storyDetails = await app.$axios
+
+  async asyncData({ app, store, route, redirect, error, context }) {
+    let storyDetails
+    let userDetails
+    if (process.browser && !store.state.user.isSignedIn) {
+      if (window.localStorage.getItem('stories-viewed')) {
+        let count =
+          JSON.parse(window.localStorage.getItem('stories-viewed')) || {}
+        if (count > 5) {
+          store.commit('ui/SET_SHOW_POPUP', {
+            status: true,
+            component: 'SignUp'
+          })
+        }
+        count++
+        window.localStorage.setItem('stories-viewed', count)
+      } else {
+        window.localStorage.setItem('stories-viewed', 1)
+      }
+    }
+
+    await app.$axios
       .$post(endpoints.API_GET_STORY_DETAILS, {
         storyId: route.params.storyId
       })
-      .catch(() => {
-        redirect('/')
+      .then(res => {
+        if (res.result.status === 200) {
+          storyDetails = res.result.item
+        }
       })
-    const userProfile = await app.$axios
+      .catch(() => {
+        error({ statusCode: 404 })
+      })
+
+    await app.$axios
       .$post(endpoints.API_GET_AUTHOR_DETAILS, {
         userName: route.params.userName
       })
-      .catch(() => {
-        redirect('/')
+      .then(res => {
+        if (res.result.status === 200) {
+          userDetails = res.result.details
+        }
       })
+      .catch(() => {
+        error({ statusCode: 404 })
+      })
+
     return {
-      story: storyDetails.result.item,
-      storyUrl: `${process.env.baseUrl}${route.path}`,
-      user: userProfile.result
+      story: storyDetails,
+      user: userDetails
     }
   },
   mounted() {
@@ -264,6 +307,12 @@ export default {
     },
     randomColor() {
       return '#' + Math.floor(Math.random() * 16777215).toString(16)
+    },
+    viewImage(imageUrl) {
+      this.$store.commit('ui/SET_IMAGE_VIEWER', {
+        status: true,
+        imageViewUrl: imageUrl
+      })
     }
   }
 }
@@ -359,7 +408,7 @@ export default {
         line-height: 1.5;
         font-weight: normal;
         @media (max-width: 768px) {
-          font-size: 24px;
+          font-size: 28px;
         }
       }
       .mini-profile {
@@ -389,6 +438,16 @@ export default {
           box-sizing: border-box;
           padding: 0 10px;
         }
+        .reading {
+          display: flex;
+          align-items: center;
+          .value {
+            font-size: 14px;
+            @media (max-width: 768px) {
+              font-size: 12px;
+            }
+          }
+        }
       }
       .date {
         font-size: 12px;
@@ -409,9 +468,12 @@ export default {
         margin: 10px 0;
         line-height: 1.5;
         padding: 0;
-        font-size: 18px;
+        font-size: 16px;
         opacity: 0.6;
         letter-spacing: 0.5px;
+        @media (max-width: 768px) {
+          font-size: 14px;
+        }
       }
     }
     .chip-container {
@@ -421,16 +483,17 @@ export default {
       .chip {
         border-radius: 4px;
         padding: 5px;
-        background: #f2f2f2;
-        color: #2e2e2e;
+        background: #f7fafc;
+        color: #337fb5;
         margin-right: 5px;
         font-size: 14px;
+        text-transform: capitalize;
+        cursor: pointer;
         @media (max-width: 768px) {
           font-size: 12px;
         }
         &:hover {
-          text-decoration: underline;
-          cursor: pointer;
+          background: #fafafa;
         }
       }
       .read-time {

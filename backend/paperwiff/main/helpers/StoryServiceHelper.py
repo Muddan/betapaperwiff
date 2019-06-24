@@ -11,3 +11,6 @@ class StoryServiceHelper():
             return False
     def getAvailableTags(self):
         return Tags.objects().exclude('id').to_json()
+
+    def getStoryDetailsByStoryId(self, storyId):
+        return Stories.objects(storyId=storyId).exclude('id').first()

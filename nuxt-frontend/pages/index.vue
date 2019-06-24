@@ -1,6 +1,21 @@
 <template>
-  <div class="main-container">
+  <div id="home-top" class="main-container">
     <div id="home">
+      <v-fab-transition>
+        <v-btn
+          v-show="ScrollToTopHidden"
+          v-scroll="onScroll"
+          color="#77b6e2"
+          fab
+          dark
+          fixed
+          bottom
+          right
+          @click="$vuetify.goTo('#home-top')"
+        >
+          <v-icon>keyboard_arrow_up</v-icon>
+        </v-btn>
+      </v-fab-transition>
       <v-navigation-drawer
         v-model="leftDrawer"
         class="mobile-left-sidebar"
@@ -8,7 +23,9 @@
         disable-resize-watcher
       >
         <v-flex class="container">
-          <SidebarStories></SidebarStories>
+          <SidebarStories>
+            <span slot="title">Popular Stories on Paperwiff</span>
+          </SidebarStories>
         </v-flex>
       </v-navigation-drawer>
       <v-navigation-drawer
@@ -23,11 +40,34 @@
         </v-flex>
       </v-navigation-drawer>
       <div class="logo-section">
-        <v-layout class="hidden-md-and-up">
+        <v-layout class="hidden-md-and-up feed-selection">
           <v-btn flat icon color="#337fb5" @click="leftDrawer = !leftDrawer">
             <v-icon small>fas fa-clipboard-list </v-icon>
           </v-btn>
-          <v-spacer></v-spacer>
+          <v-tabs
+            color="none"
+            slider-color="#337fb5"
+            fixed-tabs
+            class="selection-tabs"
+          >
+            <v-tab
+              v-for="(item, index) in FeedType"
+              :key="index"
+              :ripple="false"
+            >
+              <span> {{ item.title }}</span>
+            </v-tab>
+          </v-tabs>
+          <!-- <v-subheader
+            v-for="(label, index) in FeedType"
+            :key="index"
+            depressed
+            class="feed-title"
+            :class="{ 'feed-title--active': activeTab === label.title }"
+          >
+            {{ label.title }}
+          </v-subheader> -->
+
           <v-btn flat icon color="#337fb5" @click="rightDrawer = !rightDrawer">
             <v-icon small>fa fa-coins</v-icon>
           </v-btn>
@@ -48,8 +88,39 @@
             </v-scroll-y-transition>
           </v-flex>
           <v-flex class="content-section" md6 xs12>
-            <!-- <StoryCarousel></StoryCarousel> -->
-            <story-listing></story-listing>
+            <div class="articles-tab">
+              <div class="tab-list">
+                <v-tabs fixed-tabs class="hidden-md-and-down selection-tabs">
+                  <v-tab
+                    v-for="(item, index) in FeedType"
+                    :key="index"
+                    :ripple="false"
+                  >
+                    {{ item.title }}
+                  </v-tab>
+                </v-tabs>
+                <!-- <v-subheader
+                  v-if="isSignedIn"
+                  depressed
+                  class="feed-title"
+                  :class="{ 'feed-title--active': activeTab === 'Feed' }"
+                  @click.stop="changeTab({ title: 'Feed', status: false })"
+                >
+                  {{ 'Feed' }}
+                </v-subheader> -->
+              </div>
+              <story-items
+                v-if="getCurrentUserFeed()"
+                :stories="getCurrentUserFeed()"
+              ></story-items>
+              <no-ssr>
+                <InfiniteLoading spinner="bubbles" @infinite="infiniteHandler">
+                  <div slot="no-more" class="no-more-text">
+                    The End.
+                  </div>
+                </InfiniteLoading>
+              </no-ssr>
+            </div>
           </v-flex>
           <v-flex
             class="sidebar-section sidebar-right hidden-sm-and-down"
@@ -60,7 +131,9 @@
             <v-scroll-y-transition>
               <join-us></join-us>
             </v-scroll-y-transition>
-            <SidebarStories></SidebarStories>
+            <SidebarStories>
+              <span slot="title">Popular Stories on Paperwiff</span>
+            </SidebarStories>
           </v-flex>
         </v-layout>
       </div>
@@ -71,12 +144,15 @@
 // Custom components
 import TagListing from '@/components/Blocks/TagListing/TagListing.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
-import StoryListing from '@/components/Blocks/StoryListing.vue'
 import KeyLinks from '@/components/Blocks/KeyLinks.vue'
 import JoinUs from '@/components/Blocks/JoinUs.vue'
 import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
-// import StoryCarousel from '@/components/Blocks/StoryCarousel.vue'
+import StoryItems from '@/components/Blocks/StoryItems.vue'
+
 import { mapGetters } from 'vuex'
+
+import InfiniteLoading from 'vue-infinite-loading'
+import { endpoints } from '../api/endpoints'
 
 export default {
   transition: 'fade',
@@ -85,17 +161,25 @@ export default {
   components: {
     TagListing,
     UserInfo,
-    StoryListing,
     KeyLinks,
     JoinUs,
-    SidebarStories
-    // StoryCarousel
+    SidebarStories,
+    StoryItems,
+    InfiniteLoading
   },
   data() {
     return {
       snackbar: true,
       leftDrawer: false,
-      rightDrawer: false
+      rightDrawer: false,
+      ScrollToTopHidden: false,
+      pageNo: 2,
+      FeedType: [
+        // { title: 'My Feed', status: true },
+        { title: 'Latest', status: true }
+        // { title: 'Popular', status: false }
+      ],
+      activeTab: 'Latest'
     }
   },
   computed: {
@@ -103,6 +187,42 @@ export default {
       filteredStories: 'stories/filteredStories',
       allStories: 'stories/allStories'
     })
+  },
+  mounted() {
+    this.$store.dispatch('stories/getAllStories')
+  },
+  methods: {
+    infiniteHandler($state) {
+      this.$axios
+        .$get(`${endpoints.API_GET_STORIES}?pageNo=${this.pageNo}`)
+        .then(async res => {
+          await this.$store.commit('stories/SET_ALL_STORIES', {
+            items: res.result.items,
+            loadMore: true
+          })
+          this.pageNo++
+          if (
+            this.$store.state.stories.allStories.length < res.result.totalItems
+          ) {
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
+        })
+    },
+    onScroll(e) {
+      if (window && typeof window === 'undefined') return
+      const top = window.pageYOffset || e.target.scrollTop || 0
+      this.ScrollToTopHidden = top > 100
+    },
+    getCurrentUserFeed() {
+      // if (this.activeTab === 'Feed') {
+      //   return this.$store.dispatch('user/userFeed')
+      // } else {
+      //   return this.allStories
+      // }
+      return this.allStories
+    }
   }
 }
 </script>
@@ -117,9 +237,12 @@ export default {
 }
 $logosection-color: #043344;
 #home {
-  min-height: calc(93vh - 80px);
   margin-top: 20px;
   .logo-section {
+    .feed-selection {
+      align-items: center;
+      justify-content: space-around;
+    }
     .main-title {
       font-family: 'Marck Script', cursive;
       font-size: 55px;
@@ -152,7 +275,7 @@ $logosection-color: #043344;
     box-sizing: border-box;
     padding: 0 15px;
     @media (max-width: 1024px) {
-      padding: 0 8px;
+      padding: 0px;
     }
   }
   .sidebar-left,
@@ -167,6 +290,19 @@ $logosection-color: #043344;
   }
   .sidebar-stories-main {
     margin: 20px 0;
+  }
+  .mobile-left-sidebar {
+    .container {
+      padding: 0;
+    }
+  }
+  .selection-tabs {
+    .v-tabs__bar {
+      background: none;
+      .v-tabs__item {
+        text-transform: capitalize;
+      }
+    }
   }
 }
 </style>

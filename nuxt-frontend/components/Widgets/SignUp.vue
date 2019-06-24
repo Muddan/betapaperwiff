@@ -22,45 +22,70 @@
         </v-btn>
       </div>
 
-      <v-scroll-y-transition>
-        <div class="form-wrapper">
-          <div class="signup-form-wrapper">
-            <v-form
-              ref="sign-up-form"
-              v-model="valid"
-              class="sign-up-form"
-              lazy-validation
-            >
-              <v-scroll-y-transition>
-                <v-text-field
-                  v-if="showSignUp"
-                  prepend-icon="account_circle"
-                  label="Full Name"
-                ></v-text-field>
-              </v-scroll-y-transition>
-
+      <div v-if="isForgotPassword" class="forgot-password-form">
+        <v-text-field
+          v-model="email"
+          :rules="emailRules"
+          label="E-mail"
+          prepend-icon="email"
+          required
+        ></v-text-field>
+        <v-btn color="#2e2e2e" dark @click="resetPassword(email)">
+          Send Reset Link
+        </v-btn>
+        <v-btn
+          outline
+          color="#2e2e2e"
+          dark
+          @click="
+            () => {
+              isForgotPassword = false
+            }
+          "
+        >
+          Cancel
+        </v-btn>
+      </div>
+      <div v-else class="form-wrapper">
+        <div class="signup-form-wrapper">
+          <v-form
+            ref="sign-up-form"
+            v-model="valid"
+            class="sign-up-form"
+            lazy-validation
+          >
+            <v-scroll-y-transition>
               <v-text-field
-                v-model="email"
-                :rules="emailRules"
-                label="E-mail"
-                prepend-icon="email"
-                required
+                v-if="showSignUp"
+                v-model="fullName"
+                :rules="nameRules"
+                prepend-icon="account_circle"
+                label="Full Name"
               ></v-text-field>
+            </v-scroll-y-transition>
 
-              <v-text-field
-                v-model="password"
-                :append-icon="show1 ? 'visibility' : 'visibility_off'"
-                :rules="[rules.required, rules.min]"
-                :type="show1 ? 'text' : 'password'"
-                name="input-10-1"
-                label="Password"
-                prepend-icon="lock"
-                hint="At least 8 characters"
-                counter
-                @click:append="show1 = !show1"
-              ></v-text-field>
+            <v-text-field
+              v-model="email"
+              :rules="emailRules"
+              label="E-mail"
+              prepend-icon="email"
+              required
+            ></v-text-field>
 
-              <!--
+            <v-text-field
+              v-model="password"
+              :append-icon="show1 ? 'visibility' : 'visibility_off'"
+              :rules="[rules.required, rules.min]"
+              :type="show1 ? 'text' : 'password'"
+              name="input-10-1"
+              label="Password"
+              prepend-icon="lock"
+              hint="At least 8 characters"
+              counter
+              @click:append="show1 = !show1"
+            ></v-text-field>
+
+            <!--
               <v-checkbox
                 v-model="checkbox"
                 :rules="[v => !!v || 'You must agree to continue!']"
@@ -68,45 +93,44 @@
                 required
               ></v-checkbox> -->
 
-              <v-btn color="#2e2e2e" dark @click="validate">
-                {{ formText }}
-              </v-btn>
-              <span v-if="!showSignUp" class="forgot-password">
-                Forgot
-                <strong class="link-text" @click="forgotPassword()"
-                  >password ?</strong
+            <v-btn color="#2e2e2e" dark @click="validate">
+              {{ formText }}
+            </v-btn>
+            <span v-if="!showSignUp" class="forgot-password">
+              Forgot
+              <strong class="link-text" @click="forgotPassword()"
+                >password ?</strong
+              >
+            </span>
+            <div v-show="!showSignUp" class="form-switcher">
+              <span>
+                No account?
+                <strong class="link-text" @click="createAccount()"
+                  >Create one.</strong
                 >
               </span>
-              <div v-show="!showSignUp" class="form-switcher">
-                <span>
-                  No account?
-                  <strong class="link-text" @click="createAccount()"
-                    >Create one.</strong
-                  >
-                </span>
-              </div>
-              <div v-show="showSignUp" class="form-switcher">
-                <span>
-                  Aready have an account?
-                  <strong class="link-text" @click="loginAccount()"
-                    >Take me to login</strong
-                  >
-                </span>
-              </div>
-              <v-subheader class="notice-text">
-                <span> Click “{{ formText }}” above to accept Paperwiff's</span>
-                <span class="accepting-links">
-                  <strong class="link-text">
-                    <nuxt-link to="/privacy-policy"
-                      >Privacy Policy</nuxt-link
-                    ></strong
-                  >
-                </span>
-              </v-subheader>
-            </v-form>
-          </div>
+            </div>
+            <div v-show="showSignUp" class="form-switcher">
+              <span>
+                Aready have an account?
+                <strong class="link-text" @click="loginAccount()"
+                  >Take me to login</strong
+                >
+              </span>
+            </div>
+            <v-subheader class="notice-text">
+              <span> Click “{{ formText }}” above to accept Paperwiff's</span>
+              <span class="accepting-links">
+                <strong class="link-text">
+                  <nuxt-link to="/privacy-policy"
+                    >Privacy Policy</nuxt-link
+                  ></strong
+                >
+              </span>
+            </v-subheader>
+          </v-form>
         </div>
-      </v-scroll-y-transition>
+      </div>
     </div>
   </div>
 </template>
@@ -122,6 +146,7 @@ export default {
     formText: 'Sign In',
     show1: false,
     valid: true,
+    fullName: '',
     password: '',
     nameRules: [v => !!v || 'Name is required'],
     email: '',
@@ -134,7 +159,8 @@ export default {
       min: v => v.length >= 8 || 'Min 8 characters',
       emailMatch: () => "The email and password you entered don't match"
     },
-    checkbox: false
+    checkbox: false,
+    isForgotPassword: false
   }),
   computed: {
     ...mapGetters({
@@ -143,17 +169,19 @@ export default {
   },
   methods: {
     validate() {
-      this.$store.dispatch('notification/info', {
-        title: 'Hey there!',
-        message:
-          'We are experiencing some issue, please try our social login :)'
-      })
+      if (this.formText === 'Sign Up') {
+        this.emailSignUp(this.email, this.password, this.fullName)
+      } else {
+        this.emailLogin(this.email, this.password)
+      }
     },
     createAccount() {
       this.formText = 'Sign Up'
       this.showSignUp = true
     },
-    forgotPassword() {},
+    forgotPassword() {
+      this.isForgotPassword = true
+    },
     loginAccount() {
       this.showSignUp = false
       this.formText = 'Sign In'

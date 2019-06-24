@@ -11,7 +11,9 @@ const getter = {
   likedStories: state => state.current.likedStories,
   followingAuthors: state => state.current.followingAuthors,
   savedStories: state => state.current.saveForLater,
-  followingTags: state => state.current.followingTags
+  followingTags: state => state.current.followingTags,
+  readingListStories: state => state.readingListStories,
+  userArticlesStories: state => state.userArticlesStories
 }
 
 export default getter

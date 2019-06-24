@@ -7,6 +7,12 @@ import * as types from './mutation-types'
 import 'firebase/auth'
 
 const actions = {
+  /**
+   * Start session if user is logged in by verifying with firebase authentication and get user details from server
+   *
+   * @param {*} context
+   * @param {*} payload
+   */
   sessionStart(context, payload) {
     firebase.auth().onAuthStateChanged(async function(user) {
       if (user) {
@@ -24,16 +30,47 @@ const actions = {
     })
   },
 
-  authenticate(context, payload) {
+  /**
+   *  Authenticate the firebase USER Token in the server and return the user details as reponse
+   *
+   *  @param {*} context
+   *  @param {*} payload
+   */
+  authenticate(context, { idToken, fullName }) {
     this.$axios
       .$post(endpoints.API_USER_AUTH, {
-        id_token: payload
+        id_token: idToken,
+        fullName: fullName
       })
       .then(res => {
         context.dispatch('loginUser', res)
       })
   },
 
+  /**
+   *  Authenticate the firebase USER Token in the server and return the user details as reponse
+   *
+   *  @param {*} context
+   *  @param {*} payload
+   */
+  authenticateEmailUser(context, payload) {
+    console.log('SEDNING ID TOKEN TO  EMAIL USER SERVER')
+
+    this.$axios
+      .$post(endpoints.API_USER_EMAIL_AUTH, {
+        userId: payload
+      })
+      .then(res => {
+        context.dispatch('loginUser', res)
+      })
+  },
+
+  /**
+   * Setting the store with user details and access tokens
+   *
+   * @param {*} context
+   * @param {*} payload
+   */
   async loginUser(context, payload) {
     const tokens = {
       access_token: payload.access_token,
@@ -66,6 +103,13 @@ const actions = {
       )
     }
   },
+
+  /**
+   * Setting the access tokens in the store
+   *
+   * @param {*} context
+   * @param {*} payload
+   */
   setTokens(context, payload) {
     localStorage.setItem(
       'paperwiff/user',
@@ -77,6 +121,12 @@ const actions = {
     context.commit(types.SET_ACCESS_TOKENS, payload)
   },
 
+  /**
+   * Clear localstorage, and reset the store to initial state
+   *
+   * @param {*} context
+   * @param {*} payload
+   */
   logoutUser(context, payload) {
     firebase
       .auth()
@@ -94,6 +144,12 @@ const actions = {
     localStorage.clear()
   },
 
+  /**
+   * Gets the user details of the logged in user
+   *
+   * @param {*} context
+   * @param {*} payload userId
+   */
   async getUserDetails(context, payload) {
     await this.$axios
       .$post(
@@ -111,24 +167,61 @@ const actions = {
         context.commit(types.SET_USER_PROFILE, res.result)
       })
   },
+  /**
+   * Update the user details
+   *
+   * @param {*} context
+   * @param {*} payload userId => TODO: Set the params in the actions, rather than getting from an data object
+   * @returns
+   */
   updateUserDetails(context, payload) {
     return new Promise((resolve, reject) => {
-      this.$axios
-        .$post(endpoints.API_USER_UPDATE, payload, {
-          headers: {
-            Authorization: 'Bearer ' + context.rootState.user.access_token
-          }
+      if (payload.file) {
+        const formData = new FormData()
+        formData.append('file', payload.file)
+        formData.append('upload_preset', endpoints.upload_preset)
+        this.$axios.$post(endpoints.IMAGE_UPLOAD, formData).then(res => {
+          payload.details.userImage = res.secure_url
+          this.$axios
+            .$post(endpoints.API_USER_UPDATE, payload.details, {
+              headers: {
+                Authorization: 'Bearer ' + context.rootState.user.access_token
+              }
+            })
+            .then(res => {
+              context.dispatch('getUserDetails', payload.details.userId)
+              // context.commit(types.SET_USER_PROFILE, res.data.result)
+              resolve(true)
+            })
+            .catch(e => {
+              resolve(false)
+            })
         })
-        .then(res => {
-          context.dispatch('getUserDetails', payload.userId)
-          // context.commit(types.SET_USER_PROFILE, res.data.result)
-          resolve(true)
-        })
-        .catch(e => {
-          resolve(false)
-        })
+      } else {
+        this.$axios
+          .$post(endpoints.API_USER_UPDATE, payload.details, {
+            headers: {
+              Authorization: 'Bearer ' + context.rootState.user.access_token
+            }
+          })
+          .then(res => {
+            context.dispatch('getUserDetails', payload.details.userId)
+            // context.commit(types.SET_USER_PROFILE, res.data.result)
+            resolve(true)
+          })
+          .catch(e => {
+            resolve(false)
+          })
+      }
     })
   },
+
+  /**
+   *  Follows the author, gets the userId from the store.
+   *
+   * @param {*} context
+   * @param {*} payload authorId, ID of the author the user follows
+   */
   followAuthor(context, payload) {
     this.$axios({
       method: 'POST',
@@ -158,6 +251,12 @@ const actions = {
       }
     })
   },
+  /**
+   *Adds the story with storyId to savelater for the logged in user
+   *
+   * @param {*} context
+   * @param {*} payload storyId
+   */
   saveLater(context, payload) {
     this.$axios({
       method: 'POST',
@@ -187,6 +286,13 @@ const actions = {
       }
     })
   },
+  /**
+   * Gets the stories that are related to the user once logged In, based on following tags and following authors
+   *
+   * @param {*} context
+   * @param {*} payload
+   * @returns
+   */
   userFeed(context, payload) {
     return this.$axios({
       method: 'POST',

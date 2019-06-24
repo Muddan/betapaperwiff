@@ -23,6 +23,8 @@ const mutations = {
       if (state.allStories.length) {
         const currentStories = state.allStories
         state.allStories = currentStories.concat(payload.items)
+      } else {
+        state.allStories = payload.items
       }
     } else {
       state.allStories = payload
@@ -49,6 +51,9 @@ const mutations = {
   },
   [types.SET_USER_FEED](state, payload) {
     state.filteredStories = payload
+  },
+  [types.SET_POPULAR_STORIES](state, payload) {
+    state.popularStories = payload
   }
 }
 

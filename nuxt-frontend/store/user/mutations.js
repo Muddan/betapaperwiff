@@ -23,6 +23,14 @@ const mutations = {
     } else {
       state.current.followingTags.push(payload)
     }
+  },
+
+  [types.SET_READINGLIST](state, payload) {
+    state.readingListStories = payload
+  },
+
+  [types.SET_PUBLISHED_STORIES](state, payload) {
+    state.userArticlesStories = payload
   }
 }
 

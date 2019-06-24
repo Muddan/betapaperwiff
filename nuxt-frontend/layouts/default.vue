@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <PopUp></PopUp>
+    <ImageViewer></ImageViewer>
     <Header></Header>
     <v-content>
       <nuxt />
@@ -12,15 +13,16 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import PopUp from '../components/Widgets/PopUp'
+import ImageViewer from '../components/Widgets/ImageViewer'
 export default {
   components: {
     Footer,
     Header,
-    PopUp
+    PopUp,
+    ImageViewer
   },
   async beforeMount() {
     await this.$store.dispatch('user/sessionStart')
-    await this.$store.dispatch('stories/getAllStories')
     await this.$store.dispatch('stories/getStoryTags')
   }
 }

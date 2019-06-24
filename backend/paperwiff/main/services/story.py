@@ -186,6 +186,7 @@ class StoryClass():
                 "status": 200
             }
    # user sauthorstories by username
+
     def getAuthorStories(self, userName, pageNo=1):
         if pageNo <= 0:
             pageNo = 1
@@ -208,6 +209,7 @@ class StoryClass():
                 "status": 200
             }
     # user stories by userId
+
     def getUserStories(self, userId, pageNo=1):
         if pageNo <= 0:
             pageNo = 1
@@ -286,5 +288,52 @@ class StoryClass():
         else:
             return {
                 "msg": "Story not found with " + storyId,
+                "status": 400
+            }
+
+    def getPopularStories(self, pageNo=1):
+        if pageNo <= 0:
+            pageNo = 1
+        pageNo = pageNo - 1
+        totalItems = Stories.objects.count()
+        stories = json.loads(Stories.objects().exclude('id', 'comments', 'copyright').order_by(
+            '-views', '-likes').skip(pageNo * 5).limit(5).to_json())
+        return {
+            "pageNo": pageNo + 1,
+            "totalItems": totalItems,
+            "items": stories,
+            "status": 200
+        }
+
+    def deleteByStoryId(self, storyId):
+        if not StoryServiceHelper().storyIdExists(storyId):
+            return {
+                "msg": "The storyId does not exists, please try again",
+                "status": 400
+            }
+
+        userId = Stories.objects(storyId=storyId).first().userId
+
+        if not UserServiceHelper().userIdExists(userId):
+            return {
+                "msg": "Story contains invalid userId, please try again",
+                "status": 200
+            }
+        print('Deleting story with storyId ' + storyId)
+        try:
+            Stories.objects(storyId=storyId).delete()
+
+            print('Removing story details from userId ' + userId)
+            Users.objects(userId=userId).update_one(
+                pull__userArticles=storyId)
+            Users.objects(userId=userId).update_one(
+                pull__saveForLater=storyId)
+            return {
+                "msg": "story has been deleted successfully",
+                "status": 200
+            }
+        except Exception as e:
+            return {
+                "msg": "excepton: "+str(e),
                 "status": 200
             }

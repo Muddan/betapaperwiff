@@ -50,6 +50,7 @@ def taggedStories():
     result = storyService.getTagStories(pageNo=pageNo, tagName=tagName)
     return make_response(response(result), result.get('status'))
 
+
 @Story.route('/allstories', methods=['GET'])
 def allStories():
     if not request.args.get('pageNo'):
@@ -59,6 +60,7 @@ def allStories():
 
     result = storyService.getAllStories(pageNo=pageNo)
     return make_response(response(result), result.get('status'))
+
 
 @Story.route('/authorStories', methods=['GET'])
 def authorstories():
@@ -73,6 +75,7 @@ def authorstories():
 
     result = storyService.getAuthorStories(pageNo=pageNo, userName=userName)
     return make_response(response(result), result.get('status'))
+
 
 @Story.route('/userStories', methods=['GET'])
 def userStories():
@@ -178,7 +181,7 @@ def publishStory():
         headerImage = data_json["headerImage"]
         summary = data_json["summary"]
         result = storyService.publishStory(userId=userId, tags=tags, summary=summary,
-                                        storyTitle=storyTitle, content=content, language=language, datePublished=datePublished, headerImage=headerImage)
+                                           storyTitle=storyTitle, content=content, language=language, datePublished=datePublished, headerImage=headerImage)
         return response(result), result['status']
 
     except Exception as e:
@@ -197,24 +200,23 @@ def storyDetails():
         storyDetails = storyService.getStoryDetailsByStoryId(storyId)
         return response(storyDetails), storyDetails['status']
     except Exception as e:
-        return response('Exception '+ str(e)), 400
+        return response('Exception ' + str(e)), 400
 
 
-@Story.route('/delete', methods=['GET'])
-def deleteStory():
+@Story.route('/popular', methods=['GET'])
+def popularStories():
+    result = storyService.getPopularStories()
+    return make_response(response(result), result.get('status'))
+
+
+@Story.route('/delete', methods=['POST'])
+def deleteStories():
     try:
         data_json = request.get_json(request.data)
-
-        if not request.get_json('delete'):
-            return response("No items to delete please verify Story Id")
-
-        else:
-            arrayOfStuffToDelete=data_json.get('delete')
-            if len(arrayOfStuffToDelete) <= 0:
-                return response("No items to delete")
-
-            deleted=storyService.deleteByStoryId(arrayOfStuffToDelete)
-            return response(deleted), deleted['status']
-
+        if not data_json.get('storyId'):
+            return response('storyIds are missing, please try again'), 400
+        storyId = data_json.get('storyId')
+        result = storyService.deleteByStoryId(storyId)
+        return response(result), result['status']
     except Exception as e:
-        return response("Error:"+str(e)),400
+        return response('Exception ' + str(e)), 400

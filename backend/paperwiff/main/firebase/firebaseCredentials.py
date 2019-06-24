@@ -12,3 +12,17 @@ class firebaseCredentials:
             "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
             "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-di0by%40paperwiff.iam.gserviceaccount.com"
         }
+
+    def serviceAccountKeyDev(self):
+        return {
+            "type": "service_account",
+            "project_id": "paperwiff-dev",
+            "private_key_id": "9f6cf8ed988a4ec0fbaf91e8958ab0e994921b76",
+            "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD5dokpNGktuN8c\nBtUlGrB/asnEMSVxPiAllKzjjhcrYLcxGjvq0MWneiiGziWo7JNav2ops0vofbIm\n6JS8vyW9LoAofSYuDOYpEBjGig4j98P5YTvUaXRdIZnrJ0i4KohV9yHB1VrCGKkT\nJDWeMBSIId/csrRUcnq2TXe2Qck5hqC/eEzfnQj5hl2YmmCwmEh/6KLlIxiBLr57\nPQM3ZiqYwI4qD9mHrhSLEIPNzUFPsFV4QmyM0368ovyjkHGRPKoiVNBA+CgsR//D\nwJ+NbGqg4hQFsx6TnB/0gUDGObBi3Qi9nQ3vqTT8JpNR0b+Yj4MgEijN/BERRlUS\nVjEMiR9bAgMBAAECggEAKGhGZFm8da792KTUrptpnmH2R6SsS3EENQIllQBliV2z\nnq0AqpLhiTS0zs0idX/IiIj70cBcmc6OZlYDDaWqn7+h+6z127y0JU+Zq8Md8j6G\nTGUvE0N3mURBkcD9uvMMvVv36FU+S7VB4btaQgLIuJpAEBgUNJ+Md+4JZ4i1Zu8x\nSJGJr4mvNii49xWvjRBlQ5AAO0j1wDMJxDnvJ1kybRjgeqV5VbtfP346prpFEJGh\nBbqEgqyQSpXgPeTOjyp0S3bB6/nKdZafcjPYAx1UN/BEbDet09i28k8+4szzEqzi\nZlFAzyhBWmRxjrtRxv/6UItyMZsG3MKVHKu+vHMVSQKBgQD+33CaRcrwhvtt/1nM\n8I3BcKuMTJ8sb4WFTBJ5gi9COa18DY29AYtbajpgs6Vee2Xn55frZdk+MW5ZLvp4\njr8doMyUZt1TM3Dzd472nv/hdOP6MIzAiqDDM1fJgTY3bVpXpAB4ejyUEooZEtzo\n8cKcNMmFIofp+5OA4oPnOUYe+QKBgQD6kPibb5jmLpxFqPvtuEDHqpwMeOtOIa3O\nYa8FMowaDf2CbfjemhxI5atQ9YzTxd1pLfKRha2TwFcqDPKQ5BSJvyiU6uiHNsRh\ntSBaCbPfwLPHnE6H6U4PWsxf6ZU7ECjMfZdxsoH+q7YQwnx9LLh+GYgFir9eyPnR\nAm1XpqDB8wKBgQDOBPExUv8jBAlTNdhx53S+i4OvifQUaCUmxYIdhBUNVDAemZob\n0JbEEw8TQcOHpvmNxk+v8Qj00+Id5vKB5uknWuZjgu6epXNE6jy+r3Go3eK2Ru5P\naP9gKi1o7bBUh2lCdIgI2s4C5yWH9Q5qoZmsyKKoomv4v+nQgckba9l5iQKBgE0+\n3CWvJcfwnqSrD9+dafskEa+Wp5QSte5mFvrXNnHh1kGbfZnCkO24QDRZPu0alsOS\nMrHCMFzYcwa3ryAT8HD2yZ//O2hT7f7hQ/P+AcH9Om9TNLKZrkL1jwQSkrr+pFVG\ncqXOjlzguuQ30QEWBFp7rH9o4s5pzvoscWEQMYcZAoGADVyij+4BUjPthRe0F7Ck\naekvDOv5QHjRPfYOtcU0ROryh2YT0cqFJwhIzgFoY2oirpidqY34QKVsQG8HDeGB\nxzoUYd9S375wQOFnoka+CvmQeXdMKUqsd9ci0MPLWRgnhbo/YpCVQKbkN91/2TKR\nUkp0VCBYWf8XG4lusCf9GmY=\n-----END PRIVATE KEY-----\n",
+            "client_email": "firebase-adminsdk-cwir6@paperwiff-dev.iam.gserviceaccount.com",
+            "client_id": "102953960707086594410",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-cwir6%40paperwiff-dev.iam.gserviceaccount.com"
+        }
