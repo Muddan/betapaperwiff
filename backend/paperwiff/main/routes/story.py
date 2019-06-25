@@ -114,6 +114,14 @@ def popularStories():
     return make_response(response(result), result['status'])
 
 
+
+
+@Story.route('/popular', methods=['GET'])
+def getPopularStories():
+    result = storyService.getPopularStories()
+    return make_response(response(result), result.get('status'))
+
+
     # try:
 
     #     if  request.args.get('userId')==None and request.args.get('userName')==None:
@@ -203,15 +211,11 @@ def storyDetails():
         return response('Exception ' + str(e)), 400
 
 
-@Story.route('/popular', methods=['GET'])
-def popularStories():
-    result = storyService.getPopularStories()
-    return make_response(response(result), result.get('status'))
-
-
 @Story.route('/delete', methods=['POST'])
 def deleteStories():
     try:
+        print("someting")
+
         data_json = request.get_json(request.data)
         if not data_json.get('storyId'):
             return response('storyIds are missing, please try again'), 400
@@ -220,3 +224,18 @@ def deleteStories():
         return response(result), result['status']
     except Exception as e:
         return response('Exception ' + str(e)), 400
+
+
+@Story.route('/editStory', methods=['POST'])
+@jwt_required
+def updateStory():
+    try:
+        data_json = json.loads(request.data)
+        storyId = data_json.get('storyId')
+        result = storyService.getStoryDetailsByStoryId(storyId)
+        if result:
+            return make_response(response(storyService.updateStoryDetails(data_json)), 200)
+        return make_response(response("storyId not present"), result.get('status'))
+    except Exception as e:
+
+        return make_response(response("Error occured :"+str(e)), 400)

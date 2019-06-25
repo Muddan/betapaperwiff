@@ -337,3 +337,27 @@ class StoryClass():
                 "msg": "excepton: "+str(e),
                 "status": 200
             }
+
+    def updateStoryDetails(self,Input):
+        storyId = Input.get("storyId")
+        print(storyId)
+        if StoryServiceHelper.storyIdExists(self,storyId):
+            Stories.objects(storyId=storyId).update_one(
+                set__content=Input.get("content"),
+                set__language=Input.get("language"),
+                #set__storyTitle=Input.get("storyTitle"),
+                set__summary=Input.get("summary"),
+                set__tags=Input.get("tags"),
+                set__headerImage = Input.get("headerImage"),
+                set__visibility = Input.get("visibility"),  #public or Private
+
+            )
+            return {
+                "msg": "successfully updated",
+                "status": 200
+            }
+        else:
+            return {
+                "msg": "storyId does not exists, please try with valid storyId ",
+                "status": 200
+            }

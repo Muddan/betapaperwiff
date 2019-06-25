@@ -20,3 +20,4 @@ class Stories(Document):
     userName = StringField()
     views = IntField(default=1)
     visibility = StringField(default='public')      # Make story public/Private
+    draft = BooleanField(default=False)
