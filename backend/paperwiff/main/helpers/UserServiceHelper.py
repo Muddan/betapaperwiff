@@ -44,3 +44,14 @@ class UserServiceHelper:
             'saveForLater',
             'userArticles'
         )
+
+    def updateStoryDetailsWithUserData(self, stories):
+        finalStories = []
+        for story in stories:
+            userData = UserServiceHelper().getUserDetailsByUserId(
+                story['userId']).first()
+            story['userName'] = userData.userName
+            story['userImage'] = userData.userImage
+            story['firstName'] = userData.firstName
+            finalStories.append(story)
+        return finalStories

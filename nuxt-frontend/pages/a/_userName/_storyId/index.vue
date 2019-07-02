@@ -113,9 +113,11 @@
                           </div>
                         </v-flex>
                       </v-layout>
-                      <h1 class="main-title">{{ story.storyTitle }}</h1>
+                      <h1 class="main-title">
+                        {{ storyTitle }}
+                      </h1>
                       <span class="summary">
-                        <p>{{ story.summary }}</p>
+                        <p>{{ summary }}</p>
                       </span>
                       <div class="chip-container">
                         <span
@@ -155,7 +157,10 @@
             <!-- <comments-listing></comments-listing> -->
           </div>
         </div>
-        <div class="bottom-nav-mobile hidden-md-and-up">
+        <div
+          class="bottom-nav-mobile hidden-md-and-up"
+          :class="{ active: isScrollingUp }"
+        >
           <v-btn
             flat
             icon
@@ -197,7 +202,10 @@ export default {
   transition: 'slidedown',
   head() {
     return {
-      title: this.story.storyTitle
+      title:
+        this.story.storyTitle.charAt(0).toUpperCase() +
+        this.story.storyTitle.slice(1).toLowerCase() +
+        ' - Paperwiff'
     }
   },
   components: {
@@ -212,7 +220,8 @@ export default {
       fab: false,
       likeCount: 0,
       bottomNav: '',
-      storyUrl: ''
+      storyUrl: '',
+      isScrollingUp: true
     }
   },
 
@@ -243,6 +252,12 @@ export default {
       } else {
         return false
       }
+    },
+    storyTitle() {
+      return this.story.storyTitle.toLowerCase()
+    },
+    summary() {
+      return this.story.summary.toLowerCase()
     }
   },
 
@@ -300,6 +315,26 @@ export default {
   mounted() {
     this.likeCount = this.story.likes
     this.liked = this.likedStatus
+    this.storyUrl =
+      'https://paperwiff.com/a/' +
+      this.story.userName +
+      '/' +
+      this.story.storyId
+    if (window) {
+      let scrolled = 0
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (scrolled <= window.scrollY) {
+            this.isScrollingUp = false
+            scrolled = window.scrollY
+          } else if (this.isScrollingUp === false) {
+            this.isScrollingUp = true
+          }
+        },
+        1000
+      )
+    }
   },
   methods: {
     getPublishedDate(date) {
@@ -402,11 +437,14 @@ export default {
         font-size: 16px;
       }
       .main-title {
-        font-family: 'Cormorant Garamond', serif;
+        font-family: 'Open Sans', sans-serif;
         font-size: 47px;
         text-align: left;
         line-height: 1.5;
         font-weight: normal;
+        &:first-letter {
+          text-transform: uppercase;
+        }
         @media (max-width: 768px) {
           font-size: 28px;
         }
@@ -473,6 +511,9 @@ export default {
         letter-spacing: 0.5px;
         @media (max-width: 768px) {
           font-size: 14px;
+        }
+        &:first-letter {
+          text-transform: uppercase;
         }
       }
     }
@@ -560,6 +601,12 @@ export default {
     box-shadow: 0 3px 14px 2px rgba(0, 0, 0, 0.12);
     box-sizing: border-box;
     padding: 0 30px;
+    transform: translateY(100%);
+    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 5;
+    &.active {
+      transform: translateY(0);
+    }
   }
 }
 </style>

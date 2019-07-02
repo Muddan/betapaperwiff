@@ -1,7 +1,7 @@
-from mongoengine import DateTimeField, IntField, ListField, Document, StringField, BooleanField, MapField
+from mongoengine import DateTimeField, IntField, ListField, DynamicDocument, StringField, BooleanField, MapField
 
 
-class Users(Document):
+class Users(DynamicDocument):
     about = StringField(default='')
     availableFor = StringField(default="")
     accountLicense = StringField(default="free")

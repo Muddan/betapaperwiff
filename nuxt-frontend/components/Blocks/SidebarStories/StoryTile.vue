@@ -9,7 +9,7 @@
         <div class="content-wrapper">
           <v-list-tile-content>
             <v-list-tile-title class="story-title">
-              {{ story.storyTitle }}
+              {{ story.storyTitle.toLowerCase() }}
             </v-list-tile-title>
             <!-- <v-list-tile-sub-title class="story-summary">
               {{ story.summary }}
@@ -81,10 +81,13 @@ export default {
       color: #f82537;
     }
     .story-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Open Sans', sans-serif;
       font-style: normal;
       font-weight: normal;
       font-size: 18px;
+      &:first-letter {
+        text-transform: uppercase;
+      }
       @media (max-width: 1024px) {
         font-size: 16px;
       }

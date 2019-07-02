@@ -50,6 +50,7 @@
             solo
             name="input-7-4"
             label="Summary"
+            hint="Provide only if it is available"
           ></v-textarea>
         </v-flex>
 

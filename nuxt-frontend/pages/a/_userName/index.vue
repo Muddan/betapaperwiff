@@ -53,10 +53,6 @@
                     >{{ followedAuthor ? 'Following' : 'Follow' }}</v-btn
                   >
                 </div>
-                <v-subheader class="padding-0 ">Contact</v-subheader>
-                <a :href="'mailto:' + userProfile.email" target="_top"
-                  ><v-icon color="#337fb5" left>mail</v-icon></a
-                >
                 <p class="profile-bio">{{ userProfile.about }}</p>
                 <div class="profile-stats">
                   <div class="stats">

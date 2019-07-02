@@ -313,7 +313,7 @@ a {
       }
     }
     .story-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Open Sans', sans-serif;
       font-style: normal;
       font-weight: normal;
       font-size: 26px;

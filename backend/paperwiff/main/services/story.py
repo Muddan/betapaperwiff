@@ -51,9 +51,9 @@ class StoryClass():
                     summary=summary,
                     tags=tags,
                     userId=userId,
-                    userName=userData.first().userName,
-                    firstName=userData.first().firstName,
-                    userImage=userData.first().userImage,
+                    # userName=userData.first().userName,
+                    # firstName=userData.first().firstName,
+                    # userImage=userData.first().userImage,
                 )
                 story.save()
                 userData.update_one(push__userArticles=storyId)
@@ -111,10 +111,11 @@ class StoryClass():
             stories = json.loads(Stories.objects().exclude('id', 'comments', 'copyright').order_by(
                 '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
 
+            finalStories = UserServiceHelper().updateStoryDetailsWithUserData(stories)
             return {
                 "pageNo": pageNo + 1,
                 "totalItems": totalItems,
-                "items": stories,
+                "items": finalStories,
                 "status": 200
             }
         else:
@@ -134,9 +135,11 @@ class StoryClass():
             stories = json.loads(Stories.objects(userName=userName).exclude('id', 'comments', 'copyright').order_by(
                 '-datePublished', ).to_json())
 
+            finalStories = UserServiceHelper().updateStoryDetailsWithUserData(stories)
+
             return {
                 "pageNo": pageNo + 1,
-                "totalItems": totalItems,
+                "totalItems": finalStories,
                 "items": stories,
                 "status": 200
             }
@@ -156,10 +159,11 @@ class StoryClass():
             totalItems = Stories.objects.count()
             stories = json.loads(Stories.objects(userId=userId).exclude('id', 'comments', 'copyright').order_by(
                 '-datePublished', ).to_json())
+            finalStories = UserServiceHelper().updateStoryDetailsWithUserData(stories)
 
             return {
                 "pageNo": pageNo + 1,
-                "totalItems": totalItems,
+                "totalItems": finalStories,
                 "items": stories,
                 "status": 200
             }
@@ -169,7 +173,7 @@ class StoryClass():
                 "items": [],
                 "status": 200
             }
-
+    
     # Send story details when story url is visited
     def getStoryDetailsByStoryId(self, storyId):
         Stories.objects(storyId=storyId).update_one(inc__views=1)
@@ -193,9 +197,11 @@ class StoryClass():
         totalItems = Stories.objects.count()
         stories = json.loads(Stories.objects().exclude('id', 'comments', 'copyright').order_by(
             '-views', '-likes').skip(pageNo * 5).limit(5).to_json())
+        finalStories = UserServiceHelper().updateStoryDetailsWithUserData(stories)
+
         return {
             "pageNo": pageNo + 1,
-            "totalItems": totalItems,
+            "totalItems": finalStories,
             "items": stories,
             "status": 200
         }

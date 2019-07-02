@@ -82,7 +82,7 @@
         </v-list>
       </v-flex>
     </v-navigation-drawer>
-    <v-toolbar height="80px" app flat color="white" :scroll-off-screen="true">
+    <v-toolbar height="80px" app flat color="white" :scroll-off-screen="false">
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer">
         <v-icon color="#337fb5">fas fa-bars</v-icon>
       </v-toolbar-side-icon>

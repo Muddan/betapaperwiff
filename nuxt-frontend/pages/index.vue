@@ -82,10 +82,10 @@
             sm12
           >
             <user-info :image-only="false" :only-mobile="true"></user-info>
-            <tag-listing></tag-listing>
             <v-scroll-y-transition>
               <key-links></key-links>
             </v-scroll-y-transition>
+            <tag-listing></tag-listing>
           </v-flex>
           <v-flex class="content-section" md6 xs12>
             <div class="articles-tab">
@@ -131,7 +131,7 @@
             <v-scroll-y-transition>
               <join-us></join-us>
             </v-scroll-y-transition>
-            <SidebarStories>
+            <SidebarStories class="popular-homepage">
               <span slot="title">Popular Stories on Paperwiff</span>
             </SidebarStories>
           </v-flex>
@@ -277,6 +277,14 @@ $logosection-color: #043344;
     @media (max-width: 1024px) {
       padding: 0px;
     }
+    .keylink-main {
+      margin-top: 0;
+    }
+    .tags-main {
+      margin-top: 20px;
+      position: sticky;
+      top: 100px;
+    }
   }
   .sidebar-left,
   .sidebar-right {
@@ -302,6 +310,12 @@ $logosection-color: #043344;
       .v-tabs__item {
         text-transform: capitalize;
       }
+    }
+  }
+  .sidebar-right {
+    .popular-homepage {
+      position: sticky;
+      top: 100px;
     }
   }
 }

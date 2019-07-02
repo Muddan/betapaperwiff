@@ -14,9 +14,11 @@
 
         <v-list-tile v-else :key="item.title" avatar>
           <v-list-tile-content>
-            <v-list-tile-title v-html="item.title"></v-list-tile-title>
+            <v-list-tile-title
+              v-html="item.title.toLowerCase()"
+            ></v-list-tile-title>
             <v-list-tile-sub-title
-              v-html="item.subtitle"
+              v-html="item.subtitle.toLowerCase()"
             ></v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-avatar>

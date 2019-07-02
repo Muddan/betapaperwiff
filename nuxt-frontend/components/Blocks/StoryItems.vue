@@ -14,14 +14,23 @@
             <div class="item-header">
               <div class="item-subheader">
                 <div class="flex items-left">
-                  <v-avatar class="avatar-main" size="50px">
-                    <img v-if="story.userImage" :src="story.userImage" />
-                    <v-avatar v-else color="blue">
-                      <span v-if="story.firstName" class="white--text ">{{
-                        story.firstName[0]
-                      }}</span>
+                  <nuxt-link
+                    class="user-link"
+                    :to="{
+                      path: '/a/' + story.userName
+                    }"
+                    no-prefetch
+                  >
+                    <v-avatar class="avatar-main" size="50px">
+                      <img v-if="story.userImage" :src="story.userImage" />
+                      <v-avatar v-else color="blue">
+                        <span v-if="story.firstName" class="white--text ">{{
+                          story.firstName[0]
+                        }}</span>
+                      </v-avatar>
                     </v-avatar>
-                  </v-avatar>
+                  </nuxt-link>
+
                   <v-subheader class="username-header">
                     <nuxt-link
                       class="user-link"
@@ -101,10 +110,10 @@
                 }"
               >
                 <h3 class="story-title">
-                  {{ story.storyTitle }}
+                  {{ story.storyTitle.toLowerCase() }}
                 </h3>
+                <p class="story-desc" v-html="story.summary.toLowerCase()"></p>
               </nuxt-link>
-              <p class="story-desc" v-html="story.summary"></p>
             </div>
             <div class="item-footer">
               <div class="actions-main">
@@ -266,13 +275,16 @@ a {
       }
     }
     .story-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Open Sans', sans-serif;
       font-style: normal;
       font-weight: normal;
       font-size: 26px;
       color: #161616;
       text-decoration: none;
       padding-top: 10px;
+      &:first-letter {
+        text-transform: uppercase;
+      }
       @media (max-width: 1024px) {
         font-size: 22px;
       }
@@ -282,6 +294,9 @@ a {
       opacity: 0.5;
       overflow: hidden;
       font-size: 16px;
+      &:first-letter {
+        text-transform: uppercase;
+      }
       @media (max-width: 1024px) {
         font-size: 14px;
       }
