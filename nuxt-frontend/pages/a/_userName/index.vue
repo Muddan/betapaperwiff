@@ -8,10 +8,12 @@
               <div class="profile-details">
                 <v-avatar class="avatar-main">
                   <img
-                    class="profile-img"
+                    v-if="userProfile.userImage"
                     :src="userProfile.userImage"
-                    @click="viewImage(userProfile.userImage)"
                   />
+                  <span v-else color="blue">{{
+                    userProfile.firstName[0]
+                  }}</span>
                 </v-avatar>
                 <v-subheader>
                   Member Since
@@ -300,6 +302,12 @@ export default {
         border-bottom: 1px solid #337fb5;
         height: 150px !important;
         width: 150px !important;
+        background: #f2f2f2;
+        color: #2e2e2e;
+        span {
+          font-size: 24px;
+          font-weight: bold;
+        }
         img {
           padding: 10px;
         }

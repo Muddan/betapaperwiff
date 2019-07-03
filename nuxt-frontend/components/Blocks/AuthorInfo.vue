@@ -10,8 +10,13 @@
             }"
           >
             <div class="user-img">
-              <v-avatar size="80px">
-                <img :src="author.userImage" :alt="author.userName" />
+              <v-avatar size="100px">
+                <img v-if="author.userImage" :src="author.userImage" />
+                <v-avatar v-else size="80px" color="blue">
+                  <span v-if="author.firstName" class="white--text ">{{
+                    author.firstName[0]
+                  }}</span>
+                </v-avatar>
               </v-avatar>
             </div>
             <div class="user-info">

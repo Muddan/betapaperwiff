@@ -58,13 +58,20 @@
                       <v-layout class="mini-profile" align-center>
                         <v-flex xs8 class="details-flex">
                           <v-avatar class="profile-img" size="55px">
-                            <img :src="user.userImage" />
+                            <img v-if="user.userImage" :src="user.userImage" />
+                            <v-avatar v-else color="blue">
+                              <span
+                                v-if="user.firstName"
+                                class="white--text "
+                                >{{ user.firstName[0] }}</span
+                              >
+                            </v-avatar>
                           </v-avatar>
                           <div class="details">
                             <nuxt-link
                               class="user-profile"
                               :to="{
-                                path: '/a/' + story.userName
+                                path: '/a/' + user.userName
                               }"
                             >
                               <span class="username">{{ user.firstName }}</span>
