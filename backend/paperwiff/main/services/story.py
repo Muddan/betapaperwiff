@@ -51,12 +51,13 @@ class StoryClass():
                     summary=summary,
                     tags=tags,
                     userId=userId,
-                    # userName=userData.first().userName,
+                    userName=userData.first().userName,
                     # firstName=userData.first().firstName,
                     # userImage=userData.first().userImage,
                 )
                 story.save()
                 userData.update_one(push__userArticles=storyId)
+                print(userData.email)
                 return {
                     "msg": 'Saved the story',
                     "status": 200
@@ -134,7 +135,6 @@ class StoryClass():
             totalItems = Stories.objects.count()
             stories = json.loads(Stories.objects(userName=userName).exclude('id', 'comments', 'copyright').order_by(
                 '-datePublished', ).to_json())
-
             finalStories = UserServiceHelper().updateStoryDetailsWithUserData(stories)
 
             return {
@@ -173,7 +173,7 @@ class StoryClass():
                 "items": [],
                 "status": 200
             }
-
+    
     # Send story details when story url is visited
     def getStoryDetailsByStoryId(self, storyId):
         Stories.objects(storyId=storyId).update_one(inc__views=1)
