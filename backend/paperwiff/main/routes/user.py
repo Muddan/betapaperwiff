@@ -142,3 +142,25 @@ def savedStories():
         return make_response(response(result), result['status'])
     except Exception as e:
         return response(str(e)), 400
+
+
+@User.route('/feed', methods=['GET'])
+def userFeed():
+    try:
+        if not request.args.get('userId'):
+            return make_response(response('userId missing, please try again'), 400)
+        userId = request.args.get('userId')
+
+        # Check if userId is valid
+        if not UserServiceHelper().userIdExists(userId):
+            return make_response(response('Invalid userId, please try again'), 400)
+
+        if not request.args.get('pageNo'):
+            pageNo = 1
+        else:
+            pageNo = int(request.args.get('pageNo'))
+
+        result = userServices.getCustomizedStories(userId=userId, pageNo=pageNo)
+        return make_response(response(result), result['status'])
+    except Exception as e:
+        return response(str(e)), 400

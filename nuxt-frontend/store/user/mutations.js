@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as types from './mutation-types'
 const mutations = {
   [types.SET_SIGNED_STATE](state, payload) {
@@ -31,6 +32,9 @@ const mutations = {
 
   [types.SET_PUBLISHED_STORIES](state, payload) {
     state.userArticlesStories = payload
+  },
+  [types.SET_USER_FEED](state, payload) {
+    state.userFeed = payload
   }
 }
 

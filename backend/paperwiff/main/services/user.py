@@ -275,3 +275,30 @@ class UserClass(UserServiceHelper, StoryServiceHelper):
             "details": details,
             "status": 200
         }
+
+    def getCustomizedStories(self, userId, pageNo=1):
+        if pageNo <= 0:
+            pageNo = 1
+        pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
+        userData = json.loads(Users.objects(userId=userId).to_json())
+        UserTags = userData[0].get("followingTags")
+        noOfTags = len(UserTags)
+        if noOfTags == 0:
+            return {
+                "status": 400,
+                "Message": "follow tags that you like to create customized feed"
+            }
+        numberOfStoryToDisplay = int(10/noOfTags)
+        listOfstory = []
+        for tags in UserTags:
+            listOfstory += json.loads(Stories.objects(
+                tags=tags).exclude('id').skip(pageNo * 10).limit(10).to_json())
+        storyList = []
+        for story in listOfstory:
+            if story not in storyList:
+                storyList.append(story)
+        return {
+            "pageNo": pageNo + 1,
+            "status": 200,
+            "items": storyList
+        }

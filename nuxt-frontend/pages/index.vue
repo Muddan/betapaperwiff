@@ -42,32 +42,17 @@
       <div class="logo-section">
         <v-layout class="hidden-md-and-up feed-selection">
           <v-btn flat icon color="#337fb5" @click="leftDrawer = !leftDrawer">
-            <v-icon small>fas fa-clipboard-list </v-icon>
+            <v-icon small>fas fa-clipboard-list</v-icon>
           </v-btn>
-          <v-tabs
-            color="none"
-            slider-color="#337fb5"
-            fixed-tabs
-            class="selection-tabs"
-          >
+          <v-tabs fixed-tabs class="selection-tabs">
             <v-tab
               v-for="(item, index) in FeedType"
               :key="index"
               :ripple="false"
+              @change="tagHandler()"
+              >{{ item.title }}</v-tab
             >
-              <span> {{ item.title }}</span>
-            </v-tab>
           </v-tabs>
-          <!-- <v-subheader
-            v-for="(label, index) in FeedType"
-            :key="index"
-            depressed
-            class="feed-title"
-            :class="{ 'feed-title--active': activeTab === label.title }"
-          >
-            {{ label.title }}
-          </v-subheader> -->
-
           <v-btn flat icon color="#337fb5" @click="rightDrawer = !rightDrawer">
             <v-icon small>fa fa-coins</v-icon>
           </v-btn>
@@ -95,9 +80,9 @@
                     v-for="(item, index) in FeedType"
                     :key="index"
                     :ripple="false"
+                    @change="tagHandler()"
+                    >{{ item.title }}</v-tab
                   >
-                    {{ item.title }}
-                  </v-tab>
                 </v-tabs>
                 <!-- <v-subheader
                   v-if="isSignedIn"
@@ -107,7 +92,7 @@
                   @click.stop="changeTab({ title: 'Feed', status: false })"
                 >
                   {{ 'Feed' }}
-                </v-subheader> -->
+                </v-subheader>-->
               </div>
               <story-items
                 v-if="getCurrentUserFeed()"
@@ -115,9 +100,7 @@
               ></story-items>
               <no-ssr>
                 <InfiniteLoading spinner="bubbles" @infinite="infiniteHandler">
-                  <div slot="no-more" class="no-more-text">
-                    The End.
-                  </div>
+                  <div slot="no-more" class="no-more-text">The End.</div>
                 </InfiniteLoading>
               </no-ssr>
             </div>
@@ -175,8 +158,8 @@ export default {
       ScrollToTopHidden: false,
       pageNo: 2,
       FeedType: [
-        // { title: 'My Feed', status: true },
-        { title: 'Latest', status: true }
+        { title: 'Latest', status: true },
+        { title: 'My Feed', status: true }
         // { title: 'Popular', status: false }
       ],
       activeTab: 'Latest'
@@ -185,7 +168,9 @@ export default {
   computed: {
     ...mapGetters({
       filteredStories: 'stories/filteredStories',
-      allStories: 'stories/allStories'
+      allStories: 'stories/allStories',
+      userFeed: 'user/userFeed',
+      isSignedIn: 'user/isSignedIn'
     })
   },
   mounted() {
@@ -216,12 +201,22 @@ export default {
       this.ScrollToTopHidden = top > 100
     },
     getCurrentUserFeed() {
-      // if (this.activeTab === 'Feed') {
-      //   return this.$store.dispatch('user/userFeed')
-      // } else {
-      //   return this.allStories
-      // }
-      return this.allStories
+      if (this.activeTab === 'Feed') {
+        return this.userFeed
+      } else {
+        return this.allStories
+      }
+    },
+    tagHandler() {
+      if (this.activeTab === 'Feed') {
+        this.activeTab = 'Latest'
+      } else {
+        this.$store.dispatch(
+          'user/userFeed',
+          this.$store.state.user.current.userId
+        )
+        this.activeTab = 'Feed'
+      }
     }
   }
 }

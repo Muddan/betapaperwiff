@@ -9,7 +9,7 @@ export const endpoints = {
 
   // USER ENDPOINTS
   API_USER_UPDATE: `${BASE_URL}/api/user/updateUser`,
-  API_USER_FEED: `${BASE_URL}/api/user/feed/myfeed`,
+  API_USER_FEED: `${BASE_URL}/api/user/feed`,
   API_USER_AUTH: `${BASE_URL}/api/auth/signin`,
   API_USER_EMAIL_AUTH: `${BASE_URL}/api/auth/login`,
   API_GET_USER_DETAILS: `${BASE_URL}/api/user/details`,

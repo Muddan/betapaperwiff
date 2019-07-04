@@ -173,7 +173,7 @@ class StoryClass():
                 "items": [],
                 "status": 200
             }
-    
+
     # Send story details when story url is visited
     def getStoryDetailsByStoryId(self, storyId):
         Stories.objects(storyId=storyId).update_one(inc__views=1)
@@ -201,7 +201,7 @@ class StoryClass():
 
         return {
             "pageNo": pageNo + 1,
-            "totalItems": finalStories,
+            "totalItems": totalItems,
             "items": stories,
             "status": 200
         }
@@ -238,3 +238,4 @@ class StoryClass():
                 "msg": "excepton: "+str(e),
                 "status": 200
             }
+

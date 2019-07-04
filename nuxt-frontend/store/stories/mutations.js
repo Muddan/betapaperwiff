@@ -49,9 +49,7 @@ const mutations = {
   [types.SET_CURRENT_STORY](state, payload) {
     state.currentStory = payload
   },
-  [types.SET_USER_FEED](state, payload) {
-    state.filteredStories = payload
-  },
+
   [types.SET_POPULAR_STORIES](state, payload) {
     state.popularStories = payload
   }

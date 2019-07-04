@@ -21,6 +21,7 @@
         {{ 'Feed' }}
       </v-subheader> -->
     </div>
+
     <story-items
       v-if="getCurrentUserFeed()"
       :stories="getCurrentUserFeed()"
@@ -64,7 +65,8 @@ export default {
     ...mapGetters({
       filteredStories: 'stories/filteredStories',
       allStories: 'stories/allStories',
-      isSignedIn: 'user/isSignedIn'
+      isSignedIn: 'user/isSignedIn',
+      userFeed: 'user/userFeed'
     })
   },
   methods: {

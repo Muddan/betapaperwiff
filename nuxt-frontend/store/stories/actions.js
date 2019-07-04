@@ -119,11 +119,6 @@ const actions = {
       context.rootState.user.current.userId,
       { root: true }
     )
-    await context.dispatch(
-      'stories/userFeed',
-      context.rootState.user.current.userId,
-      { root: true }
-    )
   },
   like(context, payload) {
     if (context.rootState.user.isSignedIn) {
@@ -149,21 +144,6 @@ const actions = {
           )
         })
     }
-  },
-  userFeed(context, payload) {
-    this.$axios(
-      {
-        method: 'GET',
-        url: `${endpoints.API_GET_STORIES}?userId=${payload}`
-      },
-      {
-        headers: {
-          Authorization: 'Bearer ' + context.rootState.user.access_token
-        }
-      }
-    ).then(res => {
-      context.commit(types.SET_USER_FEED, res.data.result.items)
-    })
   },
   async getPopularStories(context, payload) {
     await this.$axios.$get(endpoints.API_GET_POPULAR_STORIES).then(response => {

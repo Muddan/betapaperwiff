@@ -7,6 +7,7 @@ export const state = () => ({
   refresh_token: '',
   readingListStories: [],
   userArticlesStories: [],
+  userFeed: [],
   current: {
     userId: null,
     firstName: '',

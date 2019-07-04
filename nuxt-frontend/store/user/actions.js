@@ -23,9 +23,6 @@ const actions = {
         context.commit(types.SET_ACCESS_TOKENS, JSON.parse(accessKeys))
 
         await context.dispatch('getUserDetails', currentUser.uid)
-        await context.dispatch('stories/userFeed', currentUser.uid, {
-          root: true
-        })
       }
     })
   },
@@ -95,13 +92,6 @@ const actions = {
       },
       { root: true }
     )
-    if (context.rootState.user.current.userId) {
-      context.dispatch(
-        'stories/userFeed',
-        context.rootState.user.current.userId,
-        { root: true }
-      )
-    }
   },
 
   /**
@@ -294,17 +284,18 @@ const actions = {
    * @returns
    */
   userFeed(context, payload) {
-    return this.$axios({
-      method: 'POST',
-      url: endpoints.API_USER_FEED,
-      data: {
-        userId: context.rootState.user.current.userId
+    this.$axios(
+      {
+        method: 'GET',
+        url: `${endpoints.API_USER_FEED}?userId=${payload}`
       },
-      headers: {
-        Authorization: 'Bearer ' + context.rootState.user.access_token
+      {
+        headers: {
+          Authorization: 'Bearer ' + context.rootState.user.access_token
+        }
       }
-    }).then(res => {
-      return res.data.result.items
+    ).then(res => {
+      context.commit(types.SET_USER_FEED, res.data.result.items)
     })
   }
 }

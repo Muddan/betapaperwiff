@@ -2,6 +2,7 @@
   <div class="user-profile-main">
     <v-container>
       <div class="user-profile-header">
+        {{ userProfile }}
         <div class="profile-content-wrapper">
           <v-layout class="header-layout">
             <v-flex xs12 md2>
@@ -165,6 +166,8 @@ export default {
   async asyncData({ app, route, store, env, error, query }) {
     let userProfile = ''
     let userStories = ''
+    // eslint-disable-next-line no-console
+    console.log(store.state.user.current)
     if (store.state.user.current.userName === route.params.userName) {
       await app.$axios
         .$post(
@@ -179,6 +182,8 @@ export default {
           }
         )
         .then(res => {
+          // eslint-disable-next-line no-console
+          console.log(res)
           userProfile = res.result
         })
         .catch(() => {

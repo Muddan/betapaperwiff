@@ -13,7 +13,8 @@ const getter = {
   savedStories: state => state.current.saveForLater,
   followingTags: state => state.current.followingTags,
   readingListStories: state => state.readingListStories,
-  userArticlesStories: state => state.userArticlesStories
+  userArticlesStories: state => state.userArticlesStories,
+  userFeed: state => state.userFeed
 }
 
 export default getter
