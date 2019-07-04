@@ -23,7 +23,6 @@ def refresh():
     }
     return jsonify(ret), 200
 
-
 @Auth.route('/signin', methods=["POST"])
 def firebaseAuth():
     request_data = request.get_json()

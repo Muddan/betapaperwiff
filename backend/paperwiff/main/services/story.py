@@ -127,41 +127,6 @@ class StoryClass():
             }
 
 
-    def getAllPopularStories(self, pageNo=1):
-
-        try:
-            if pageNo <= 0:
-                pageNo = 1
-            pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
-            totalItems = self.storyCollection.count()
-
-            stories = self.storyCollection.find(projection={
-                "_id": False, "comments": False
-            }).skip(pageNo * 10).limit(10).sort("likes",decending).sort("views",decending)
-            listofStories = []
-
-            for story in stories:
-                print(story)
-                image = self.userCollection.find_one({"userId": story["userId"]}, projection={
-                    "_id": False, 'userImage': True, })
-                story.update(image)
-                listofStories.append(story)
-            if (len(listofStories)) == 0:
-                return {
-                    "msg": "no more stories",
-                    "status": 200
-                }
-            return {
-                "pageNo": pageNo + 1,
-                "totalItems": totalItems,
-                "items": list(listofStories),
-                "status": 200
-            }
-        except Exception as e:
-            return {
-                "excetion":str(e),
-                "status": 400
-            }
 
 
     def getAllStories(self, pageNo=1):
@@ -170,7 +135,7 @@ class StoryClass():
         pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
         if Stories.objects.count():
             totalItems = Stories.objects.count()
-            stories = json.loads(Stories.objects().exclude('id', 'comments', 'copyright').order_by(
+            stories = json.loads(Stories.objects(visibility='public', draft=False).exclude('id', 'comments', 'copyright').order_by(
                 '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
 
             return {
@@ -210,13 +175,15 @@ class StoryClass():
             }
     # user stories by userId
 
+
+    #get user stories to show to other users
     def getUserStories(self, userId, pageNo=1):
         if pageNo <= 0:
             pageNo = 1
         pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
         if Stories.objects.count():
             totalItems = Stories.objects.count()
-            stories = json.loads(Stories.objects(userId=userId).exclude('id', 'comments', 'copyright').order_by(
+            stories = json.loads(Stories.objects(userId=userId,visibility='public', draft=False).exclude('id', 'comments', 'copyright').order_by(
                 '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
 
             return {
@@ -237,7 +204,7 @@ class StoryClass():
             pageNo = 1
         pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
         print(userId)
-        userData=json.loads(Users.objects(userId=userId).to_json())
+        userData=json.loads(Users.objects(userId=userId,visibility='public', draft=False).to_json())
         UserTags=userData[0].get("followingTags")
         noOfTags=len(UserTags)
         if noOfTags==0:
@@ -249,7 +216,7 @@ class StoryClass():
         print("no.:"+str(numberOfStoryToDisplay))
         listOfstory=[]
         for tags in UserTags:
-            listOfstory+=json.loads(Stories.objects(tags=tags).skip(pageNo * 5).limit(5).to_json())
+            listOfstory+=json.loads(Stories.objects(tags=tags,visibility='public', draft=False).skip(pageNo * 5).limit(5).to_json())
         storyList=[]
         for story in listOfstory:
             if story not in storyList:
@@ -281,11 +248,14 @@ class StoryClass():
                 "status": 400
             }
 
+
+#depricated the below api is depricated
+
     def getPopularStories(self, pageNo=1):
         if pageNo <= 0:
             pageNo = 1
         pageNo = pageNo - 1
-        totalItems = Stories.objects.count()
+        totalItems = Stories.objects().count()
         stories = json.loads(Stories.objects().exclude('id', 'comments', 'copyright').order_by(
             '-views', '-likes').skip(pageNo * 5).limit(5).to_json())
         return {
@@ -294,6 +264,44 @@ class StoryClass():
             "items": stories,
             "status": 200
         }
+
+    def getAllPopularStories(self, pageNo=1):
+
+        try:
+            if pageNo <= 0:
+                pageNo = 1
+            pageNo = pageNo - 1  # so if page one so that it doesnt skip the first 10 posts
+            totalItems = self.storyCollection.count()
+
+            stories = self.storyCollection.find(projection={
+                "_id": False, "comments": False
+            }).skip(pageNo * 10).limit(10).sort("likes",decending).sort("views",decending)
+            listofStories = []
+
+            for story in stories:
+                print(story)
+                image = self.userCollection.find_one({"userId": story["userId"]}, projection={
+                    "_id": False, 'userImage': True, })
+                story.update(image)
+                listofStories.append(story)
+            if (len(listofStories)) == 0:
+                return {
+                    "msg": "no more stories",
+                    "status": 200
+                }
+            return {
+                "pageNo": pageNo + 1,
+                "totalItems": totalItems,
+                "items": list(listofStories),
+                "status": 200
+            }
+        except Exception as e:
+            return {
+                "excetion":str(e),
+                "status": 400
+            }
+
+
 
     def deleteByStoryId(self, storyId):
         if not StoryServiceHelper().storyIdExists(storyId):

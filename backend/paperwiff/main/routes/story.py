@@ -124,7 +124,7 @@ def popularStories():
 
 @Story.route('/popular', methods=['GET'])
 def getPopularStories():
-    result = storyService.getPopularStories()
+    #result = storyService.getPopularStories()
     return make_response(response(result), result.get('status'))
 
 
