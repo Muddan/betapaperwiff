@@ -139,8 +139,8 @@ class StoryClass():
 
             return {
                 "pageNo": pageNo + 1,
-                "totalItems": finalStories,
-                "items": stories,
+                "totalItems": totalItems,
+                "items": finalStories,
                 "status": 200
             }
         else:
@@ -163,8 +163,8 @@ class StoryClass():
 
             return {
                 "pageNo": pageNo + 1,
-                "totalItems": finalStories,
-                "items": stories,
+                "totalItems": totalItems,
+                "items": finalStories,
                 "status": 200
             }
         else:
@@ -173,7 +173,7 @@ class StoryClass():
                 "items": [],
                 "status": 200
             }
-    
+
     # Send story details when story url is visited
     def getStoryDetailsByStoryId(self, storyId):
         Stories.objects(storyId=storyId).update_one(inc__views=1)
