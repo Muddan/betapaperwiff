@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, json, make_response
 from ..services.story import StoryClass
 from ..services.user import UserClass
+from ..helpers.StoryServiceHelper import StoryServiceHelper
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from translate import Translator
@@ -13,6 +14,7 @@ Story = Blueprint('story', __name__)
 
 storyService = StoryClass()
 userService = UserClass()
+helperStory = StoryServiceHelper()
 
 
 @Story.route('/alltags', methods=['GET'])
@@ -93,16 +95,20 @@ def userStories():
 
 @Story.route('/userfeed', methods=['GET'])
 def userFeed():
-    if not request.args.get('pageNo'):
-        pageNo = 1
-    else:
-        pageNo = int(request.args.get('pageNo'))
-    if not request.get_json('userId'):
-        return make_response(response("userId is missing"), 400)
-    JsonData = request.get_json('userId')
-    userId=JsonData.get('userId')
-    result = storyService.getCustomizedStories(pageNo=pageNo, userId=userId)
-    return make_response(response(result), result['status'])
+    try:
+        if not request.args.get('pageNo'):
+            pageNo = 1
+        else:
+            pageNo = int(request.args.get('pageNo'))
+
+        if not request.get_json('userId'):
+            return make_response(response("userId is missing"), 400)
+        JsonData = request.get_json('userId')
+        userId=JsonData.get('userId')
+        result = storyService.getCustomizedStories(pageNo=pageNo, userId=userId)
+        return make_response(response(result), result['status'])
+    except Exception as e:
+        return(str(e))
 
 @Story.route('/popularStories', methods=['GET'])
 def popularStories():
@@ -188,7 +194,10 @@ def publishStory():
         datePublished = data_json["datePublished"]
         headerImage = data_json["headerImage"]
         summary = data_json["summary"]
-        result = storyService.publishStory(userId=userId, tags=tags, summary=summary,
+        visibility=data_json["visibility"]
+        draft=data_json["draft"]
+
+        result = storyService.publishStory(userId=userId, tags=tags,draft=draft, summary=summary,visibility=visibility,
                                            storyTitle=storyTitle, content=content, language=language, datePublished=datePublished, headerImage=headerImage)
         return response(result), result['status']
 
@@ -212,6 +221,7 @@ def storyDetails():
 
 
 @Story.route('/delete', methods=['POST'])
+@jwt_required
 def deleteStories():
     try:
         print("someting")
@@ -227,15 +237,14 @@ def deleteStories():
 
 
 @Story.route('/editStory', methods=['POST'])
-@jwt_required
+#@jwt_required
 def updateStory():
     try:
         data_json = json.loads(request.data)
+        if not data_json.get('storyId'):
+            return make_response(response("Error occured storyId is missing:"), 400)
         storyId = data_json.get('storyId')
-        result = storyService.getStoryDetailsByStoryId(storyId)
-        if result:
-            return make_response(response(storyService.updateStoryDetails(data_json)), 200)
-        return make_response(response("storyId not present"), result.get('status'))
-    except Exception as e:
+        return make_response(response(storyService.updateStoryDetails(data_json)), 200)
 
+    except Exception as e:
         return make_response(response("Error occured :"+str(e)), 400)

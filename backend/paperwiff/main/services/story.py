@@ -28,7 +28,7 @@ class StoryClass():
 
 
     # Story CRUD METHODS
-    def publishStory(self, userId, tags, storyTitle, content, language, datePublished, headerImage, summary):
+    def publishStory(self, userId, tags, storyTitle, content, language,draft, datePublished, headerImage, summary, visibility):
         userData = UserServiceHelper().getUserDetailsByUserId(userId)
         for tag in tags:
             if not TagServiceHelper().isValid(tag):
@@ -58,6 +58,8 @@ class StoryClass():
                     userName=userData.first().userName,
                     firstName=userData.first().firstName,
                     userImage=userData.first().userImage,
+                    visibility=visibility,
+                    draft=draft,
                 )
                 story.save()
                 userData.update_one(push__userArticles=storyId)
@@ -123,8 +125,6 @@ class StoryClass():
                 "msg": "excepton: "+str(e),
                 "status": 200
             }
-
-
 
 
     def getAllPopularStories(self, pageNo=1):
@@ -240,6 +240,11 @@ class StoryClass():
         userData=json.loads(Users.objects(userId=userId).to_json())
         UserTags=userData[0].get("followingTags")
         noOfTags=len(UserTags)
+        if noOfTags==0:
+            return {
+                "status": 400,
+                "Message":"follow tags that you like to create customized feed"
+            }
         numberOfStoryToDisplay=int(10/noOfTags)
         print("no.:"+str(numberOfStoryToDisplay))
         listOfstory=[]
@@ -257,29 +262,14 @@ class StoryClass():
             }
 
 
-        # if Stories.objects.count():
-        #     totalItems = Stories.objects.count()
-        #     stories = json.loads(Stories.objects(userId=userId).exclude('id', 'comments', 'copyright').order_by(
-        #         '-datePublished', ).skip(pageNo * 10).limit(10).to_json())
-        #
-        #     return {
-        #         "pageNo": pageNo + 1,
-        #         "totalItems": totalItems,
-        #         "items": stories,
-        #         "status": 200
-        #     }
-        # else:
-        #     return {
-        #         "msg": "Sorry, no articles are available",
-        #         "items": [],
-        #         "status": 200
-        #     }
-
     # Send story details when story url is visited
     def getStoryDetailsByStoryId(self, storyId):
         Stories.objects(storyId=storyId).update_one(inc__views=1)
+
         storyDetails = json.loads(Stories.objects(
             storyId=storyId).exclude('id').first().to_json())
+
+
         if storyDetails:
             return {
                 "item": storyDetails,
@@ -340,16 +330,18 @@ class StoryClass():
 
     def updateStoryDetails(self,Input):
         storyId = Input.get("storyId")
-        print(storyId)
         if StoryServiceHelper.storyIdExists(self,storyId):
+            storyTitle=Input.get("storyTitle")
+
             Stories.objects(storyId=storyId).update_one(
                 set__content=Input.get("content"),
                 set__language=Input.get("language"),
-                #set__storyTitle=Input.get("storyTitle"),
+                set__storyTitle=Input.get("storyTitle"),
                 set__summary=Input.get("summary"),
                 set__tags=Input.get("tags"),
                 set__headerImage = Input.get("headerImage"),
                 set__visibility = Input.get("visibility"),  #public or Private
+                #set__storyId = re.sub('[^A-Za-z0-9-"-"]+', '',storyTitle.lower().replace(" ", "-"))
 
             )
             return {
