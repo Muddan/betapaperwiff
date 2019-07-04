@@ -45,12 +45,9 @@
             <v-icon small>fas fa-clipboard-list</v-icon>
           </v-btn>
           <v-tabs fixed-tabs class="selection-tabs">
-            <v-tab
-              v-for="(item, index) in FeedType"
-              :key="index"
-              :ripple="false"
-              @change="tagHandler()"
-              >{{ item.title }}</v-tab
+            <v-tab :ripple="false">Latest</v-tab>
+            <v-tab v-if="isSignedIn" :ripple="false" @change="tagHandler()"
+              >Feed</v-tab
             >
           </v-tabs>
           <v-btn flat icon color="#337fb5" @click="rightDrawer = !rightDrawer">
@@ -76,12 +73,12 @@
             <div class="articles-tab">
               <div class="tab-list">
                 <v-tabs fixed-tabs class="hidden-md-and-down selection-tabs">
+                  <v-tab :ripple="false">Latest</v-tab>
                   <v-tab
-                    v-for="(item, index) in FeedType"
-                    :key="index"
+                    v-if="isSignedIn"
                     :ripple="false"
                     @change="tagHandler()"
-                    >{{ item.title }}</v-tab
+                    >Feed</v-tab
                   >
                 </v-tabs>
                 <!-- <v-subheader
@@ -201,7 +198,7 @@ export default {
       this.ScrollToTopHidden = top > 100
     },
     getCurrentUserFeed() {
-      if (this.activeTab === 'Feed') {
+      if (this.activeTab === 'Feed' && this.isSignedIn) {
         return this.userFeed
       } else {
         return this.allStories
