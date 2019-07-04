@@ -323,10 +323,7 @@ export default {
     this.likeCount = this.story.likes
     this.liked = this.likedStatus
     this.storyUrl =
-      'https://paperwiff.com/a/' +
-      this.story.userName +
-      '/' +
-      this.story.storyId
+      'https://paperwiff.com/a/' + this.user.userName + '/' + this.story.storyId
     if (window) {
       let scrolled = 0
       window.addEventListener(
