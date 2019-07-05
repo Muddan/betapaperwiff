@@ -2,7 +2,6 @@
   <div class="user-profile-main">
     <v-container>
       <div class="user-profile-header">
-        {{ userProfile }}
         <div class="profile-content-wrapper">
           <v-layout class="header-layout">
             <v-flex xs12 md2>
