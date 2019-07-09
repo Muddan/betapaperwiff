@@ -40,6 +40,11 @@
         </v-flex>
       </v-navigation-drawer>
       <div class="logo-section">
+        <v-layout>
+          <v-flex sm12>
+            <HomepageHero />
+          </v-flex>
+        </v-layout>
         <v-layout class="hidden-md-and-up feed-selection">
           <v-btn flat icon color="#337fb5" @click="leftDrawer = !leftDrawer">
             <v-icon small>fas fa-clipboard-list</v-icon>
@@ -58,18 +63,17 @@
       <div class="main-content">
         <v-layout>
           <v-flex
-            class="sidebar-section sidebar-left hidden-sm-and-down"
-            md3
+            class="sidebar-section sidebar-right hidden-sm-and-down"
+            md4
+            lg3
             xs12
             sm12
           >
+            <join-us></join-us>
             <user-info :image-only="false" :only-mobile="true"></user-info>
-            <v-scroll-y-transition>
-              <key-links></key-links>
-            </v-scroll-y-transition>
             <tag-listing></tag-listing>
           </v-flex>
-          <v-flex class="content-section" md6 xs12>
+          <v-flex class="content-section" md8 lg7 xs12>
             <div class="articles-tab">
               <div class="tab-list">
                 <v-tabs fixed-tabs class="hidden-md-and-down selection-tabs">
@@ -104,13 +108,11 @@
           </v-flex>
           <v-flex
             class="sidebar-section sidebar-right hidden-sm-and-down"
-            md3
+            md4
+            lg3
             xs12
             sm12
           >
-            <v-scroll-y-transition>
-              <join-us></join-us>
-            </v-scroll-y-transition>
             <SidebarStories class="popular-homepage">
               <span slot="title">Popular Stories on Paperwiff</span>
             </SidebarStories>
@@ -124,7 +126,7 @@
 // Custom components
 import TagListing from '@/components/Blocks/TagListing/TagListing.vue'
 import UserInfo from '@/components/Blocks/UserInfo.vue'
-import KeyLinks from '@/components/Blocks/KeyLinks.vue'
+import HomepageHero from '@/components/Blocks/HomepageHero.vue'
 import JoinUs from '@/components/Blocks/JoinUs.vue'
 import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
 import StoryItems from '@/components/Blocks/StoryItems.vue'
@@ -141,11 +143,11 @@ export default {
   components: {
     TagListing,
     UserInfo,
-    KeyLinks,
     JoinUs,
     SidebarStories,
     StoryItems,
-    InfiniteLoading
+    InfiniteLoading,
+    HomepageHero
   },
   data() {
     return {
@@ -280,7 +282,7 @@ $logosection-color: #043344;
   }
   .sidebar-left,
   .sidebar-right {
-    padding-top: 10px;
+    padding-top: 65px;
   }
   .articles-tab {
     padding-top: 10px;
@@ -306,6 +308,7 @@ $logosection-color: #043344;
   }
   .sidebar-right {
     .popular-homepage {
+      margin: 0;
       position: sticky;
       top: 100px;
     }

@@ -39,7 +39,7 @@
           <v-text-field
             v-model="storyForm.title"
             required
-            label="Title"
+            label="Give a title for your story"
             single-line
             solo
           ></v-text-field>
@@ -49,7 +49,7 @@
             v-model="storyForm.summary"
             solo
             name="input-7-4"
-            label="Summary"
+            label="Add a summary"
             hint="Provide only if it is available"
           ></v-textarea>
         </v-flex>
@@ -82,14 +82,14 @@
           <v-combobox
             v-model="storyForm.selectedTags"
             :items="tagsArray"
-            label="Add Tags"
+            label="Select upto 3 Tags"
             chips
             clearable
             solo
             multiple
             :counter="3"
             hint="Select upto 3 tags"
-            :persistent-hint="true"
+            :persistent-hint="false"
             @input="limiter"
           >
             <template v-slot:selection="data">

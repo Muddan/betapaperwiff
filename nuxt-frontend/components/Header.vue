@@ -82,7 +82,14 @@
         </v-list>
       </v-flex>
     </v-navigation-drawer>
-    <v-toolbar height="80px" app flat color="white" :scroll-off-screen="false">
+    <v-toolbar
+      height="85px"
+      app
+      flat
+      color="white"
+      :scroll-off-screen="false"
+      :prominent="true"
+    >
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer">
         <v-icon color="#337fb5">fas fa-bars</v-icon>
       </v-toolbar-side-icon>
@@ -92,11 +99,28 @@
         </router-link>
       </v-toolbar-title>
 
+      <span
+        v-for="item in keyLinks"
+        :key="item.title"
+        class="hidden-md-and-down"
+      >
+        <v-btn
+          depressed
+          small
+          class="header-links"
+          color="#297eaa"
+          flat
+          :to="item.link"
+        >
+          {{ item.title }}
+        </v-btn>
+      </span>
+
       <v-spacer class="hidden-md-and-up"></v-spacer>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
       <router-link to="/write">
         <v-btn color="#337fb5" flat value="help">
-          <v-icon size="18px" left>fas fa-feather</v-icon>
+          <v-icon size="18px" left>fas fa-feather-alt</v-icon>
           <span>Write</span>
         </v-btn>
       </router-link>
@@ -116,14 +140,21 @@
         <v-menu left bottom offset-y>
           <template v-slot:activator="{ on }">
             <v-btn flat icon color="#337fb5" v-on="on">
-              <v-icon>
-                notifications
-              </v-icon>
+              <v-badge left>
+                <template v-slot:badge>
+                  <span>1</span>
+                </template>
+                <v-icon>
+                  notifications
+                </v-icon>
+              </v-badge>
             </v-btn>
           </template>
           <v-list>
             <v-list-tile>
-              <v-subheader>No notifications</v-subheader>
+              <v-subheader
+                >UserFeed is in beta, you can submit your feedback.</v-subheader
+              >
             </v-list-tile>
           </v-list>
         </v-menu>
@@ -229,7 +260,7 @@ export default {
       }
     ],
     keyLinks: [
-      { title: 'About Paperwiff', link: '/about' },
+      { title: 'About', link: '/about' },
       // { title: 'Pricing', link: '/pricing' },
       { title: ' Privacy Policy', link: '/privacy-policy' },
       { title: 'Contact', link: '/contact' }
@@ -298,6 +329,10 @@ export default {
     .user-info {
       margin-bottom: 10px;
     }
+  }
+  .header-links {
+    text-transform: capitalize;
+    font-size: 16px;
   }
 }
 .v-list {

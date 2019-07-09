@@ -4,7 +4,7 @@
       <div class="user-profile-header">
         <div class="profile-content-wrapper">
           <v-layout class="header-layout">
-            <v-flex xs12 md2>
+            <v-flex xs12 md3>
               <div class="profile-details">
                 <v-avatar class="avatar-main">
                   <img
@@ -95,7 +95,10 @@
           <v-flex xs3 md3 class="hidden-sm-and-down">
             <v-flex class="sidebar-section sidebar-left">
               <user-info :image-only="false" :only-mobile="true"></user-info>
-              <KeyLinks></KeyLinks>
+
+              <SidebarStories class="sidebar-profile-page">
+                <span slot="title">Popular Stories on Paperwiff</span>
+              </SidebarStories>
             </v-flex>
           </v-flex>
           <v-flex xs12 md6>
@@ -107,13 +110,6 @@
               </div>
             </v-flex>
           </v-flex>
-          <v-flex xs3 md3 class="hidden-sm-and-down">
-            <v-flex class="sidebar-section sidebar-left">
-              <SidebarStories>
-                <span slot="title">Popular Stories on Paperwiff</span>
-              </SidebarStories>
-            </v-flex>
-          </v-flex>
         </template>
       </v-layout>
     </v-container>
@@ -122,18 +118,17 @@
 
 <script>
 import StoryItems from '@/components/Blocks/StoryItems.vue'
-import UserInfo from '@/components/Blocks/UserInfo.vue'
 import SidebarStories from '@/components/Blocks/SidebarStories/SidebarStories.vue'
-import KeyLinks from '@/components/Blocks/KeyLinks.vue'
+import UserInfo from '@/components/Blocks/UserInfo.vue'
+
 import { mapGetters } from 'vuex'
 import { endpoints } from '@/api/endpoints.js'
 export default {
   transition: 'slidedown',
   components: {
     StoryItems,
-    UserInfo,
     SidebarStories,
-    KeyLinks
+    UserInfo
   },
   data() {
     return {
@@ -165,8 +160,6 @@ export default {
   async asyncData({ app, route, store, env, error, query }) {
     let userProfile = ''
     let userStories = ''
-    // eslint-disable-next-line no-console
-    console.log(store.state.user.current)
     if (store.state.user.current.userName === route.params.userName) {
       await app.$axios
         .$post(
@@ -181,8 +174,6 @@ export default {
           }
         )
         .then(res => {
-          // eslint-disable-next-line no-console
-          console.log(res)
           userProfile = res.result
         })
         .catch(() => {

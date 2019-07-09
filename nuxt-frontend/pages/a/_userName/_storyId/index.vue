@@ -43,7 +43,7 @@
                   </div>
                 </div>
               </v-flex>
-              <v-flex content-layout md8 xs12>
+              <v-flex content-layout md10 lg8 xs12>
                 <div class="story-poster">
                   <img
                     class="poster"

@@ -238,7 +238,7 @@ a {
   background: #fff;
   padding: 10px 15px 0 15px;
   box-sizing: border-box;
-  border-bottom: 4px solid #5199c3 !important;
+  // border-bottom: 4px solid #5199c3 !important;
   box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
   @media (max-width: 1024px) {
     padding-bottom: 0;

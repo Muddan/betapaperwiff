@@ -1,7 +1,7 @@
 <template>
   <div class="author-info">
     <v-container>
-      <v-layout justify-center main-layout>
+      <v-layout justify-center main-layout wrap>
         <v-flex sm8 xs12 info-main>
           <router-link
             class="user-link"
@@ -60,11 +60,19 @@ export default {
   .info-main {
     display: flex;
     border-right: 1px solid #c2c2c2;
+    @media (max-width: 768px) {
+      border: none;
+    }
     a {
-      display: inherit;
+      display: flex;
+      align-items: center;
     }
     @media (max-width: 768px) {
       flex-direction: column;
+      a {
+        padding-bottom: 20px;
+        flex-direction: column;
+      }
     }
     .user-info {
       padding: 0 10px;

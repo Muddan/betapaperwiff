@@ -3,7 +3,13 @@
 }
 /** Transitions */
 .application {
-  background: #f7fafc !important;
+  // background: #f7fafc !important;
+  background: url('~assets/images/main-bg.png') !important;
+  background-repeat: repeat-y;
+  background-position: center -200px;
+  background-attachment: scroll; /* background-attachment: scroll|fixed|local|initial|inherit; */
+  background-size: 100%; /* background-size: auto|length|cover|contain|initial|inherit; */
+  background-origin: padding-box;
 }
 .fade-enter-active,
 .fade-leave-active {
