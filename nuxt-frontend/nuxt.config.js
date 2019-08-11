@@ -30,7 +30,8 @@ export default {
       },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css?family=EB+Garamond:400,600'
+        href:
+          'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap'
       }
     ]
   },
@@ -60,7 +61,8 @@ export default {
     { src: '~plugins/nuxtQuill.js', ssr: false },
     { src: '~plugins/cloudinary', ssr: false },
     { src: '~plugins/firebase', ssr: true },
-    { src: '~plugins/infiniteLoading', ssr: false }
+    { src: '~plugins/infiniteLoading', ssr: false },
+    { src: '~plugins/ga.js', ssr: false }
   ],
 
   /*
